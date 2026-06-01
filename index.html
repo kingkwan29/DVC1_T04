@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Enforcement Nexus · Data Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-name">Enforcement Nexus</span>
+                <span class="brand-version">v2.0</span>
+            </div>
+
+            <div class="sidebar-filters">
+                <div class="filter-group">
+                    <label for="filterJurisdiction">Jurisdiction</label>
+                    <select id="filterJurisdiction">
+                        <option value="all">All</option>
+                        <option value="ACT">ACT</option>
+                        <option value="NSW">NSW</option>
+                        <option value="NT">NT</option>
+                        <option value="QLD">QLD</option>
+                        <option value="SA">SA</option>
+                        <option value="TAS">TAS</option>
+                        <option value="VIC">VIC</option>
+                        <option value="WA">WA</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterAge">Age Group</label>
+                    <select id="filterAge">
+                        <option value="all">All</option>
+                        <option value="0-16">0–16</option>
+                        <option value="17-25">17–25</option>
+                        <option value="26-39">26–39</option>
+                        <option value="40-64">40–64</option>
+                        <option value="65 and over">65+</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterMetric">Metric Type</label>
+                    <select id="filterMetric">
+                        <option value="all">All</option>
+                        <option value="mobile_phone_use">Mobile Phone Use</option>
+                        <option value="non_wearing_seatbelts">Non-wearing Seatbelts</option>
+                        <option value="speed_fines">Speed Fines</option>
+                        <option value="unlicensed_driving">Unlicensed Driving</option>
+                    </select>
+                </div>
+
+                <div class="export-group">
+                    <button id="exportPNG" class="export-btn">📸 Export as PNG</button>
+                    <button id="exportCSV" class="export-btn">📎 Export Data (CSV)</button>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <span>BITRE · 2024 | D3.js v7</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="kpi-row" id="kpiRow">
+                <div class="kpi-card">
+                    <span class="kpi-label">Total Fines</span>
+                    <span class="kpi-number" id="kpiFines">—</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">Total Arrests</span>
+                    <span class="kpi-number" id="kpiArrests">—</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">Total Charges</span>
+                    <span class="kpi-number" id="kpiCharges">—</span>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card full-width">
+                    <div class="chart-header">
+                        <div class="header-left">
+                            <span class="chart-title">Monthly Fines Trend</span>
+                            <span class="chart-sub">Area Chart · 2008–2024</span>
+                        </div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" data-chart="trend">⤓</button>
+                        </div>
+                    </div>
+                    <div class="chart-body" id="trendChart"></div>
+                </div>
+
+                <div class="chart-card half-width">
+                    <div class="chart-header">
+                        <div class="header-left">
+                            <span class="chart-title">Fines vs Arrests by Age</span>
+                            <span class="chart-sub">Grouped Bar Chart · fines ($K) vs arrests</span>
+                        </div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" data-chart="grouped">⤓</button>
+                        </div>
+                    </div>
+                    <div class="chart-body" id="groupedBarChart"></div>
+                </div>
+
+                <div class="chart-card half-width">
+                    <div class="chart-header">
+                        <div class="header-left">
+                            <span class="chart-title">Metric Distribution</span>
+                            <span class="chart-sub">Horizontal Bar Chart · fines by violation type</span>
+                        </div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" data-chart="hbar">⤓</button>
+                        </div>
+                    </div>
+                    <div class="chart-body" id="hbarChart"></div>
+                </div>
+
+                <div class="chart-card full-width">
+                    <div class="chart-header">
+                        <div class="header-left">
+                            <span class="chart-title">Jurisdiction Comparison</span>
+                            <span class="chart-sub">Vertical Bar Chart · fines by state (in millions)</span>
+                        </div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" data-chart="vbar">⤓</button>
+                        </div>
+                    </div>
+                    <div class="chart-body" id="vbarChart"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/kpi.js"></script>
+    <script src="js/trend.js"></script>
+    <script src="js/grouped-bar.js"></script>
+    <script src="js/hbar.js"></script>
+    <script src="js/vbar.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
