@@ -39,9 +39,9 @@ function exportAsCSV() {
         return;
     }
 
-    const headers = ['location', 'ageGroup', 'metric', 'fines', 'arrests', 'charges'];
+    const headers = ['location', 'ageGroup', 'metric', 'method', 'fines', 'arrests', 'charges'];
     const rows = intersectionData.map(d => [
-        d.location, d.ageGroup, d.metric, d.fines, d.arrests, d.charges
+        d.location, d.ageGroup, d.metric, d.method || '', d.fines, d.arrests, d.charges
     ]);
 
     const csvContent = [headers, ...rows]
@@ -130,6 +130,7 @@ async function loadAllData() {
                 location: d.LOCATION,
                 ageGroup: d.AGE_GROUP,
                 metric: d.METRIC,
+                method: d.METHOD || d.DETECTION_METHOD || 'Unknown',  // 匹配 method 字段
                 fines: parseNumber(d.FINES),
                 arrests: parseNumber(d.ARRESTS),
                 charges: parseNumber(d.CHARGES)
@@ -188,8 +189,9 @@ safeAddEvent(document.getElementById('filterAge'), 'change', function (e) {
     refreshAllCharts();
 });
 
-safeAddEvent(document.getElementById('filterMetric'), 'change', function (e) {
-    state.metric = e.target.value;
+// 新的 method 筛选器
+safeAddEvent(document.getElementById('filterMethod'), 'change', function (e) {
+    state.method = e.target.value;
     refreshAllCharts();
 });
 

@@ -50,7 +50,6 @@ function renderGroupedBarChart() {
         const subgroups = ['fines', 'arrests'];
         const subgroupLabels = { fines: 'Fines ($K)', arrests: 'Arrests' };
 
-        // ✅ 修复溢出Bug：把最大值比较放在同一个量级下
         const maxFinesScaled = d3.max(data, d => d.fines / 1000);
         const maxArrests = d3.max(data, d => d.arrests);
         const yMax = Math.max(maxFinesScaled || 0, maxArrests || 0) * 1.1;
@@ -126,7 +125,6 @@ function renderGroupedBarChart() {
                 .attr('opacity', 0.85)
                 .attr('rx', 3)
                 .style('cursor', 'pointer')
-                // ✅ 修复：事件绑定必须在 transition 之前
                 .on('mouseenter', function (event, d) {
                     d3.select(this).attr('opacity', 1);
                     const value = subgroup === 'fines' ? d.fines : d.arrests;
@@ -150,7 +148,6 @@ function renderGroupedBarChart() {
                     d3.select(this).attr('opacity', 0.85);
                     hideTooltip();
                 })
-                // 最后执行动画
                 .transition()
                 .duration(500)
                 .attr('y', d => {

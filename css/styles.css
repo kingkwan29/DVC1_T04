@@ -388,3 +388,35 @@ body {
         padding: 16px;
     }
 }
+
+/* ========== 修复 vbarChart 图表标题重叠问题 ========== */
+#vbarChart {
+    min-height: 480px;
+    overflow: visible;
+}
+
+#vbarChart svg {
+    overflow: visible;
+}
+
+/* 确保 chart-card 有足够空间容纳标题 */
+.chart-card.full-width {
+    min-height: 500px;
+}
+
+/* 针对 vbarChart 所在卡片的特殊处理 */
+.chart-card:has(#vbarChart) {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .chart-card.full-width {
+        min-height: 550px;
+    }
+
+    #vbarChart {
+        min-height: 520px;
+    }
+}

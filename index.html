@@ -49,14 +49,18 @@
                     </select>
                 </div>
 
+                <!-- 核心任务 2: 将 Metric Type 改为 Detection Method，更新 ID 和 Options -->
                 <div class="filter-group">
-                    <label for="filterMetric">Metric Type</label>
-                    <select id="filterMetric">
-                        <option value="all">All</option>
-                        <option value="mobile_phone_use">Mobile Phone Use</option>
-                        <option value="non_wearing_seatbelts">Non-wearing Seatbelts</option>
-                        <option value="speed_fines">Speed Fines</option>
-                        <option value="unlicensed_driving">Unlicensed Driving</option>
+                    <label for="filterMethod">Detection Method</label>
+                    <select id="filterMethod">
+                        <option value="all">All Methods</option>
+                        <option value="Police issued">Police Issued</option>
+                        <option value="Fixed camera">Fixed Camera</option>
+                        <option value="Mobile camera">Mobile Camera</option>
+                        <option value="Red light camera">Red Light Camera</option>
+                        <option value="Manual Action">Manual Action</option>
+                        <option value="Camera (Unspecified)">Camera (Unspecified)</option>
+                        <option value="All Methods">Unregistered Method</option>
                     </select>
                 </div>
 
@@ -127,11 +131,13 @@
                     <div class="chart-body" id="hbarChart"></div>
                 </div>
 
+                <!-- 核心任务 1: 改造底部大图容器，标题更新为 Enforcement Severity: Fines vs. Arrests by Jurisdiction -->
                 <div class="chart-card full-width">
                     <div class="chart-header">
                         <div class="header-left">
-                            <span class="chart-title">Jurisdiction Comparison</span>
-                            <span class="chart-sub">Vertical Bar Chart · fines by state (in millions)</span>
+                            <span class="chart-title">Enforcement Severity: Fines vs. Arrests by Jurisdiction</span>
+                            <span class="chart-sub">Dual X‑Axis · fines (top) vs arrests (bottom) · insight: massive
+                                fines, minimal arrests</span>
                         </div>
                         <div class="chart-actions">
                             <button class="chart-action-btn" data-chart="vbar">⤓</button>

@@ -2,7 +2,7 @@
 const state = {
     jurisdiction: "all",
     age: "all",
-    metric: "all"
+    method: "all"      // 从 metric 改为 method，匹配新的筛选器
 };
 
 let kpiData = {};
@@ -27,9 +27,8 @@ function getTooltip() {
     if (!tooltipDiv) {
         tooltipDiv = document.createElement('div');
         tooltipDiv.style.position = 'fixed';
-        // ✅ 修复：改成深色背景 + 浅色字体，在白底网页上清晰可见
         tooltipDiv.style.backgroundColor = 'rgba(15, 23, 42, 0.95)';
-        tooltipDiv.style.color = '#f8fafc'; // ✅ 改成浅灰白色字体
+        tooltipDiv.style.color = '#f8fafc';
         tooltipDiv.style.padding = '12px 18px';
         tooltipDiv.style.borderRadius = '10px';
         tooltipDiv.style.fontSize = '13px';
@@ -56,7 +55,6 @@ function showTooltip(event, html) {
     let x = event.clientX + 15;
     let y = event.clientY - 20;
 
-    // 边界检测
     const tooltipRect = tooltip.getBoundingClientRect();
     if (x + 250 > window.innerWidth) {
         x = event.clientX - 260;
@@ -97,8 +95,8 @@ function applyAllFilters(data) {
         result = result.filter(d => d.ageGroup === state.age);
     }
 
-    if (state.metric !== 'all') {
-        result = result.filter(d => d.metric === state.metric);
+    if (state.method !== 'all') {
+        result = result.filter(d => d.method === state.method);
     }
 
     return result;
