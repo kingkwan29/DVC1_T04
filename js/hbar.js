@@ -112,10 +112,9 @@ function renderHBarChart() {
             .attr('opacity', 0.85)
             .attr('rx', 4)
             .style('cursor', 'pointer')
-            .transition()
-            .duration(500)
-            .attr('width', d => xScale(d.fines))
+            // ✅ 修复：事件绑定必须在 transition 之前
             .on('mouseenter', function (event, d) {
+                d3.select(this).attr('opacity', 1);
                 showTooltip(event, `
                     <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;">${d.label}</div>
                     <div>Fines: $${d.fines.toLocaleString()}</div>
@@ -132,8 +131,13 @@ function renderHBarChart() {
                 `);
             })
             .on('mouseleave', function () {
+                d3.select(this).attr('opacity', 0.85);
                 hideTooltip();
-            });
+            })
+            // 最后执行动画
+            .transition()
+            .duration(500)
+            .attr('width', d => xScale(d.fines));
 
         svg.selectAll('.hbar-value')
             .data(data)

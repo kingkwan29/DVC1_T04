@@ -20,25 +20,27 @@ const COLORS = {
 };
 
 // ==================== TOOLTIP FUNCTIONS ====================
+
 let tooltipDiv = null;
 
 function getTooltip() {
     if (!tooltipDiv) {
         tooltipDiv = document.createElement('div');
         tooltipDiv.style.position = 'fixed';
-        tooltipDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-        tooltipDiv.style.color = 'white';
-        tooltipDiv.style.padding = '10px 16px';
-        tooltipDiv.style.borderRadius = '8px';
-        tooltipDiv.style.fontSize = '12px';
+        // ✅ 修复：改成深色背景 + 浅色字体，在白底网页上清晰可见
+        tooltipDiv.style.backgroundColor = 'rgba(15, 23, 42, 0.95)';
+        tooltipDiv.style.color = '#f8fafc'; // ✅ 改成浅灰白色字体
+        tooltipDiv.style.padding = '12px 18px';
+        tooltipDiv.style.borderRadius = '10px';
+        tooltipDiv.style.fontSize = '13px';
         tooltipDiv.style.fontFamily = 'Inter, sans-serif';
         tooltipDiv.style.pointerEvents = 'none';
         tooltipDiv.style.zIndex = '10000';
-        tooltipDiv.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
-        tooltipDiv.style.border = '1px solid rgba(255,255,255,0.2)';
+        tooltipDiv.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+        tooltipDiv.style.border = '1px solid rgba(255,255,255,0.1)';
         tooltipDiv.style.fontWeight = '500';
-        tooltipDiv.style.lineHeight = '1.5';
-        tooltipDiv.style.maxWidth = '280px';
+        tooltipDiv.style.lineHeight = '1.6';
+        tooltipDiv.style.maxWidth = '300px';
         tooltipDiv.style.opacity = '0';
         tooltipDiv.style.transition = 'opacity 0.15s ease';
         document.body.appendChild(tooltipDiv);
@@ -52,7 +54,7 @@ function showTooltip(event, html) {
     tooltip.style.opacity = '1';
 
     let x = event.clientX + 15;
-    let y = event.clientY - 30;
+    let y = event.clientY - 20;
 
     // 边界检测
     const tooltipRect = tooltip.getBoundingClientRect();
@@ -76,6 +78,7 @@ function hideTooltip() {
 }
 
 // ==================== FILTER FUNCTIONS ====================
+
 function applyAllFilters(data) {
     let result = [...data];
 
