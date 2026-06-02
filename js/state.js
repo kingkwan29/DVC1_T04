@@ -1,8 +1,10 @@
-// ==================== GLOBAL STATE & DATA ====================
+// js/state.js
+// Global State and Data
+
 const state = {
     jurisdiction: "all",
     age: "all",
-    method: "all"      // 从 metric 改为 method，匹配新的筛选器
+    method: "all"
 };
 
 let kpiData = {};
@@ -18,8 +20,6 @@ const COLORS = {
     arrestsLight: '#fcd34d',
     chargesLight: '#6ee7b7'
 };
-
-// ==================== TOOLTIP FUNCTIONS ====================
 
 let tooltipDiv = null;
 
@@ -75,8 +75,6 @@ function hideTooltip() {
     tooltip.style.opacity = '0';
 }
 
-// ==================== FILTER FUNCTIONS ====================
-
 function applyAllFilters(data) {
     let result = [...data];
 
@@ -87,7 +85,9 @@ function applyAllFilters(data) {
         };
         const targetLoc = jurisMap[state.jurisdiction];
         if (targetLoc) {
-            result = result.filter(d => d.location === targetLoc || d.location === 'All Regions');
+            result = result.filter(d => d.location === targetLoc);
+        } else {
+            result = result.filter(d => d.location === 'All Regions');
         }
     }
 
@@ -95,7 +95,7 @@ function applyAllFilters(data) {
         result = result.filter(d => d.ageGroup === state.age);
     }
 
-    if (state.method !== 'all') {
+    if (state.method !== 'all' && result.length > 0 && result[0].method !== undefined) {
         result = result.filter(d => d.method === state.method);
     }
 

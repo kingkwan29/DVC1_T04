@@ -1,3 +1,5 @@
+// js/trend.js
+
 function renderMonthlyTrend() {
     const container = document.getElementById('trendChart');
     if (!container) return;
@@ -9,16 +11,26 @@ function renderMonthlyTrend() {
         return;
     }
 
+    const noteDiv = document.createElement('div');
+    noteDiv.className = 'trend-note';
+    noteDiv.style.cssText = 'position: absolute; top: 8px; right: 12px; font-size: 10px; color: #ef4444; font-style: italic; background: rgba(239,68,68,0.08); padding: 4px 8px; border-radius: 6px; z-index: 10;';
+    noteDiv.textContent = '*Note: Data for 2008-2022 represents annual January snapshots only.';
+    if (!container.querySelector('.trend-note')) {
+        container.style.position = 'relative';
+        container.appendChild(noteDiv);
+    }
+
     setTimeout(() => {
         const rect = container.getBoundingClientRect();
         const width = Math.max(rect.width - 40, 500);
         const height = Math.max(rect.height - 40, 260);
 
-        const margin = { top: 20, right: 30, bottom: 50, left: 70 };
+        const margin = { top: 30, right: 30, bottom: 50, left: 70 };
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
-        container.innerHTML = '';
+        const existingSvg = container.querySelector('svg');
+        if (existingSvg) existingSvg.remove();
 
         const svg = d3.select(container)
             .append('svg')

@@ -1,3 +1,5 @@
+// js/grouped-bar.js
+
 function renderGroupedBarChart() {
     const container = document.getElementById('groupedBarChart');
     if (!container) return;
@@ -9,14 +11,39 @@ function renderGroupedBarChart() {
         return;
     }
 
-    let filtered = intersectionData.filter(d => d.location === 'All Regions' && d.ageGroup !== 'All Ages');
+    let filtered = [...intersectionData];
+
+    filtered = filtered.filter(d => d.location === 'All Regions');
+
+    if (state.method === 'all') {
+        filtered = filtered.filter(d => d.method !== 'All Methods');
+        filtered = filtered.filter(d => d.method !== 'Camera');
+        filtered = filtered.filter(d => d.ageGroup !== 'All Ages');
+    } else {
+        filtered = filtered.filter(d => d.method === state.method);
+    }
+
     filtered = applyAllFilters(filtered);
 
-    const ageGroups = ['0-16', '17-25', '26-39', '40-64', '65 and over'];
+    const ageGroupsOrder = ['0-16', '17-25', '26-39', '40-64', '65 and over', 'All Ages'];
+
+    const existingAgeGroups = [...new Set(filtered.map(d => d.ageGroup))];
+    const ageGroups = ageGroupsOrder.filter(ag => existingAgeGroups.includes(ag));
+
+    const ageGroupLabels = {
+        '0-16': '0-16',
+        '17-25': '17-25',
+        '26-39': '26-39',
+        '40-64': '40-64',
+        '65 and over': '65+',
+        'All Ages': 'All Ages'
+    };
+
     const data = ageGroups.map(age => {
         const ageData = filtered.filter(d => d.ageGroup === age);
         return {
             ageGroup: age,
+            displayLabel: ageGroupLabels[age] || age,
             fines: d3.sum(ageData, d => d.fines),
             arrests: d3.sum(ageData, d => d.arrests),
             charges: d3.sum(ageData, d => d.charges)
@@ -37,7 +64,8 @@ function renderGroupedBarChart() {
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
-        container.innerHTML = '';
+        const existingSvg = container.querySelector('svg');
+        if (existingSvg) existingSvg.remove();
 
         const svg = d3.select(container)
             .append('svg')
@@ -55,7 +83,7 @@ function renderGroupedBarChart() {
         const yMax = Math.max(maxFinesScaled || 0, maxArrests || 0) * 1.1;
 
         const xScale = d3.scaleBand()
-            .domain(data.map(d => d.ageGroup))
+            .domain(data.map(d => d.displayLabel))
             .range([0, innerWidth])
             .padding(0.2);
 
@@ -67,7 +95,7 @@ function renderGroupedBarChart() {
         const yScale = d3.scaleLinear()
             .domain([0, yMax])
             .range([innerHeight, 0])
-            .nice();
+            .nice(5);
 
         const colors = {
             fines: COLORS.fines,
@@ -75,12 +103,12 @@ function renderGroupedBarChart() {
         };
 
         svg.append('g')
-            .call(d3.axisLeft(yScale).ticks(8).tickSize(-innerWidth).tickFormat(''))
+            .call(d3.axisLeft(yScale).ticks(5).tickSize(-innerWidth).tickFormat(''))
             .style('color', '#e2e8f0')
             .style('stroke-dasharray', '4,4');
 
         svg.append('g')
-            .call(d3.axisLeft(yScale).ticks(8).tickFormat(d => {
+            .call(d3.axisLeft(yScale).ticks(5).tickFormat(d => {
                 if (d >= 1000) return (d / 1000).toFixed(0) + 'K';
                 return d;
             }))
@@ -117,7 +145,7 @@ function renderGroupedBarChart() {
                 .data(data)
                 .enter()
                 .append('rect')
-                .attr('x', d => xScale(d.ageGroup) + xSubgroup(subgroup))
+                .attr('x', d => xScale(d.displayLabel) + xSubgroup(subgroup))
                 .attr('y', innerHeight)
                 .attr('width', xSubgroup.bandwidth())
                 .attr('height', 0)
@@ -130,7 +158,7 @@ function renderGroupedBarChart() {
                     const value = subgroup === 'fines' ? d.fines : d.arrests;
                     const formattedValue = subgroup === 'fines' ? '$' + value.toLocaleString() : value.toLocaleString();
                     showTooltip(event, `
-                        <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;">${d.ageGroup}</div>
+                        <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;">${d.displayLabel}</div>
                         <div>${subgroupLabels[subgroup]}: ${formattedValue}</div>
                         <div>Charges: ${d.charges.toLocaleString()}</div>
                     `);
@@ -139,7 +167,7 @@ function renderGroupedBarChart() {
                     const value = subgroup === 'fines' ? d.fines : d.arrests;
                     const formattedValue = subgroup === 'fines' ? '$' + value.toLocaleString() : value.toLocaleString();
                     showTooltip(event, `
-                        <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;">${d.ageGroup}</div>
+                        <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;">${d.displayLabel}</div>
                         <div>${subgroupLabels[subgroup]}: ${formattedValue}</div>
                         <div>Charges: ${d.charges.toLocaleString()}</div>
                     `);
@@ -165,7 +193,7 @@ function renderGroupedBarChart() {
                 .data(data)
                 .enter()
                 .append('text')
-                .attr('x', d => xScale(d.ageGroup) + xSubgroup(subgroup) + xSubgroup.bandwidth() / 2)
+                .attr('x', d => xScale(d.displayLabel) + xSubgroup(subgroup) + xSubgroup.bandwidth() / 2)
                 .attr('y', d => {
                     const value = subgroup === 'fines' ? d.fines / 1000 : d.arrests;
                     return yScale(value) - 5;
@@ -174,9 +202,12 @@ function renderGroupedBarChart() {
                 .text(d => {
                     const value = subgroup === 'fines' ? d.fines : d.arrests;
                     if (subgroup === 'fines') {
-                        return (value / 1000).toFixed(0) + 'K';
+                        if (value >= 1e6) return (value / 1e6).toFixed(1) + 'M';
+                        if (value >= 1e3) return (value / 1e3).toFixed(0) + 'K';
+                        return value;
                     }
-                    return value.toLocaleString();
+                    if (value >= 1000) return (value / 1000).toFixed(0) + 'K';
+                    return value;
                 })
                 .style('font-size', '9px')
                 .style('fill', '#475569')

@@ -1,15 +1,25 @@
+// js/vbar.js
+
 function renderVBarChart() {
     const container = document.getElementById('vbarChart');
     if (!container) return;
 
     container.innerHTML = '';
 
+    const noticeDiv = container.querySelector('.vbar-notice');
+    if (!noticeDiv) {
+        const div = document.createElement('div');
+        div.className = 'vbar-notice';
+        div.style.cssText = 'font-size: 10px; color: #64748b; font-style: italic; text-align: center; padding: 6px 12px; background: #f1f5f9; border-radius: 8px; margin-bottom: 12px;';
+        div.textContent = 'Jurisdiction view currently displays aggregate data across all detection methods.';
+        container.appendChild(div);
+    }
+
     if (!geoData || geoData.length === 0) {
         container.innerHTML = '<div class="loading-state">Loading data...</div>';
         return;
     }
 
-    // 应用 Jurisdiction 筛选
     let filtered = applyJurisdictionFilter(geoData);
     const sorted = [...filtered].sort((a, b) => b.fines - a.fines);
 
@@ -27,7 +37,8 @@ function renderVBarChart() {
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
-        container.innerHTML = '';
+        const existingSvg = container.querySelector('svg');
+        if (existingSvg) existingSvg.remove();
 
         const svg = d3.select(container)
             .append('svg')
@@ -38,7 +49,6 @@ function renderVBarChart() {
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
-        // Y轴: 各个州
         const yScale = d3.scaleBand()
             .domain(sorted.map(d => d.jurisdiction))
             .range([0, innerHeight])
@@ -46,29 +56,23 @@ function renderVBarChart() {
 
         const bandHeight = yScale.bandwidth();
 
-        // 计算最大值
         const maxFines = d3.max(sorted, d => d.fines);
         const maxArrests = d3.max(sorted, d => d.arrests);
 
-        // 左右各占一半宽度
         const halfWidth = innerWidth / 2;
 
-        // 左侧罚款轴：从中心向左延伸，最大值映射到 halfWidth
         const xFinesScale = d3.scaleLinear()
             .domain([0, maxFines * 1.1])
             .range([0, halfWidth])
             .nice();
 
-        // 右侧逮捕轴：从中心向右延伸，最大值映射到 halfWidth
         const xArrestsScale = d3.scaleLinear()
             .domain([0, maxArrests * 1.3])
             .range([0, halfWidth])
             .nice();
 
-        // 中心线位置
         const centerX = halfWidth;
 
-        // ========== 图例（放到最右边）==========
         const legendGroup = svg.append('g')
             .attr('transform', `translate(${innerWidth - 140}, -15)`);
 
@@ -117,13 +121,11 @@ function renderVBarChart() {
             .style('font-size', '10px')
             .style('fill', '#475569');
 
-        // ========== 上方网格线和 X 轴（罚款）==========
         svg.append('g')
             .call(d3.axisTop(xFinesScale).ticks(6).tickSize(-innerHeight).tickFormat(''))
             .style('color', '#e2e8f0')
             .style('stroke-dasharray', '3,3');
 
-        // 左侧 X 轴（罚款）- 放在顶部
         const leftAxisGroup = svg.append('g')
             .attr('transform', `translate(0, -10)`);
 
@@ -137,7 +139,6 @@ function renderVBarChart() {
             .style('font-size', '10px')
             .style('font-weight', '600');
 
-        // 左侧轴标签 - 往上移动10步（从 -18 改为 -28）
         svg.append('text')
             .attr('x', halfWidth / 2)
             .attr('y', -28)
@@ -145,9 +146,8 @@ function renderVBarChart() {
             .style('font-size', '12px')
             .style('fill', '#1e40af')
             .style('font-weight', '700')
-            .text('← Fines ($)');
+            .text('Fines ($)');
 
-        // ========== 右侧 X 轴（逮捕）- 放在底部 ==========
         const rightAxisGroup = svg.append('g')
             .attr('transform', `translate(${centerX}, ${innerHeight + 10})`);
 
@@ -157,7 +157,6 @@ function renderVBarChart() {
             .style('font-size', '10px')
             .style('font-weight', '600');
 
-        // 右侧轴标签
         svg.append('text')
             .attr('x', centerX + halfWidth / 2)
             .attr('y', innerHeight + 40)
@@ -165,16 +164,14 @@ function renderVBarChart() {
             .style('font-size', '12px')
             .style('fill', '#b91c1c')
             .style('font-weight', '700')
-            .text('Arrests (count) →');
+            .text('Arrests (count)');
 
-        // ========== Y 轴（州名）==========
         svg.append('g')
             .call(d3.axisLeft(yScale))
             .style('color', '#334155')
             .style('font-size', '11px')
             .style('font-weight', '600');
 
-        // ========== 中心基准线 ==========
         svg.append('line')
             .attr('x1', centerX)
             .attr('y1', 0)
@@ -184,7 +181,6 @@ function renderVBarChart() {
             .attr('stroke-width', 1.5)
             .attr('stroke-dasharray', '5,5');
 
-        // ========== 绘制罚款条形（向左）==========
         svg.selectAll('.bar-fines')
             .data(sorted)
             .enter()
@@ -226,7 +222,6 @@ function renderVBarChart() {
             .duration(500)
             .attr('width', d => xFinesScale(d.fines));
 
-        // 罚款数值标签
         svg.selectAll('.label-fines')
             .data(sorted)
             .enter()
@@ -247,7 +242,6 @@ function renderVBarChart() {
             .duration(550)
             .style('opacity', 1);
 
-        // ========== 绘制逮捕条形（向右）==========
         svg.selectAll('.bar-arrests')
             .data(sorted)
             .enter()
@@ -289,7 +283,6 @@ function renderVBarChart() {
             .duration(500)
             .attr('width', d => xArrestsScale(d.arrests));
 
-        // 逮捕数值标签
         svg.selectAll('.label-arrests')
             .data(sorted.filter(d => d.arrests > 0))
             .enter()
@@ -306,7 +299,6 @@ function renderVBarChart() {
             .duration(550)
             .style('opacity', 1);
 
-        // ========== 注释区域 ==========
         svg.append('text')
             .attr('x', 0)
             .attr('y', innerHeight + 55)
@@ -314,7 +306,7 @@ function renderVBarChart() {
             .style('font-size', '9px')
             .style('fill', '#94a3b8')
             .style('font-style', 'italic')
-            .text('Note: Fines and arrests use independent scales — left axis 0–$23M, right axis 0–5,000 arrests.');
+            .text('Note: Fines and arrests use independent scales.');
 
         svg.append('text')
             .attr('x', 0)
@@ -323,7 +315,7 @@ function renderVBarChart() {
             .style('font-size', '9px')
             .style('fill', '#94a3b8')
             .style('font-style', 'italic')
-            .text('Source: BITRE · Enforcement Statistics Annual Report · Showing massive fines vs minimal arrests across jurisdictions.');
+            .text('Source: BITRE · Enforcement Statistics Annual Report');
 
     }, 50);
 }

@@ -1,141 +1,409 @@
-"LOCATION","AGE_GROUP","METRIC","FINES","ARRESTS","CHARGES"
-"All Regions","0-16","mobile_phone_use",2116,0,3
-"All Regions","0-16","non_wearing_seatbelts",838,7,30
-"All Regions","0-16","speed_fines",19532,14,58
-"All Regions","0-16","unlicensed_driving",655,749,1642
-"All Regions","17-25","mobile_phone_use",16903,4,114
-"All Regions","17-25","non_wearing_seatbelts",9378,46,584
-"All Regions","17-25","speed_fines",358254,55,1110
-"All Regions","17-25","unlicensed_driving",11054,1692,12020
-"All Regions","26-39","mobile_phone_use",42867,7,200
-"All Regions","26-39","non_wearing_seatbelts",22124,63,943
-"All Regions","26-39","speed_fines",811519,91,1830
-"All Regions","26-39","unlicensed_driving",19350,3876,21321
-"All Regions","40-64","mobile_phone_use",40361,4,130
-"All Regions","40-64","non_wearing_seatbelts",21100,25,402
-"All Regions","40-64","speed_fines",1169407,55,1629
-"All Regions","40-64","unlicensed_driving",12916,1805,14026
-"All Regions","65 and over","mobile_phone_use",5255,2,14
-"All Regions","65 and over","non_wearing_seatbelts",5282,10,120
-"All Regions","65 and over","speed_fines",303854,9,230
-"All Regions","65 and over","unlicensed_driving",1054,131,934
-"All Regions","All Ages","mobile_phone_use",2881674,0,0
-"All Regions","All Ages","non_wearing_seatbelts",400652,0,0
-"All Regions","All Ages","speed_fines",54395261,0,1
-"All Regions","All Ages","unlicensed_driving",27865,0,4
-"Inner Regional Australia","0-16","mobile_phone_use",17,0,2
-"Inner Regional Australia","0-16","non_wearing_seatbelts",44,0,11
-"Inner Regional Australia","0-16","speed_fines",143,1,23
-"Inner Regional Australia","0-16","unlicensed_driving",54,0,290
-"Inner Regional Australia","17-25","mobile_phone_use",2042,0,12
-"Inner Regional Australia","17-25","non_wearing_seatbelts",2613,0,55
-"Inner Regional Australia","17-25","speed_fines",64209,3,315
-"Inner Regional Australia","17-25","unlicensed_driving",1294,0,3760
-"Inner Regional Australia","26-39","mobile_phone_use",4350,0,15
-"Inner Regional Australia","26-39","non_wearing_seatbelts",5237,0,55
-"Inner Regional Australia","26-39","speed_fines",137852,4,301
-"Inner Regional Australia","26-39","unlicensed_driving",3111,0,6613
-"Inner Regional Australia","40-64","mobile_phone_use",4527,0,14
-"Inner Regional Australia","40-64","non_wearing_seatbelts",5311,0,19
-"Inner Regional Australia","40-64","speed_fines",186470,6,171
-"Inner Regional Australia","40-64","unlicensed_driving",2146,0,4107
-"Inner Regional Australia","65 and over","mobile_phone_use",718,0,0
-"Inner Regional Australia","65 and over","non_wearing_seatbelts",1834,0,1
-"Inner Regional Australia","65 and over","speed_fines",63430,0,7
-"Inner Regional Australia","65 and over","unlicensed_driving",243,0,266
-"Inner Regional Australia","All Ages","mobile_phone_use",2871,0,0
-"Inner Regional Australia","All Ages","non_wearing_seatbelts",5824,0,0
-"Inner Regional Australia","All Ages","speed_fines",36444,0,0
-"Inner Regional Australia","All Ages","unlicensed_driving",623,0,0
-"Major Cities of Australia","0-16","mobile_phone_use",47,0,6
-"Major Cities of Australia","0-16","non_wearing_seatbelts",78,0,10
-"Major Cities of Australia","0-16","speed_fines",247,3,43
-"Major Cities of Australia","0-16","unlicensed_driving",107,28,647
-"Major Cities of Australia","17-25","mobile_phone_use",18556,0,127
-"Major Cities of Australia","17-25","non_wearing_seatbelts",6767,0,77
-"Major Cities of Australia","17-25","speed_fines",193435,23,1031
-"Major Cities of Australia","17-25","unlicensed_driving",5079,72,12006
-"Major Cities of Australia","26-39","mobile_phone_use",42515,1,131
-"Major Cities of Australia","26-39","non_wearing_seatbelts",19750,1,132
-"Major Cities of Australia","26-39","speed_fines",524910,32,751
-"Major Cities of Australia","26-39","unlicensed_driving",7909,232,17134
-"Major Cities of Australia","40-64","mobile_phone_use",41007,1,72
-"Major Cities of Australia","40-64","non_wearing_seatbelts",22528,0,72
-"Major Cities of Australia","40-64","speed_fines",807143,16,378
-"Major Cities of Australia","40-64","unlicensed_driving",4248,102,11017
-"Major Cities of Australia","65 and over","mobile_phone_use",5426,0,6
-"Major Cities of Australia","65 and over","non_wearing_seatbelts",5829,0,7
-"Major Cities of Australia","65 and over","speed_fines",230309,0,6
-"Major Cities of Australia","65 and over","unlicensed_driving",457,0,584
-"Major Cities of Australia","All Ages","mobile_phone_use",26274,0,0
-"Major Cities of Australia","All Ages","non_wearing_seatbelts",19477,0,0
-"Major Cities of Australia","All Ages","speed_fines",232267,0,1
-"Major Cities of Australia","All Ages","unlicensed_driving",4522,0,3
-"Outer Regional Australia","0-16","mobile_phone_use",1,0,1
-"Outer Regional Australia","0-16","non_wearing_seatbelts",20,0,1
-"Outer Regional Australia","0-16","speed_fines",44,0,7
-"Outer Regional Australia","0-16","unlicensed_driving",22,0,119
-"Outer Regional Australia","17-25","mobile_phone_use",318,0,7
-"Outer Regional Australia","17-25","non_wearing_seatbelts",731,0,13
-"Outer Regional Australia","17-25","speed_fines",15695,2,65
-"Outer Regional Australia","17-25","unlicensed_driving",368,0,945
-"Outer Regional Australia","26-39","mobile_phone_use",573,0,1
-"Outer Regional Australia","26-39","non_wearing_seatbelts",1344,0,16
-"Outer Regional Australia","26-39","speed_fines",32076,3,86
-"Outer Regional Australia","26-39","unlicensed_driving",900,0,1768
-"Outer Regional Australia","40-64","mobile_phone_use",518,0,2
-"Outer Regional Australia","40-64","non_wearing_seatbelts",1235,0,12
-"Outer Regional Australia","40-64","speed_fines",42954,5,59
-"Outer Regional Australia","40-64","unlicensed_driving",592,0,1029
-"Outer Regional Australia","65 and over","mobile_phone_use",78,0,0
-"Outer Regional Australia","65 and over","non_wearing_seatbelts",447,0,4
-"Outer Regional Australia","65 and over","speed_fines",14495,0,11
-"Outer Regional Australia","65 and over","unlicensed_driving",125,0,110
-"Outer Regional Australia","All Ages","mobile_phone_use",124,0,0
-"Outer Regional Australia","All Ages","non_wearing_seatbelts",196,0,0
-"Outer Regional Australia","All Ages","speed_fines",4521,0,0
-"Outer Regional Australia","All Ages","unlicensed_driving",831,0,0
-"Remote Australia","0-16","mobile_phone_use",0,0,0
-"Remote Australia","0-16","non_wearing_seatbelts",0,0,0
-"Remote Australia","0-16","speed_fines",5,0,0
-"Remote Australia","0-16","unlicensed_driving",4,0,14
-"Remote Australia","17-25","mobile_phone_use",16,0,2
-"Remote Australia","17-25","non_wearing_seatbelts",70,0,6
-"Remote Australia","17-25","speed_fines",1226,0,12
-"Remote Australia","17-25","unlicensed_driving",24,0,157
-"Remote Australia","26-39","mobile_phone_use",31,0,2
-"Remote Australia","26-39","non_wearing_seatbelts",112,0,5
-"Remote Australia","26-39","speed_fines",2417,2,8
-"Remote Australia","26-39","unlicensed_driving",54,0,277
-"Remote Australia","40-64","mobile_phone_use",23,0,0
-"Remote Australia","40-64","non_wearing_seatbelts",125,0,1
-"Remote Australia","40-64","speed_fines",3045,0,9
-"Remote Australia","40-64","unlicensed_driving",35,0,137
-"Remote Australia","65 and over","mobile_phone_use",6,0,0
-"Remote Australia","65 and over","non_wearing_seatbelts",40,0,0
-"Remote Australia","65 and over","speed_fines",885,0,0
-"Remote Australia","65 and over","unlicensed_driving",14,0,7
-"Remote Australia","All Ages","mobile_phone_use",0,0,0
-"Remote Australia","All Ages","non_wearing_seatbelts",0,0,0
-"Remote Australia","All Ages","speed_fines",17,0,0
-"Remote Australia","All Ages","unlicensed_driving",170,0,0
-"Very Remote Australia","0-16","speed_fines",1,0,1
-"Very Remote Australia","0-16","unlicensed_driving",0,0,4
-"Very Remote Australia","17-25","mobile_phone_use",8,0,0
-"Very Remote Australia","17-25","non_wearing_seatbelts",39,0,1
-"Very Remote Australia","17-25","speed_fines",359,0,2
-"Very Remote Australia","17-25","unlicensed_driving",4,0,55
-"Very Remote Australia","26-39","mobile_phone_use",11,0,1
-"Very Remote Australia","26-39","non_wearing_seatbelts",105,0,3
-"Very Remote Australia","26-39","speed_fines",792,1,4
-"Very Remote Australia","26-39","unlicensed_driving",13,0,92
-"Very Remote Australia","40-64","mobile_phone_use",12,0,0
-"Very Remote Australia","40-64","non_wearing_seatbelts",75,0,2
-"Very Remote Australia","40-64","speed_fines",924,1,3
-"Very Remote Australia","40-64","unlicensed_driving",10,0,44
-"Very Remote Australia","65 and over","mobile_phone_use",2,0,0
-"Very Remote Australia","65 and over","non_wearing_seatbelts",17,0,0
-"Very Remote Australia","65 and over","speed_fines",221,0,0
-"Very Remote Australia","65 and over","unlicensed_driving",4,0,4
-"Very Remote Australia","All Ages","speed_fines",3,0,0
-"Very Remote Australia","All Ages","unlicensed_driving",117,0,0
+"LOCATION","AGE_GROUP","METRIC","DETECTION_METHOD","FINES","ARRESTS","CHARGES"
+"All Regions","0-16","mobile_phone_use","All Methods",0,0,3
+"All Regions","0-16","mobile_phone_use","Fixed camera",2101,0,0
+"All Regions","0-16","mobile_phone_use","Mobile camera",0,0,0
+"All Regions","0-16","mobile_phone_use","Police issued",15,0,0
+"All Regions","0-16","non_wearing_seatbelts","All Methods",0,0,4
+"All Regions","0-16","non_wearing_seatbelts","Camera",2,0,0
+"All Regions","0-16","non_wearing_seatbelts","Fixed camera",801,0,0
+"All Regions","0-16","non_wearing_seatbelts","Mobile camera",0,0,0
+"All Regions","0-16","non_wearing_seatbelts","Police issued",35,7,26
+"All Regions","0-16","speed_fines","All Methods",0,1,26
+"All Regions","0-16","speed_fines","Average speed camera",45,0,0
+"All Regions","0-16","speed_fines","Camera",23,0,0
+"All Regions","0-16","speed_fines","Fixed camera",7975,0,0
+"All Regions","0-16","speed_fines","Mobile camera",11114,0,0
+"All Regions","0-16","speed_fines","Other",0,5,10
+"All Regions","0-16","speed_fines","Police issued",136,8,22
+"All Regions","0-16","speed_fines","Red light camera",239,0,0
+"All Regions","0-16","unlicensed_driving","Manual Action",651,349,815
+"All Regions","0-16","unlicensed_driving","Police issued",4,400,827
+"All Regions","17-25","mobile_phone_use","All Methods",0,2,81
+"All Regions","17-25","mobile_phone_use","Camera",193,0,0
+"All Regions","17-25","mobile_phone_use","Fixed camera",9694,0,0
+"All Regions","17-25","mobile_phone_use","Mobile camera",11,0,0
+"All Regions","17-25","mobile_phone_use","Police issued",7005,2,33
+"All Regions","17-25","non_wearing_seatbelts","All Methods",0,17,222
+"All Regions","17-25","non_wearing_seatbelts","Camera",551,0,0
+"All Regions","17-25","non_wearing_seatbelts","Fixed camera",5004,0,0
+"All Regions","17-25","non_wearing_seatbelts","Mobile camera",12,0,0
+"All Regions","17-25","non_wearing_seatbelts","Police issued",3811,29,362
+"All Regions","17-25","speed_fines","All Methods",0,8,635
+"All Regions","17-25","speed_fines","Average speed camera",4355,0,0
+"All Regions","17-25","speed_fines","Camera",11701,0,0
+"All Regions","17-25","speed_fines","Fixed camera",63424,0,0
+"All Regions","17-25","speed_fines","Mobile camera",176632,0,0
+"All Regions","17-25","speed_fines","Other",1,8,81
+"All Regions","17-25","speed_fines","Police issued",84324,39,394
+"All Regions","17-25","speed_fines","Red light camera",17817,0,0
+"All Regions","17-25","unlicensed_driving","Manual Action",9321,824,6166
+"All Regions","17-25","unlicensed_driving","Police issued",1733,868,5854
+"All Regions","26-39","mobile_phone_use","All Methods",0,6,155
+"All Regions","26-39","mobile_phone_use","Camera",863,0,0
+"All Regions","26-39","mobile_phone_use","Fixed camera",27876,0,0
+"All Regions","26-39","mobile_phone_use","Mobile camera",79,0,0
+"All Regions","26-39","mobile_phone_use","Police issued",14049,1,45
+"All Regions","26-39","non_wearing_seatbelts","All Methods",0,20,349
+"All Regions","26-39","non_wearing_seatbelts","Camera",1575,0,0
+"All Regions","26-39","non_wearing_seatbelts","Fixed camera",13411,0,0
+"All Regions","26-39","non_wearing_seatbelts","Mobile camera",66,0,0
+"All Regions","26-39","non_wearing_seatbelts","Police issued",7072,43,594
+"All Regions","26-39","speed_fines","All Methods",0,22,1194
+"All Regions","26-39","speed_fines","Average speed camera",9905,0,0
+"All Regions","26-39","speed_fines","Camera",30203,0,0
+"All Regions","26-39","speed_fines","Fixed camera",161407,0,0
+"All Regions","26-39","speed_fines","Mobile camera",405636,0,0
+"All Regions","26-39","speed_fines","Other",2,13,95
+"All Regions","26-39","speed_fines","Police issued",142904,56,541
+"All Regions","26-39","speed_fines","Red light camera",61462,0,0
+"All Regions","26-39","unlicensed_driving","Manual Action",14986,1931,11248
+"All Regions","26-39","unlicensed_driving","Police issued",4364,1945,10073
+"All Regions","40-64","mobile_phone_use","All Methods",0,3,113
+"All Regions","40-64","mobile_phone_use","Camera",957,0,0
+"All Regions","40-64","mobile_phone_use","Fixed camera",28641,0,0
+"All Regions","40-64","mobile_phone_use","Mobile camera",98,0,0
+"All Regions","40-64","mobile_phone_use","Police issued",10665,1,17
+"All Regions","40-64","non_wearing_seatbelts","All Methods",0,5,142
+"All Regions","40-64","non_wearing_seatbelts","Camera",1777,0,0
+"All Regions","40-64","non_wearing_seatbelts","Fixed camera",13589,0,0
+"All Regions","40-64","non_wearing_seatbelts","Mobile camera",60,0,0
+"All Regions","40-64","non_wearing_seatbelts","Police issued",5674,20,260
+"All Regions","40-64","speed_fines","All Methods",0,5,1240
+"All Regions","40-64","speed_fines","Average speed camera",11306,0,0
+"All Regions","40-64","speed_fines","Camera",42317,0,0
+"All Regions","40-64","speed_fines","Fixed camera",239538,0,0
+"All Regions","40-64","speed_fines","Mobile camera",581221,0,0
+"All Regions","40-64","speed_fines","Other",1,15,88
+"All Regions","40-64","speed_fines","Police issued",166282,35,301
+"All Regions","40-64","speed_fines","Red light camera",128742,0,0
+"All Regions","40-64","unlicensed_driving","Manual Action",9432,1004,7811
+"All Regions","40-64","unlicensed_driving","Police issued",3484,801,6215
+"All Regions","65 and over","mobile_phone_use","All Methods",0,0,8
+"All Regions","65 and over","mobile_phone_use","Camera",141,0,0
+"All Regions","65 and over","mobile_phone_use","Fixed camera",3701,0,0
+"All Regions","65 and over","mobile_phone_use","Mobile camera",9,0,0
+"All Regions","65 and over","mobile_phone_use","Police issued",1404,2,6
+"All Regions","65 and over","non_wearing_seatbelts","All Methods",0,0,13
+"All Regions","65 and over","non_wearing_seatbelts","Camera",838,0,0
+"All Regions","65 and over","non_wearing_seatbelts","Fixed camera",3039,0,0
+"All Regions","65 and over","non_wearing_seatbelts","Mobile camera",21,0,0
+"All Regions","65 and over","non_wearing_seatbelts","Police issued",1384,10,107
+"All Regions","65 and over","speed_fines","All Methods",0,0,147
+"All Regions","65 and over","speed_fines","Average speed camera",1936,0,0
+"All Regions","65 and over","speed_fines","Camera",16031,0,0
+"All Regions","65 and over","speed_fines","Fixed camera",64829,0,0
+"All Regions","65 and over","speed_fines","Mobile camera",146163,0,0
+"All Regions","65 and over","speed_fines","Other",0,0,18
+"All Regions","65 and over","speed_fines","Police issued",36896,9,65
+"All Regions","65 and over","speed_fines","Red light camera",37999,0,0
+"All Regions","65 and over","unlicensed_driving","Manual Action",710,24,329
+"All Regions","65 and over","unlicensed_driving","Police issued",344,107,605
+"All Regions","All Ages","mobile_phone_use","Camera",1057330,0,0
+"All Regions","All Ages","mobile_phone_use","Fixed camera",301,0,0
+"All Regions","All Ages","mobile_phone_use","Mobile camera",883,0,0
+"All Regions","All Ages","mobile_phone_use","Police issued",1823160,0,0
+"All Regions","All Ages","non_wearing_seatbelts","All Methods",1,0,0
+"All Regions","All Ages","non_wearing_seatbelts","Camera",162946,0,0
+"All Regions","All Ages","non_wearing_seatbelts","Fixed camera",182,0,0
+"All Regions","All Ages","non_wearing_seatbelts","Mobile camera",702,0,0
+"All Regions","All Ages","non_wearing_seatbelts","Police issued",236821,0,0
+"All Regions","All Ages","speed_fines","All Methods",1,0,0
+"All Regions","All Ages","speed_fines","Average speed camera",9804,0,0
+"All Regions","All Ages","speed_fines","Camera",49339892,0,0
+"All Regions","All Ages","speed_fines","Fixed camera",1148496,0,0
+"All Regions","All Ages","speed_fines","Mobile camera",552124,0,0
+"All Regions","All Ages","speed_fines","Other",0,0,0
+"All Regions","All Ages","speed_fines","Police issued",2872277,0,1
+"All Regions","All Ages","speed_fines","Red light camera",472667,0,0
+"All Regions","All Ages","unlicensed_driving","Manual Action",162,0,2
+"All Regions","All Ages","unlicensed_driving","Police issued",27703,0,2
+"Inner Regional Australia","0-16","mobile_phone_use","Fixed camera",0,0,0
+"Inner Regional Australia","0-16","mobile_phone_use","Mobile camera",0,0,0
+"Inner Regional Australia","0-16","mobile_phone_use","Police issued",17,0,2
+"Inner Regional Australia","0-16","non_wearing_seatbelts","Fixed camera",0,0,0
+"Inner Regional Australia","0-16","non_wearing_seatbelts","Mobile camera",0,0,0
+"Inner Regional Australia","0-16","non_wearing_seatbelts","Police issued",44,0,11
+"Inner Regional Australia","0-16","speed_fines","Fixed camera",0,0,0
+"Inner Regional Australia","0-16","speed_fines","Mobile camera",2,0,0
+"Inner Regional Australia","0-16","speed_fines","Police issued",141,1,23
+"Inner Regional Australia","0-16","unlicensed_driving","Manual Action",16,0,126
+"Inner Regional Australia","0-16","unlicensed_driving","Police issued",38,0,164
+"Inner Regional Australia","17-25","mobile_phone_use","Fixed camera",0,0,0
+"Inner Regional Australia","17-25","mobile_phone_use","Mobile camera",497,0,0
+"Inner Regional Australia","17-25","mobile_phone_use","Police issued",1545,0,12
+"Inner Regional Australia","17-25","non_wearing_seatbelts","Fixed camera",0,0,0
+"Inner Regional Australia","17-25","non_wearing_seatbelts","Mobile camera",570,0,0
+"Inner Regional Australia","17-25","non_wearing_seatbelts","Police issued",2043,0,55
+"Inner Regional Australia","17-25","speed_fines","Fixed camera",3226,0,0
+"Inner Regional Australia","17-25","speed_fines","Mobile camera",14546,0,0
+"Inner Regional Australia","17-25","speed_fines","Police issued",46437,3,315
+"Inner Regional Australia","17-25","unlicensed_driving","Manual Action",447,0,1800
+"Inner Regional Australia","17-25","unlicensed_driving","Police issued",847,0,1960
+"Inner Regional Australia","26-39","mobile_phone_use","Fixed camera",0,0,0
+"Inner Regional Australia","26-39","mobile_phone_use","Mobile camera",2096,0,0
+"Inner Regional Australia","26-39","mobile_phone_use","Police issued",2254,0,15
+"Inner Regional Australia","26-39","non_wearing_seatbelts","Fixed camera",0,0,0
+"Inner Regional Australia","26-39","non_wearing_seatbelts","Mobile camera",1936,0,0
+"Inner Regional Australia","26-39","non_wearing_seatbelts","Police issued",3301,0,55
+"Inner Regional Australia","26-39","speed_fines","Fixed camera",11133,0,0
+"Inner Regional Australia","26-39","speed_fines","Mobile camera",51287,0,0
+"Inner Regional Australia","26-39","speed_fines","Police issued",75432,4,301
+"Inner Regional Australia","26-39","unlicensed_driving","Manual Action",983,0,3238
+"Inner Regional Australia","26-39","unlicensed_driving","Police issued",2128,0,3375
+"Inner Regional Australia","40-64","mobile_phone_use","Fixed camera",0,0,0
+"Inner Regional Australia","40-64","mobile_phone_use","Mobile camera",2858,0,0
+"Inner Regional Australia","40-64","mobile_phone_use","Police issued",1669,0,14
+"Inner Regional Australia","40-64","non_wearing_seatbelts","Fixed camera",0,0,0
+"Inner Regional Australia","40-64","non_wearing_seatbelts","Mobile camera",2929,0,0
+"Inner Regional Australia","40-64","non_wearing_seatbelts","Police issued",2382,0,19
+"Inner Regional Australia","40-64","speed_fines","Fixed camera",18291,0,0
+"Inner Regional Australia","40-64","speed_fines","Mobile camera",84404,0,0
+"Inner Regional Australia","40-64","speed_fines","Police issued",83775,6,171
+"Inner Regional Australia","40-64","unlicensed_driving","Manual Action",681,0,2108
+"Inner Regional Australia","40-64","unlicensed_driving","Police issued",1465,0,1999
+"Inner Regional Australia","65 and over","mobile_phone_use","Fixed camera",0,0,0
+"Inner Regional Australia","65 and over","mobile_phone_use","Mobile camera",498,0,0
+"Inner Regional Australia","65 and over","mobile_phone_use","Police issued",220,0,0
+"Inner Regional Australia","65 and over","non_wearing_seatbelts","Fixed camera",0,0,0
+"Inner Regional Australia","65 and over","non_wearing_seatbelts","Mobile camera",1221,0,0
+"Inner Regional Australia","65 and over","non_wearing_seatbelts","Police issued",613,0,1
+"Inner Regional Australia","65 and over","speed_fines","Fixed camera",7566,0,0
+"Inner Regional Australia","65 and over","speed_fines","Mobile camera",35347,0,0
+"Inner Regional Australia","65 and over","speed_fines","Police issued",20517,0,7
+"Inner Regional Australia","65 and over","unlicensed_driving","Manual Action",110,0,132
+"Inner Regional Australia","65 and over","unlicensed_driving","Police issued",133,0,134
+"Inner Regional Australia","All Ages","mobile_phone_use","Fixed camera",0,0,0
+"Inner Regional Australia","All Ages","mobile_phone_use","Mobile camera",2870,0,0
+"Inner Regional Australia","All Ages","mobile_phone_use","Police issued",1,0,0
+"Inner Regional Australia","All Ages","non_wearing_seatbelts","Fixed camera",0,0,0
+"Inner Regional Australia","All Ages","non_wearing_seatbelts","Mobile camera",5824,0,0
+"Inner Regional Australia","All Ages","speed_fines","Fixed camera",8880,0,0
+"Inner Regional Australia","All Ages","speed_fines","Mobile camera",27506,0,0
+"Inner Regional Australia","All Ages","speed_fines","Police issued",58,0,0
+"Inner Regional Australia","All Ages","unlicensed_driving","Manual Action",618,0,0
+"Inner Regional Australia","All Ages","unlicensed_driving","Police issued",5,0,0
+"Major Cities of Australia","0-16","mobile_phone_use","Camera",4,0,0
+"Major Cities of Australia","0-16","mobile_phone_use","Fixed camera",0,0,0
+"Major Cities of Australia","0-16","mobile_phone_use","Mobile camera",0,0,0
+"Major Cities of Australia","0-16","mobile_phone_use","Police issued",43,0,6
+"Major Cities of Australia","0-16","non_wearing_seatbelts","Fixed camera",0,0,0
+"Major Cities of Australia","0-16","non_wearing_seatbelts","Mobile camera",0,0,0
+"Major Cities of Australia","0-16","non_wearing_seatbelts","Police issued",78,0,10
+"Major Cities of Australia","0-16","speed_fines","Fixed camera",38,0,0
+"Major Cities of Australia","0-16","speed_fines","Mobile camera",20,0,0
+"Major Cities of Australia","0-16","speed_fines","Police issued",189,3,43
+"Major Cities of Australia","0-16","unlicensed_driving","Manual Action",37,15,257
+"Major Cities of Australia","0-16","unlicensed_driving","Police issued",70,13,390
+"Major Cities of Australia","17-25","mobile_phone_use","Camera",3601,0,0
+"Major Cities of Australia","17-25","mobile_phone_use","Fixed camera",0,0,0
+"Major Cities of Australia","17-25","mobile_phone_use","Mobile camera",2729,0,0
+"Major Cities of Australia","17-25","mobile_phone_use","Police issued",12226,0,127
+"Major Cities of Australia","17-25","non_wearing_seatbelts","Fixed camera",0,0,0
+"Major Cities of Australia","17-25","non_wearing_seatbelts","Mobile camera",3011,0,0
+"Major Cities of Australia","17-25","non_wearing_seatbelts","Police issued",3756,0,77
+"Major Cities of Australia","17-25","speed_fines","Fixed camera",75168,0,0
+"Major Cities of Australia","17-25","speed_fines","Mobile camera",55716,0,0
+"Major Cities of Australia","17-25","speed_fines","Police issued",62551,23,1031
+"Major Cities of Australia","17-25","unlicensed_driving","Manual Action",2411,42,6088
+"Major Cities of Australia","17-25","unlicensed_driving","Police issued",2668,30,5918
+"Major Cities of Australia","26-39","mobile_phone_use","Camera",10788,0,0
+"Major Cities of Australia","26-39","mobile_phone_use","Fixed camera",0,0,0
+"Major Cities of Australia","26-39","mobile_phone_use","Mobile camera",14127,0,0
+"Major Cities of Australia","26-39","mobile_phone_use","Police issued",17600,1,131
+"Major Cities of Australia","26-39","non_wearing_seatbelts","Fixed camera",0,0,0
+"Major Cities of Australia","26-39","non_wearing_seatbelts","Mobile camera",13113,0,0
+"Major Cities of Australia","26-39","non_wearing_seatbelts","Police issued",6637,1,132
+"Major Cities of Australia","26-39","speed_fines","Fixed camera",247586,0,0
+"Major Cities of Australia","26-39","speed_fines","Mobile camera",197239,0,0
+"Major Cities of Australia","26-39","speed_fines","Police issued",80085,32,751
+"Major Cities of Australia","26-39","unlicensed_driving","Manual Action",2625,114,8424
+"Major Cities of Australia","26-39","unlicensed_driving","Police issued",5284,118,8710
+"Major Cities of Australia","40-64","mobile_phone_use","Camera",10535,0,0
+"Major Cities of Australia","40-64","mobile_phone_use","Fixed camera",0,0,0
+"Major Cities of Australia","40-64","mobile_phone_use","Mobile camera",17553,0,0
+"Major Cities of Australia","40-64","mobile_phone_use","Police issued",12919,1,72
+"Major Cities of Australia","40-64","non_wearing_seatbelts","Fixed camera",0,0,0
+"Major Cities of Australia","40-64","non_wearing_seatbelts","Mobile camera",17725,0,0
+"Major Cities of Australia","40-64","non_wearing_seatbelts","Police issued",4803,0,72
+"Major Cities of Australia","40-64","speed_fines","Fixed camera",417863,0,0
+"Major Cities of Australia","40-64","speed_fines","Mobile camera",312826,0,0
+"Major Cities of Australia","40-64","speed_fines","Police issued",76454,16,378
+"Major Cities of Australia","40-64","unlicensed_driving","Manual Action",1307,48,5440
+"Major Cities of Australia","40-64","unlicensed_driving","Police issued",2941,54,5577
+"Major Cities of Australia","65 and over","mobile_phone_use","Camera",1236,0,0
+"Major Cities of Australia","65 and over","mobile_phone_use","Fixed camera",0,0,0
+"Major Cities of Australia","65 and over","mobile_phone_use","Mobile camera",2791,0,0
+"Major Cities of Australia","65 and over","mobile_phone_use","Police issued",1399,0,6
+"Major Cities of Australia","65 and over","non_wearing_seatbelts","Fixed camera",0,0,0
+"Major Cities of Australia","65 and over","non_wearing_seatbelts","Mobile camera",4993,0,0
+"Major Cities of Australia","65 and over","non_wearing_seatbelts","Police issued",836,0,7
+"Major Cities of Australia","65 and over","speed_fines","Fixed camera",125705,0,0
+"Major Cities of Australia","65 and over","speed_fines","Mobile camera",92044,0,0
+"Major Cities of Australia","65 and over","speed_fines","Police issued",12560,0,6
+"Major Cities of Australia","65 and over","unlicensed_driving","Manual Action",230,0,312
+"Major Cities of Australia","65 and over","unlicensed_driving","Police issued",227,0,272
+"Major Cities of Australia","All Ages","mobile_phone_use","Camera",772,0,0
+"Major Cities of Australia","All Ages","mobile_phone_use","Fixed camera",0,0,0
+"Major Cities of Australia","All Ages","mobile_phone_use","Mobile camera",25489,0,0
+"Major Cities of Australia","All Ages","mobile_phone_use","Police issued",13,0,0
+"Major Cities of Australia","All Ages","non_wearing_seatbelts","Fixed camera",0,0,0
+"Major Cities of Australia","All Ages","non_wearing_seatbelts","Mobile camera",19473,0,0
+"Major Cities of Australia","All Ages","non_wearing_seatbelts","Police issued",4,0,0
+"Major Cities of Australia","All Ages","speed_fines","Fixed camera",145889,0,0
+"Major Cities of Australia","All Ages","speed_fines","Mobile camera",86311,0,0
+"Major Cities of Australia","All Ages","speed_fines","Police issued",67,0,1
+"Major Cities of Australia","All Ages","unlicensed_driving","Manual Action",4508,0,2
+"Major Cities of Australia","All Ages","unlicensed_driving","Police issued",14,0,1
+"Outer Regional Australia","0-16","mobile_phone_use","Fixed camera",0,0,0
+"Outer Regional Australia","0-16","mobile_phone_use","Mobile camera",0,0,0
+"Outer Regional Australia","0-16","mobile_phone_use","Police issued",1,0,1
+"Outer Regional Australia","0-16","non_wearing_seatbelts","Fixed camera",0,0,0
+"Outer Regional Australia","0-16","non_wearing_seatbelts","Mobile camera",0,0,0
+"Outer Regional Australia","0-16","non_wearing_seatbelts","Police issued",20,0,1
+"Outer Regional Australia","0-16","speed_fines","Fixed camera",0,0,0
+"Outer Regional Australia","0-16","speed_fines","Mobile camera",1,0,0
+"Outer Regional Australia","0-16","speed_fines","Police issued",43,0,7
+"Outer Regional Australia","0-16","unlicensed_driving","Manual Action",10,0,27
+"Outer Regional Australia","0-16","unlicensed_driving","Police issued",12,0,92
+"Outer Regional Australia","17-25","mobile_phone_use","Fixed camera",0,0,0
+"Outer Regional Australia","17-25","mobile_phone_use","Mobile camera",18,0,0
+"Outer Regional Australia","17-25","mobile_phone_use","Police issued",300,0,7
+"Outer Regional Australia","17-25","non_wearing_seatbelts","Fixed camera",0,0,0
+"Outer Regional Australia","17-25","non_wearing_seatbelts","Mobile camera",46,0,0
+"Outer Regional Australia","17-25","non_wearing_seatbelts","Police issued",685,0,13
+"Outer Regional Australia","17-25","speed_fines","Fixed camera",286,0,0
+"Outer Regional Australia","17-25","speed_fines","Mobile camera",2347,0,0
+"Outer Regional Australia","17-25","speed_fines","Police issued",13062,2,65
+"Outer Regional Australia","17-25","unlicensed_driving","Manual Action",120,0,472
+"Outer Regional Australia","17-25","unlicensed_driving","Police issued",248,0,473
+"Outer Regional Australia","26-39","mobile_phone_use","Fixed camera",0,0,0
+"Outer Regional Australia","26-39","mobile_phone_use","Mobile camera",83,0,0
+"Outer Regional Australia","26-39","mobile_phone_use","Police issued",490,0,1
+"Outer Regional Australia","26-39","non_wearing_seatbelts","Fixed camera",0,0,0
+"Outer Regional Australia","26-39","non_wearing_seatbelts","Mobile camera",219,0,0
+"Outer Regional Australia","26-39","non_wearing_seatbelts","Police issued",1125,0,16
+"Outer Regional Australia","26-39","speed_fines","Fixed camera",630,0,0
+"Outer Regional Australia","26-39","speed_fines","Mobile camera",7995,0,0
+"Outer Regional Australia","26-39","speed_fines","Police issued",23451,3,86
+"Outer Regional Australia","26-39","unlicensed_driving","Manual Action",308,0,842
+"Outer Regional Australia","26-39","unlicensed_driving","Police issued",592,0,926
+"Outer Regional Australia","40-64","mobile_phone_use","Fixed camera",0,0,0
+"Outer Regional Australia","40-64","mobile_phone_use","Mobile camera",86,0,0
+"Outer Regional Australia","40-64","mobile_phone_use","Police issued",432,0,2
+"Outer Regional Australia","40-64","non_wearing_seatbelts","Fixed camera",0,0,0
+"Outer Regional Australia","40-64","non_wearing_seatbelts","Mobile camera",265,0,0
+"Outer Regional Australia","40-64","non_wearing_seatbelts","Police issued",970,0,12
+"Outer Regional Australia","40-64","speed_fines","Fixed camera",951,0,0
+"Outer Regional Australia","40-64","speed_fines","Mobile camera",13743,0,0
+"Outer Regional Australia","40-64","speed_fines","Other",1,0,0
+"Outer Regional Australia","40-64","speed_fines","Police issued",28259,5,59
+"Outer Regional Australia","40-64","unlicensed_driving","Manual Action",193,0,448
+"Outer Regional Australia","40-64","unlicensed_driving","Police issued",399,0,581
+"Outer Regional Australia","65 and over","mobile_phone_use","Fixed camera",0,0,0
+"Outer Regional Australia","65 and over","mobile_phone_use","Mobile camera",13,0,0
+"Outer Regional Australia","65 and over","mobile_phone_use","Police issued",65,0,0
+"Outer Regional Australia","65 and over","non_wearing_seatbelts","Fixed camera",0,0,0
+"Outer Regional Australia","65 and over","non_wearing_seatbelts","Mobile camera",121,0,0
+"Outer Regional Australia","65 and over","non_wearing_seatbelts","Police issued",326,0,4
+"Outer Regional Australia","65 and over","speed_fines","Fixed camera",320,0,0
+"Outer Regional Australia","65 and over","speed_fines","Mobile camera",6549,0,0
+"Outer Regional Australia","65 and over","speed_fines","Police issued",7626,0,11
+"Outer Regional Australia","65 and over","unlicensed_driving","Manual Action",79,0,51
+"Outer Regional Australia","65 and over","unlicensed_driving","Police issued",46,0,59
+"Outer Regional Australia","All Ages","mobile_phone_use","Fixed camera",0,0,0
+"Outer Regional Australia","All Ages","mobile_phone_use","Mobile camera",124,0,0
+"Outer Regional Australia","All Ages","non_wearing_seatbelts","Fixed camera",0,0,0
+"Outer Regional Australia","All Ages","non_wearing_seatbelts","Mobile camera",196,0,0
+"Outer Regional Australia","All Ages","speed_fines","Fixed camera",189,0,0
+"Outer Regional Australia","All Ages","speed_fines","Mobile camera",4311,0,0
+"Outer Regional Australia","All Ages","speed_fines","Police issued",21,0,0
+"Outer Regional Australia","All Ages","unlicensed_driving","Manual Action",829,0,0
+"Outer Regional Australia","All Ages","unlicensed_driving","Police issued",2,0,0
+"Remote Australia","0-16","mobile_phone_use","Fixed camera",0,0,0
+"Remote Australia","0-16","mobile_phone_use","Mobile camera",0,0,0
+"Remote Australia","0-16","non_wearing_seatbelts","Fixed camera",0,0,0
+"Remote Australia","0-16","non_wearing_seatbelts","Mobile camera",0,0,0
+"Remote Australia","0-16","speed_fines","Fixed camera",0,0,0
+"Remote Australia","0-16","speed_fines","Mobile camera",0,0,0
+"Remote Australia","0-16","speed_fines","Police issued",5,0,0
+"Remote Australia","0-16","unlicensed_driving","Manual Action",0,0,6
+"Remote Australia","0-16","unlicensed_driving","Police issued",4,0,8
+"Remote Australia","17-25","mobile_phone_use","Fixed camera",0,0,0
+"Remote Australia","17-25","mobile_phone_use","Mobile camera",0,0,0
+"Remote Australia","17-25","mobile_phone_use","Police issued",16,0,2
+"Remote Australia","17-25","non_wearing_seatbelts","Fixed camera",0,0,0
+"Remote Australia","17-25","non_wearing_seatbelts","Mobile camera",0,0,0
+"Remote Australia","17-25","non_wearing_seatbelts","Police issued",70,0,6
+"Remote Australia","17-25","speed_fines","Fixed camera",0,0,0
+"Remote Australia","17-25","speed_fines","Mobile camera",39,0,0
+"Remote Australia","17-25","speed_fines","Police issued",1187,0,12
+"Remote Australia","17-25","unlicensed_driving","Manual Action",8,0,69
+"Remote Australia","17-25","unlicensed_driving","Police issued",16,0,88
+"Remote Australia","26-39","mobile_phone_use","Fixed camera",0,0,0
+"Remote Australia","26-39","mobile_phone_use","Mobile camera",0,0,0
+"Remote Australia","26-39","mobile_phone_use","Police issued",31,0,2
+"Remote Australia","26-39","non_wearing_seatbelts","Fixed camera",0,0,0
+"Remote Australia","26-39","non_wearing_seatbelts","Mobile camera",0,0,0
+"Remote Australia","26-39","non_wearing_seatbelts","Police issued",112,0,5
+"Remote Australia","26-39","speed_fines","Fixed camera",0,0,0
+"Remote Australia","26-39","speed_fines","Mobile camera",163,0,0
+"Remote Australia","26-39","speed_fines","Police issued",2254,2,8
+"Remote Australia","26-39","unlicensed_driving","Manual Action",30,0,140
+"Remote Australia","26-39","unlicensed_driving","Police issued",24,0,137
+"Remote Australia","40-64","mobile_phone_use","Fixed camera",0,0,0
+"Remote Australia","40-64","mobile_phone_use","Mobile camera",0,0,0
+"Remote Australia","40-64","mobile_phone_use","Police issued",23,0,0
+"Remote Australia","40-64","non_wearing_seatbelts","Fixed camera",0,0,0
+"Remote Australia","40-64","non_wearing_seatbelts","Mobile camera",0,0,0
+"Remote Australia","40-64","non_wearing_seatbelts","Police issued",125,0,1
+"Remote Australia","40-64","speed_fines","Fixed camera",0,0,0
+"Remote Australia","40-64","speed_fines","Mobile camera",280,0,0
+"Remote Australia","40-64","speed_fines","Police issued",2765,0,9
+"Remote Australia","40-64","unlicensed_driving","Manual Action",21,0,57
+"Remote Australia","40-64","unlicensed_driving","Police issued",14,0,80
+"Remote Australia","65 and over","mobile_phone_use","Fixed camera",0,0,0
+"Remote Australia","65 and over","mobile_phone_use","Mobile camera",0,0,0
+"Remote Australia","65 and over","mobile_phone_use","Police issued",6,0,0
+"Remote Australia","65 and over","non_wearing_seatbelts","Fixed camera",0,0,0
+"Remote Australia","65 and over","non_wearing_seatbelts","Mobile camera",0,0,0
+"Remote Australia","65 and over","non_wearing_seatbelts","Police issued",40,0,0
+"Remote Australia","65 and over","speed_fines","Fixed camera",0,0,0
+"Remote Australia","65 and over","speed_fines","Mobile camera",105,0,0
+"Remote Australia","65 and over","speed_fines","Police issued",780,0,0
+"Remote Australia","65 and over","unlicensed_driving","Manual Action",14,0,2
+"Remote Australia","65 and over","unlicensed_driving","Police issued",0,0,5
+"Remote Australia","All Ages","mobile_phone_use","Fixed camera",0,0,0
+"Remote Australia","All Ages","mobile_phone_use","Mobile camera",0,0,0
+"Remote Australia","All Ages","non_wearing_seatbelts","Fixed camera",0,0,0
+"Remote Australia","All Ages","non_wearing_seatbelts","Mobile camera",0,0,0
+"Remote Australia","All Ages","speed_fines","Fixed camera",0,0,0
+"Remote Australia","All Ages","speed_fines","Mobile camera",16,0,0
+"Remote Australia","All Ages","speed_fines","Police issued",1,0,0
+"Remote Australia","All Ages","unlicensed_driving","Manual Action",170,0,0
+"Very Remote Australia","0-16","speed_fines","Police issued",1,0,1
+"Very Remote Australia","0-16","unlicensed_driving","Manual Action",0,0,3
+"Very Remote Australia","0-16","unlicensed_driving","Police issued",0,0,1
+"Very Remote Australia","17-25","mobile_phone_use","Police issued",8,0,0
+"Very Remote Australia","17-25","non_wearing_seatbelts","Police issued",39,0,1
+"Very Remote Australia","17-25","speed_fines","Police issued",359,0,2
+"Very Remote Australia","17-25","unlicensed_driving","Manual Action",2,0,26
+"Very Remote Australia","17-25","unlicensed_driving","Police issued",2,0,29
+"Very Remote Australia","26-39","mobile_phone_use","Police issued",11,0,1
+"Very Remote Australia","26-39","non_wearing_seatbelts","Police issued",105,0,3
+"Very Remote Australia","26-39","speed_fines","Police issued",792,1,4
+"Very Remote Australia","26-39","unlicensed_driving","Manual Action",5,0,36
+"Very Remote Australia","26-39","unlicensed_driving","Police issued",8,0,56
+"Very Remote Australia","40-64","mobile_phone_use","Police issued",12,0,0
+"Very Remote Australia","40-64","non_wearing_seatbelts","Police issued",75,0,2
+"Very Remote Australia","40-64","speed_fines","Mobile camera",1,0,0
+"Very Remote Australia","40-64","speed_fines","Police issued",923,1,3
+"Very Remote Australia","40-64","unlicensed_driving","Manual Action",5,0,22
+"Very Remote Australia","40-64","unlicensed_driving","Police issued",5,0,22
+"Very Remote Australia","65 and over","mobile_phone_use","Police issued",2,0,0
+"Very Remote Australia","65 and over","non_wearing_seatbelts","Police issued",17,0,0
+"Very Remote Australia","65 and over","speed_fines","Police issued",221,0,0
+"Very Remote Australia","65 and over","unlicensed_driving","Manual Action",4,0,3
+"Very Remote Australia","65 and over","unlicensed_driving","Police issued",0,0,1
+"Very Remote Australia","All Ages","speed_fines","Mobile camera",2,0,0
+"Very Remote Australia","All Ages","speed_fines","Police issued",1,0,0
+"Very Remote Australia","All Ages","unlicensed_driving","Manual Action",117,0,0

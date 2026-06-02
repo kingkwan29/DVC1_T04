@@ -1,3 +1,4 @@
+// js/main.js
 async function exportAsPNG() {
     const mainContent = document.querySelector('.main-content');
     const originalOverflow = mainContent.style.overflow;
@@ -119,6 +120,7 @@ async function loadAllData() {
         if (geoRaw && geoRaw.length > 0) {
             geoData = geoRaw.map(d => ({
                 jurisdiction: d.JURISDICTION,
+                method: d.DETECTION_METHOD,
                 fines: parseNumber(d.FINES),
                 arrests: parseNumber(d.ARRESTS),
                 charges: parseNumber(d.CHARGES)
@@ -130,7 +132,7 @@ async function loadAllData() {
                 location: d.LOCATION,
                 ageGroup: d.AGE_GROUP,
                 metric: d.METRIC,
-                method: d.METHOD || d.DETECTION_METHOD || 'Unknown',  // 匹配 method 字段
+                method: d.DETECTION_METHOD || 'unspecified',  // 添加这一行
                 fines: parseNumber(d.FINES),
                 arrests: parseNumber(d.ARRESTS),
                 charges: parseNumber(d.CHARGES)
@@ -189,7 +191,6 @@ safeAddEvent(document.getElementById('filterAge'), 'change', function (e) {
     refreshAllCharts();
 });
 
-// 新的 method 筛选器
 safeAddEvent(document.getElementById('filterMethod'), 'change', function (e) {
     state.method = e.target.value;
     refreshAllCharts();
