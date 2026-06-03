@@ -1,6 +1,3 @@
-// js/grouped-bar.js
-// Fixed: Larger fonts to match horizontal bar chart
-
 function renderGroupedBarChart() {
     const container = document.getElementById('groupedBarChart');
     if (!container) return;
@@ -13,7 +10,6 @@ function renderGroupedBarChart() {
     }
 
     let filtered = [...intersectionData];
-
     filtered = filtered.filter(d => d.location === 'All Regions');
 
     if (state.method === 'all') {
@@ -27,7 +23,6 @@ function renderGroupedBarChart() {
     filtered = applyAllFilters(filtered);
 
     const ageGroupsOrder = ['0-16', '17-25', '26-39', '40-64', '65 and over', 'All Ages'];
-
     const existingAgeGroups = [...new Set(filtered.map(d => d.ageGroup))];
     const ageGroups = ageGroupsOrder.filter(ag => existingAgeGroups.includes(ag));
 
@@ -61,7 +56,7 @@ function renderGroupedBarChart() {
         const width = Math.max(rect.width - 40, 550);
         const height = Math.max(rect.height - 40, 400);
 
-        const margin = { top: 60, right: 80, bottom: 70, left: 85 };
+        const margin = { top: 95, right: 80, bottom: 70, left: 80 };
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
@@ -79,80 +74,159 @@ function renderGroupedBarChart() {
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
         const subgroups = ['fines', 'arrests'];
-        const subgroupLabels = { fines: 'Fines ($K)', arrests: 'Arrests' };
+        const subgroupLabels = { fines: 'Fines ($)', arrests: 'Arrests' };
 
-        const maxFinesScaled = d3.max(data, d => d.fines / 1000);
+        const maxFines = d3.max(data, d => d.fines);
         const maxArrests = d3.max(data, d => d.arrests);
-        const yMax = Math.max(maxFinesScaled || 0, maxArrests || 0) * 1.15;
+        const yMaxFines = maxFines * 1.15;
+        const yMaxArrests = maxArrests * 1.15;
 
         const xScale = d3.scaleBand()
             .domain(data.map(d => d.displayLabel))
             .range([0, innerWidth])
-            .padding(0.15);
+            .padding(0.2);
 
         const xSubgroup = d3.scaleBand()
             .domain(subgroups)
             .range([0, xScale.bandwidth()])
-            .padding(0.08);
+            .padding(0.1);
 
-        const yScale = d3.scaleLinear()
-            .domain([0, yMax])
+        const yScaleFines = d3.scaleLinear()
+            .domain([0, yMaxFines])
             .range([innerHeight, 0])
-            .nice(5);
+            .nice();
+
+        const yScaleArrests = d3.scaleLinear()
+            .domain([0, yMaxArrests])
+            .range([innerHeight, 0])
+            .nice();
 
         // Grid lines
         svg.append('g')
-            .call(d3.axisLeft(yScale).ticks(5).tickSize(-innerWidth).tickFormat(''))
-            .style('color', '#E2E8F0')
-            .style('stroke-dasharray', '3,3')
-            .style('opacity', 0.4);
+            .call(d3.axisLeft(yScaleFines).ticks(5).tickSize(-innerWidth).tickFormat(''))
+            .style('stroke', '#E2E8F0')
+            .style('stroke-dasharray', '2,4')
+            .style('opacity', 0.3)
+            .select('.domain').remove();
 
-        // Y-axis - LARGER FONT (13px to match hbar's 11px bold + larger)
+        const colors = { fines: '#2E86AB', arrests: '#E63946' };
+
+        // Left Y-axis: Fines
         svg.append('g')
-            .call(d3.axisLeft(yScale).ticks(5).tickFormat(d => {
-                if (d >= 1000) return (d / 1000).toFixed(0) + 'K';
+            .call(d3.axisLeft(yScaleFines).ticks(5).tickFormat(d => {
+                if (d >= 1e6) return (d / 1e6).toFixed(1) + 'M';
+                if (d >= 1e3) return (d / 1e3).toFixed(0) + 'K';
                 return d;
             }))
-            .style('color', '#2D3748')
-            .style('font-size', '16px')
+            .style('color', colors.fines)
+            .style('font-size', '14px')
             .style('font-weight', '600');
 
-        // X-axis - LARGER FONT
+        // Right Y-axis: Arrests
+        svg.append('g')
+            .attr('transform', `translate(${innerWidth}, 0)`)
+            .call(d3.axisRight(yScaleArrests).ticks(5).tickFormat(d => {
+                if (d >= 1e6) return (d / 1e6).toFixed(1) + 'M';
+                if (d >= 1e3) return (d / 1e3).toFixed(0) + 'K';
+                return d;
+            }))
+            .style('color', colors.arrests)
+            .style('font-size', '14px')
+            .style('font-weight', '600');
+
+        // X-axis
         svg.append('g')
             .attr('transform', `translate(0,${innerHeight})`)
             .call(d3.axisBottom(xScale))
             .style('color', '#2D3748')
-            .style('font-size', '16px')
+            .style('font-size', '14px')
             .style('font-weight', '600');
 
-        // X-axis label - LARGER
+        // X-axis label
         svg.append('text')
             .attr('x', innerWidth / 2)
-            .attr('y', innerHeight + 52)
+            .attr('y', innerHeight + 50)
             .attr('text-anchor', 'middle')
-            .style('font-size', '16px')
+            .style('font-size', '15px')
             .style('fill', '#2D3748')
             .style('font-weight', '700')
             .text('Age Group');
 
-        // Y-axis label - LARGER
+        // Left Y-axis label
         svg.append('text')
             .attr('x', -innerHeight / 2)
-            .attr('y', -62)
+            .attr('y', -55)
             .attr('text-anchor', 'middle')
             .attr('transform', 'rotate(-90)')
-            .style('font-size', '16px')
-            .style('fill', '#2D3748')
+            .style('font-size', '14px')
+            .style('fill', colors.fines)
             .style('font-weight', '700')
-            .text('Amount (Fines in $K, Arrests in count)');
+            .text('Fines ($)');
 
-        const colors = {
-            fines: '#2E86AB',
-            arrests: '#D64933'
-        };
+        // Right Y-axis label
+        svg.append('text')
+            .attr('x', -innerHeight / 2)
+            .attr('y', innerWidth + 68)
+            .attr('text-anchor', 'middle')
+            .attr('transform', 'rotate(-90)')
+            .style('font-size', '14px')
+            .style('fill', colors.arrests)
+            .style('font-weight', '700')
+            .text('Arrests (count)');
 
-        // Draw bars
+        // Dual axis indicator — 15px bold, moved up slightly
+        svg.append('text')
+            .attr('x', innerWidth / 2)
+            .attr('y', -45)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '15px')
+            .style('fill', '#6B7280')
+            .style('font-weight', '700')
+            .text('← Fines ($) · Arrests (count) →');
+
+        // Legend — FAR RIGHT, higher up, colored text
+        const legend = svg.append('g')
+            .attr('transform', `translate(${innerWidth - 10}, -85)`);
+
+        // Fines legend item
+        legend.append('rect')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', 18)
+            .attr('height', 18)
+            .attr('fill', colors.fines)
+            .attr('rx', 3);
+
+        legend.append('text')
+            .attr('x', 26)
+            .attr('y', 14)
+            .text('Fines ($)')
+            .style('font-size', '15px')
+            .style('fill', colors.fines)  // BLUE text
+            .style('font-weight', '700');
+
+        // Arrests legend item — PURE RED
+        legend.append('rect')
+            .attr('x', 0)
+            .attr('y', 28)
+            .attr('width', 18)
+            .attr('height', 18)
+            .attr('fill', colors.arrests)
+            .attr('rx', 3);
+
+        legend.append('text')
+            .attr('x', 26)
+            .attr('y', 42)
+            .text('Arrests')
+            .style('font-size', '15px')
+            .style('fill', colors.arrests)  // RED text
+            .style('font-weight', '700');
+
+        // Draw bars — Arrests pure red
         subgroups.forEach(subgroup => {
+            const isFines = subgroup === 'fines';
+            const yScale = isFines ? yScaleFines : yScaleArrests;
+
             svg.selectAll(`.bar-${subgroup}`)
                 .data(data)
                 .enter()
@@ -162,97 +236,89 @@ function renderGroupedBarChart() {
                 .attr('width', xSubgroup.bandwidth())
                 .attr('height', 0)
                 .attr('fill', colors[subgroup])
-                .attr('opacity', 0.85)
-                .attr('rx', 4)
+                .attr('opacity', 0.9)
+                .attr('rx', 3)
                 .style('cursor', 'pointer')
                 .on('mouseenter', function (event, d) {
                     d3.select(this).attr('opacity', 1);
-                    const value = subgroup === 'fines' ? d.fines : d.arrests;
-                    const formattedValue = subgroup === 'fines' ? '$' + value.toLocaleString() : value.toLocaleString();
+                    const ratio = d.fines > 0 ? (d.arrests / (d.fines / 1000)).toFixed(1) : '0';
                     showTooltip(event, `
-                        <div style="font-weight:700;color:#93c5fd;margin-bottom:6px;">${d.displayLabel}</div>
-                        <div>${subgroupLabels[subgroup]}: ${formattedValue}</div>
-                        <div>Charges: ${d.charges.toLocaleString()}</div>
+                        <div style="font-weight:700;color:#93c5fd;margin-bottom:8px;font-size:14px;">${d.displayLabel}</div>
+                        <div style="margin-bottom:4px;"><span style="color:${colors.fines};">●</span> Fines: ${formatCurrency(d.fines)}</div>
+                        <div style="margin-bottom:4px;"><span style="color:${colors.arrests};">●</span> Arrests: ${formatNumber(d.arrests)}</div>
+                        <div style="margin-bottom:4px;"><span style="color:#6B7280;">◆</span> Charges: ${formatNumber(d.charges)}</div>
+                        <div style="margin-top:6px;padding-top:6px;border-top:1px solid #374151;font-size:12px;color:#9CA3AF;">
+                            Ratio: ${ratio} arrests per $1K fines
+                        </div>
                     `);
                 })
                 .on('mousemove', function (event, d) {
-                    const value = subgroup === 'fines' ? d.fines : d.arrests;
-                    const formattedValue = subgroup === 'fines' ? '$' + value.toLocaleString() : value.toLocaleString();
+                    const ratio = d.fines > 0 ? (d.arrests / (d.fines / 1000)).toFixed(1) : '0';
                     showTooltip(event, `
-                        <div style="font-weight:700;color:#93c5fd;margin-bottom:6px;">${d.displayLabel}</div>
-                        <div>${subgroupLabels[subgroup]}: ${formattedValue}</div>
-                        <div>Charges: ${d.charges.toLocaleString()}</div>
+                        <div style="font-weight:700;color:#93c5fd;margin-bottom:8px;font-size:14px;">${d.displayLabel}</div>
+                        <div style="margin-bottom:4px;"><span style="color:${colors.fines};">●</span> Fines: ${formatCurrency(d.fines)}</div>
+                        <div style="margin-bottom:4px;"><span style="color:${colors.arrests};">●</span> Arrests: ${formatNumber(d.arrests)}</div>
+                        <div style="margin-bottom:4px;"><span style="color:#6B7280;">◆</span> Charges: ${formatNumber(d.charges)}</div>
+                        <div style="margin-top:6px;padding-top:6px;border-top:1px solid #374151;font-size:12px;color:#9CA3AF;">
+                            Ratio: ${ratio} arrests per $1K fines
+                        </div>
                     `);
                 })
                 .on('mouseleave', function () {
-                    d3.select(this).attr('opacity', 0.85);
+                    d3.select(this).attr('opacity', 0.9);
                     hideTooltip();
                 })
                 .transition()
-                .duration(500)
-                .attr('y', d => {
-                    const value = subgroup === 'fines' ? d.fines / 1000 : d.arrests;
-                    return yScale(value);
-                })
-                .attr('height', d => {
-                    const value = subgroup === 'fines' ? d.fines / 1000 : d.arrests;
-                    return innerHeight - yScale(value);
-                });
+                .duration(600)
+                .attr('y', d => yScale(isFines ? d.fines : d.arrests))
+                .attr('height', d => innerHeight - yScale(isFines ? d.fines : d.arrests));
         });
 
-        // Data labels - placed above bars, larger font
+        // Data labels
         subgroups.forEach(subgroup => {
+            const isFines = subgroup === 'fines';
+            const yScale = isFines ? yScaleFines : yScaleArrests;
+
             svg.selectAll(`.label-${subgroup}`)
                 .data(data)
                 .enter()
                 .append('text')
                 .attr('x', d => xScale(d.displayLabel) + xSubgroup(subgroup) + xSubgroup.bandwidth() / 2)
                 .attr('y', d => {
-                    const value = subgroup === 'fines' ? d.fines / 1000 : d.arrests;
-                    const barTop = yScale(value);
-                    return barTop - 10;
+                    const value = isFines ? d.fines : d.arrests;
+                    return yScale(value) - 10;
                 })
                 .attr('text-anchor', 'middle')
-                .text(d => {
-                    const value = subgroup === 'fines' ? d.fines : d.arrests;
-                    if (subgroup === 'fines') {
-                        if (value >= 1e6) return (value / 1e6).toFixed(1) + 'M';
-                        if (value >= 1e3) return (value / 1e3).toFixed(0) + 'K';
-                        return value;
-                    }
-                    if (value >= 1000) return (value / 1000).toFixed(0) + 'K';
-                    return value;
-                })
-                .style('font-size', '12px')
-                .style('fill', '#2D3748')
-                .style('font-weight', '600')
+                .text(d => formatCompact(isFines ? d.fines : d.arrests))
+                .style('font-size', '13px')
+                .style('fill', colors[subgroup])
+                .style('font-weight', '700')
                 .style('opacity', 0)
                 .transition()
-                .duration(550)
+                .duration(650)
                 .style('opacity', 1);
         });
 
-        // Legend - larger font
-        const legend = svg.append('g')
-            .attr('transform', `translate(${innerWidth - 100}, -45)`);
-
-        ['fines', 'arrests'].forEach((key, i) => {
-            legend.append('rect')
-                .attr('x', 0)
-                .attr('y', i * 20)
-                .attr('width', 12)
-                .attr('height', 12)
-                .attr('fill', colors[key])
-                .attr('rx', 2);
-
-            legend.append('text')
-                .attr('x', 18)
-                .attr('y', i * 20 + 9)
-                .text(subgroupLabels[key])
-                .style('font-size', '14px')
-                .style('fill', '#2D3748')
-                .style('font-weight', '600');
-        });
-
     }, 50);
+}
+
+function formatCurrency(value) {
+    if (value === 0) return '$0';
+    if (value >= 1e6) return '$' + (value / 1e6).toFixed(1) + 'M';
+    if (value >= 1e3) return '$' + (value / 1e3).toFixed(0) + 'K';
+    return '$' + value.toLocaleString();
+}
+
+function formatNumber(value) {
+    if (value === 0) return '0';
+    if (value >= 1e6) return (value / 1e6).toFixed(1) + 'M';
+    if (value >= 1e3) return (value / 1e3).toFixed(0) + 'K';
+    return value.toLocaleString();
+}
+
+function formatCompact(value) {
+    if (value === 0) return '0';
+    if (value >= 1e6) return (value / 1e6).toFixed(1) + 'M';
+    if (value >= 1e3) return (value / 1e3).toFixed(0) + 'K';
+    return value.toLocaleString();
 }
