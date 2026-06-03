@@ -1,4 +1,5 @@
 // js/hbar.js
+// Fixed: Dynamic scale with proper tick generation
 
 function renderHBarChart() {
     if (state.jurisdiction === 'all') {
@@ -8,15 +9,87 @@ function renderHBarChart() {
     }
 }
 
-function getSmartTicks(maxValue) {
-    if (maxValue === 0) return { ticks: [0], niceMax: 0 };
-    const niceMax = Math.ceil(maxValue / 100000) * 100000;
-    const step = niceMax / 5;
-    const ticks = [];
-    for (let i = 0; i <= 5; i++) {
-        ticks.push(Math.round(i * step));
+function getDynamicTicks(maxValue) {
+    if (maxValue === 0) return { ticks: [0], maxDomain: 0 };
+
+    // Add 10% padding to max value for better visual
+    const paddedMax = maxValue * 1.1;
+
+    // Calculate appropriate step size based on padded max
+    let step;
+    if (paddedMax <= 50000) {
+        step = 10000;
+    } else if (paddedMax <= 100000) {
+        step = 25000;
+    } else if (paddedMax <= 250000) {
+        step = 50000;
+    } else if (paddedMax <= 500000) {
+        step = 100000;
+    } else if (paddedMax <= 1000000) {
+        step = 200000;
+    } else if (paddedMax <= 2500000) {
+        step = 500000;
+    } else if (paddedMax <= 5000000) {
+        step = 1000000;
+    } else if (paddedMax <= 10000000) {
+        step = 2000000;
+    } else {
+        step = 5000000;
     }
-    return { ticks: ticks, niceMax: niceMax };
+
+    // Calculate max domain (round up to nearest step)
+    const maxDomain = Math.ceil(paddedMax / step) * step;
+
+    // Generate 5 ticks evenly spaced
+    const tickStep = maxDomain / 4;
+    const ticks = [];
+    for (let i = 0; i <= 4; i++) {
+        let tickValue = i * tickStep;
+        // Round to reasonable precision
+        if (tickValue >= 1000000) {
+            tickValue = Math.round(tickValue / 100000) * 100000;
+        } else if (tickValue >= 1000) {
+            tickValue = Math.round(tickValue / 1000) * 1000;
+        }
+        ticks.push(tickValue);
+    }
+
+    return { ticks: ticks, maxDomain: maxDomain };
+}
+
+function formatCurrency(value) {
+    if (value === 0) return '$0';
+    if (value >= 1e6) return '$' + (value / 1e6).toFixed(1) + 'M';
+    if (value >= 1e3) return '$' + (value / 1e3).toFixed(0) + 'K';
+    return '$' + value.toLocaleString();
+}
+
+function formatNumber(value) {
+    if (value === 0) return '0';
+    if (value >= 1e6) return (value / 1e6).toFixed(1) + 'M';
+    if (value >= 1e3) return (value / 1e3).toFixed(0) + 'K';
+    return value.toLocaleString();
+}
+
+function getViolationColor(metric) {
+    const colors = {
+        'mobile_phone_use': '#2E86AB',
+        'non_wearing_seatbelts': '#F9844A',
+        'speed_fines': '#43AA8B',
+        'unlicensed_driving': '#F9C74F'
+    };
+    return colors[metric] || '#2E86AB';
+}
+
+function getLocationColor(location) {
+    const colors = {
+        'Major Cities of Australia': '#2E86AB',
+        'Inner Regional Australia': '#F9844A',
+        'Outer Regional Australia': '#43AA8B',
+        'Remote Australia': '#F9C74F',
+        'Very Remote Australia': '#577590'
+    };
+    return colors[location] || '#2E86AB';
 }
 
 function renderViolationChart() {
@@ -84,10 +157,10 @@ function renderViolationChart() {
 
     setTimeout(() => {
         const rect = container.getBoundingClientRect();
-        const width = Math.max(rect.width - 40, 300);
-        const height = Math.max(rect.height - 40, 280);
+        const width = Math.max(rect.width - 40, 380);
+        const height = Math.max(rect.height - 40, 320);
 
-        const margin = { top: 20, right: 80, bottom: 30, left: 140 };
+        const margin = { top: 30, right: 85, bottom: 45, left: 155 };
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
@@ -98,6 +171,8 @@ function renderViolationChart() {
             .attr('width', '100%')
             .attr('height', '100%')
             .attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('role', 'img')
+            .attr('aria-label', 'Horizontal bar chart showing fines by violation type')
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -107,48 +182,47 @@ function renderViolationChart() {
             .padding(0.35);
 
         const maxFines = d3.max(data, d => d.fines);
-        const { ticks, niceMax } = getSmartTicks(maxFines);
+        const { ticks, maxDomain } = getDynamicTicks(maxFines);
 
         const xScale = d3.scaleLinear()
-            .domain([0, niceMax])
+            .domain([0, maxDomain])
             .range([0, innerWidth]);
 
-        const metricColors = {
-            'mobile_phone_use': '#3b82f6',
-            'non_wearing_seatbelts': '#f59e0b',
-            'speed_fines': '#10b981',
-            'unlicensed_driving': '#ef4444'
-        };
-
+        // Grid lines
         svg.append('g')
             .call(d3.axisTop(xScale).tickValues(ticks).tickSize(-innerHeight).tickFormat(''))
-            .style('color', '#e2e8f0')
-            .style('stroke-dasharray', '4,4');
+            .style('color', '#E2E8F0')
+            .style('stroke-dasharray', '3,3')
+            .style('opacity', 0.4);
 
+        // Bottom axis with proper ticks
         svg.append('g')
             .attr('transform', `translate(0,${innerHeight})`)
-            .call(d3.axisBottom(xScale).tickValues(ticks).tickFormat(d => {
-                if (d >= 1e6) return (d / 1e6).toFixed(1) + 'M';
-                if (d >= 1e3) return (d / 1e3).toFixed(0) + 'K';
-                return d;
-            }))
-            .style('color', '#64748b')
-            .style('font-size', '10px');
+            .call(d3.axisBottom(xScale)
+                .tickValues(ticks)
+                .tickFormat(d => formatCurrency(d)))
+            .style('color', '#2D3748')
+            .style('font-size', '11px')
+            .style('font-weight', '600');
 
+        // X-axis label
         svg.append('text')
             .attr('x', innerWidth / 2)
-            .attr('y', innerHeight + 35)
+            .attr('y', innerHeight + 38)
             .attr('text-anchor', 'middle')
-            .style('font-size', '11px')
-            .style('fill', '#5b6e8c')
-            .style('font-weight', '500')
-            .text('Total Fines ($)');
+            .style('font-size', '13px')
+            .style('fill', '#2D3748')
+            .style('font-weight', '700')
+            .text('Total Fines');
 
+        // Y-axis - bold labels
         svg.append('g')
             .call(d3.axisLeft(yScale))
-            .style('color', '#64748b')
-            .style('font-size', '10px');
+            .style('color', '#2D3748')
+            .style('font-size', '12px')
+            .style('font-weight', '700');
 
+        // Draw bars
         svg.selectAll('rect')
             .data(data)
             .enter()
@@ -157,25 +231,25 @@ function renderViolationChart() {
             .attr('x', 0)
             .attr('height', yScale.bandwidth())
             .attr('width', 0)
-            .attr('fill', d => metricColors[d.metric])
+            .attr('fill', d => getViolationColor(d.metric))
             .attr('opacity', 0.85)
             .attr('rx', 4)
             .style('cursor', 'pointer')
             .on('mouseenter', function (event, d) {
                 d3.select(this).attr('opacity', 1);
                 showTooltip(event, `
-                    <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;">${d.label}</div>
-                    <div>Fines: $${d.fines.toLocaleString()}</div>
-                    <div>Arrests: ${d.arrests.toLocaleString()}</div>
-                    <div>Charges: ${d.charges.toLocaleString()}</div>
+                    <div style="font-weight:700;color:#93c5fd;margin-bottom:6px;">${d.label}</div>
+                    <div>Fines: ${formatCurrency(d.fines)}</div>
+                    <div>Arrests: ${formatNumber(d.arrests)}</div>
+                    <div>Charges: ${formatNumber(d.charges)}</div>
                 `);
             })
             .on('mousemove', function (event, d) {
                 showTooltip(event, `
-                    <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;">${d.label}</div>
-                    <div>Fines: $${d.fines.toLocaleString()}</div>
-                    <div>Arrests: ${d.arrests.toLocaleString()}</div>
-                    <div>Charges: ${d.charges.toLocaleString()}</div>
+                    <div style="font-weight:700;color:#93c5fd;margin-bottom:6px;">${d.label}</div>
+                    <div>Fines: ${formatCurrency(d.fines)}</div>
+                    <div>Arrests: ${formatNumber(d.arrests)}</div>
+                    <div>Charges: ${formatNumber(d.charges)}</div>
                 `);
             })
             .on('mouseleave', function () {
@@ -184,30 +258,30 @@ function renderViolationChart() {
             })
             .transition()
             .duration(500)
-            .attr('width', d => {
-                const width = xScale(d.fines);
-                if (d.fines > 0 && width < 4) return 4;
-                return width;
-            });
+            .attr('width', d => Math.max(xScale(d.fines), 4));
 
+        // Data labels
         svg.selectAll('.hbar-value')
             .data(data.filter(d => d.fines > 0))
             .enter()
             .append('text')
             .attr('x', d => {
                 const barWidth = xScale(d.fines);
-                if (barWidth < 4) return 8;
-                return barWidth + 5;
+                if (barWidth < 50) return barWidth + 8;
+                return barWidth - 10;
             })
             .attr('y', d => yScale(d.label) + yScale.bandwidth() / 2 + 4)
-            .text(d => {
-                if (d.fines >= 1e6) return (d.fines / 1e6).toFixed(1) + 'M';
-                if (d.fines >= 1e3) return (d.fines / 1e3).toFixed(0) + 'K';
-                return d.fines.toLocaleString();
+            .attr('text-anchor', d => {
+                const barWidth = xScale(d.fines);
+                return barWidth < 50 ? 'start' : 'end';
             })
-            .style('font-size', '10px')
-            .style('fill', '#475569')
-            .style('font-weight', '500')
+            .text(d => formatCurrency(d.fines))
+            .style('font-size', '11px')
+            .style('fill', d => {
+                const barWidth = xScale(d.fines);
+                return barWidth >= 50 ? '#FFFFFF' : '#2D3748';
+            })
+            .style('font-weight', '600')
             .style('opacity', 0)
             .transition()
             .duration(550)
@@ -293,20 +367,12 @@ function renderGeoChart() {
         return;
     }
 
-    const locationColors = {
-        'Major Cities of Australia': '#1e40af',
-        'Inner Regional Australia': '#3b82f6',
-        'Outer Regional Australia': '#60a5fa',
-        'Remote Australia': '#f59e0b',
-        'Very Remote Australia': '#ea580c'
-    };
-
     setTimeout(() => {
         const rect = container.getBoundingClientRect();
-        const width = Math.max(rect.width - 40, 300);
-        const height = Math.max(rect.height - 40, 320);
+        const width = Math.max(rect.width - 40, 380);
+        const height = Math.max(rect.height - 40, 370);
 
-        const margin = { top: 20, right: 80, bottom: 30, left: 120 };
+        const margin = { top: 30, right: 85, bottom: 45, left: 125 };
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
@@ -317,51 +383,58 @@ function renderGeoChart() {
             .attr('width', '100%')
             .attr('height', '100%')
             .attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('role', 'img')
+            .attr('aria-label', 'Horizontal bar chart showing fines by geographic location')
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
         const yScale = d3.scaleBand()
             .domain(data.map(d => d.displayLabel))
             .range([0, innerHeight])
-            .padding(0.4);
+            .padding(0.35);
 
         const maxFines = d3.max(data, d => d.fines);
-        const { ticks, niceMax } = getSmartTicks(maxFines);
+        const { ticks, maxDomain } = getDynamicTicks(maxFines);
 
         const xScale = d3.scaleLinear()
-            .domain([0, niceMax])
+            .domain([0, maxDomain])
             .range([0, innerWidth]);
 
+        // Grid lines
         svg.append('g')
             .call(d3.axisTop(xScale).tickValues(ticks).tickSize(-innerHeight).tickFormat(''))
-            .style('color', '#e2e8f0')
-            .style('stroke-dasharray', '4,4');
+            .style('color', '#E2E8F0')
+            .style('stroke-dasharray', '3,3')
+            .style('opacity', 0.4);
 
+        // Bottom axis with proper ticks
         svg.append('g')
             .attr('transform', `translate(0,${innerHeight})`)
-            .call(d3.axisBottom(xScale).tickValues(ticks).tickFormat(d => {
-                if (d >= 1e6) return (d / 1e6).toFixed(1) + 'M';
-                if (d >= 1e3) return (d / 1e3).toFixed(0) + 'K';
-                return d;
-            }))
-            .style('color', '#64748b')
-            .style('font-size', '10px');
+            .call(d3.axisBottom(xScale)
+                .tickValues(ticks)
+                .tickFormat(d => formatCurrency(d)))
+            .style('color', '#2D3748')
+            .style('font-size', '11px')
+            .style('font-weight', '600');
 
+        // X-axis label
         svg.append('text')
             .attr('x', innerWidth / 2)
-            .attr('y', innerHeight + 35)
+            .attr('y', innerHeight + 38)
             .attr('text-anchor', 'middle')
-            .style('font-size', '11px')
-            .style('fill', '#5b6e8c')
-            .style('font-weight', '500')
-            .text('Total Fines ($)');
+            .style('font-size', '13px')
+            .style('fill', '#2D3748')
+            .style('font-weight', '700')
+            .text('Total Fines');
 
+        // Y-axis - bold labels
         svg.append('g')
             .call(d3.axisLeft(yScale))
-            .style('color', '#64748b')
-            .style('font-size', '11px')
-            .style('font-weight', '500');
+            .style('color', '#2D3748')
+            .style('font-size', '12px')
+            .style('font-weight', '700');
 
+        // Draw bars
         svg.selectAll('rect')
             .data(data)
             .enter()
@@ -370,7 +443,7 @@ function renderGeoChart() {
             .attr('x', 0)
             .attr('height', yScale.bandwidth())
             .attr('width', 0)
-            .attr('fill', d => locationColors[d.location] || '#64748b')
+            .attr('fill', d => getLocationColor(d.location))
             .attr('opacity', 0.85)
             .attr('rx', 4)
             .style('cursor', 'pointer')
@@ -378,17 +451,17 @@ function renderGeoChart() {
                 d3.select(this).attr('opacity', 1);
                 showTooltip(event, `
                     <div style="font-weight:700;color:#93c5fd;margin-bottom:6px;">${d.displayLabel}</div>
-                    <div>Fines: $${d.fines.toLocaleString()}</div>
-                    <div>Arrests: ${d.arrests.toLocaleString()}</div>
-                    <div>Charges: ${d.charges.toLocaleString()}</div>
+                    <div>Fines: ${formatCurrency(d.fines)}</div>
+                    <div>Arrests: ${formatNumber(d.arrests)}</div>
+                    <div>Charges: ${formatNumber(d.charges)}</div>
                 `);
             })
             .on('mousemove', function (event, d) {
                 showTooltip(event, `
                     <div style="font-weight:700;color:#93c5fd;margin-bottom:6px;">${d.displayLabel}</div>
-                    <div>Fines: $${d.fines.toLocaleString()}</div>
-                    <div>Arrests: ${d.arrests.toLocaleString()}</div>
-                    <div>Charges: ${d.charges.toLocaleString()}</div>
+                    <div>Fines: ${formatCurrency(d.fines)}</div>
+                    <div>Arrests: ${formatNumber(d.arrests)}</div>
+                    <div>Charges: ${formatNumber(d.charges)}</div>
                 `);
             })
             .on('mouseleave', function () {
@@ -397,29 +470,29 @@ function renderGeoChart() {
             })
             .transition()
             .duration(500)
-            .attr('width', d => {
-                const width = xScale(d.fines);
-                if (d.fines > 0 && width < 4) return 4;
-                return width;
-            });
+            .attr('width', d => Math.max(xScale(d.fines), 4));
 
+        // Data labels
         svg.selectAll('.hbar-value')
             .data(data.filter(d => d.fines > 0))
             .enter()
             .append('text')
             .attr('x', d => {
                 const barWidth = xScale(d.fines);
-                if (barWidth < 4) return 8;
-                return barWidth + 5;
+                if (barWidth < 50) return barWidth + 8;
+                return barWidth - 10;
             })
             .attr('y', d => yScale(d.displayLabel) + yScale.bandwidth() / 2 + 4)
-            .text(d => {
-                if (d.fines >= 1e6) return (d.fines / 1e6).toFixed(1) + 'M';
-                if (d.fines >= 1e3) return (d.fines / 1e3).toFixed(0) + 'K';
-                return d.fines.toLocaleString();
+            .attr('text-anchor', d => {
+                const barWidth = xScale(d.fines);
+                return barWidth < 50 ? 'start' : 'end';
             })
-            .style('font-size', '10px')
-            .style('fill', '#475569')
+            .text(d => formatCurrency(d.fines))
+            .style('font-size', '11px')
+            .style('fill', d => {
+                const barWidth = xScale(d.fines);
+                return barWidth >= 50 ? '#FFFFFF' : '#2D3748';
+            })
             .style('font-weight', '600')
             .style('opacity', 0)
             .transition()
