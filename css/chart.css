@@ -1,0 +1,212 @@
+/* ----- BASE ----- */
+.chart-body svg text,
+.chart-body svg tspan {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===== AXIS ===== */
+.chart-body .axis path,
+.chart-body .axis line {
+    stroke: #E2E8F0;
+}
+
+/* ===== GROUPED BAR CHART AXES ===== */
+
+/* Left Y-axis (Fines) - Blue text + Blue line */
+#groupedBarChart .axis-fines .tick text {
+    font-size: 14px;
+    font-weight: 600;
+    fill: #2E86AB;
+}
+
+#groupedBarChart .axis-fines path,
+#groupedBarChart .axis-fines line {
+    stroke: #2E86AB !important;
+}
+
+/* Right Y-axis (Arrests) - Red text + Red line */
+#groupedBarChart .axis-arrests .tick text {
+    font-size: 14px;
+    font-weight: 600;
+    fill: #E63946;
+}
+
+#groupedBarChart .axis-arrests path,
+#groupedBarChart .axis-arrests line {
+    stroke: #E63946 !important;
+}
+
+/* Bottom X-axis (Age Group) - Dark gray text, BLACK line */
+#groupedBarChart .axis-bottom .tick text {
+    font-size: 14px;
+    font-weight: 600;
+    fill: #2D3748;
+}
+
+#groupedBarChart .axis-bottom path,
+#groupedBarChart .axis-bottom line {
+    stroke: #1A1A1A !important;
+}
+
+/* ===== HBAR CHART AXES ===== */
+
+/* Bottom axis (X-axis - Fines values) */
+#hbarChart .axis-bottom .tick text {
+    font-size: 13px;
+    font-weight: 600;
+    fill: #2D3748;
+}
+
+#hbarChart .axis-bottom path,
+#hbarChart .axis-bottom line {
+    stroke: #1A1A1A !important;
+    /* BLACK line */
+}
+
+/* Left axis (Y-axis - Category labels) */
+#hbarChart .axis-left .tick text {
+    font-size: 13px;
+    font-weight: 700;
+    fill: #2D3748;
+}
+
+#hbarChart .axis-left path,
+#hbarChart .axis-left line {
+    stroke: #1A1A1A !important;
+    /* BLACK line */
+}
+
+/* ===== AXIS LABELS ===== */
+.axis-label-x {
+    font-size: 15px;
+    font-weight: 700;
+    fill: #2D3748;
+}
+
+.axis-label-y-left {
+    font-size: 14px;
+    font-weight: 700;
+    fill: #2E86AB;
+}
+
+.axis-label-y-right {
+    font-size: 14px;
+    font-weight: 700;
+    fill: #E63946;
+}
+
+/* ===== DUAL AXIS INDICATOR ===== */
+.dual-axis-indicator {
+    font-size: 15px;
+    fill: #6B7280;
+    font-weight: 700;
+}
+
+/* ===== LOG INDICATOR ===== */
+.log-indicator {
+    font-size: 12px;
+    fill: #9CA3AF;
+    font-style: italic;
+}
+
+/* ===== LEGEND ===== */
+.legend-text-fines {
+    font-size: 15px;
+    font-weight: 700;
+    fill: #2E86AB;
+}
+
+.legend-text-arrests {
+    font-size: 15px;
+    font-weight: 700;
+    fill: #E63946;
+}
+
+/* ===== DATA LABELS ===== */
+.data-label {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.hbar-value {
+    font-size: 13px;
+    font-weight: 700;
+    fill: #2D3748;
+}
+
+.label-fines {
+    font-size: 13px;
+    font-weight: 700;
+    fill: #2E86AB;
+}
+
+.label-arrests {
+    font-size: 13px;
+    font-weight: 700;
+    fill: #E63946;
+}
+
+/* ===== BARS ===== */
+.bar {
+    opacity: 0.9;
+    rx: 5;
+}
+
+.bar:hover {
+    opacity: 1;
+}
+
+/* ===== GRID ===== */
+.grid-lines .tick line {
+    stroke: #E2E8F0;
+    stroke-dasharray: 2, 4;
+    opacity: 0.3;
+}
+
+.grid-lines .domain {
+    display: none;
+}
+
+/* ===== DOT MARKERS ===== */
+.bar-dot {
+    stroke: #FFFFFF;
+    stroke-width: 2;
+    pointer-events: none;
+}
+
+/* ===== TOOLTIP ===== */
+.chart-tooltip {
+    position: fixed;
+    background: #1F2F3E;
+    color: #F0F6FE;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 280px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.chart-tooltip .tooltip-title {
+    font-weight: 700;
+    color: #93c5fd;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.chart-tooltip .tooltip-row {
+    margin-bottom: 4px;
+}
+
+.chart-tooltip .tooltip-footer {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #374151;
+    font-size: 11px;
+    color: #9CA3AF;
+}

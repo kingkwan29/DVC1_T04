@@ -1,4 +1,5 @@
 // js/trend.js
+// Monthly Trend Area Chart
 
 function renderMonthlyTrend() {
     const container = document.getElementById('trendChart');
@@ -13,7 +14,6 @@ function renderMonthlyTrend() {
 
     const noteDiv = document.createElement('div');
     noteDiv.className = 'trend-note';
-    noteDiv.style.cssText = 'position: absolute; top: 8px; right: 12px; font-size: 10px; color: #ef4444; font-style: italic; background: rgba(239,68,68,0.08); padding: 4px 8px; border-radius: 6px; z-index: 10;';
     noteDiv.textContent = '*Note: Data for 2008-2022 represents annual January snapshots only.';
     if (!container.querySelector('.trend-note')) {
         container.style.position = 'relative';
@@ -50,11 +50,13 @@ function renderMonthlyTrend() {
             .range([innerHeight, 0])
             .nice();
 
+        // Grid lines
         svg.append('g')
+            .attr('class', 'grid-lines')
             .call(d3.axisLeft(yScale).ticks(6).tickSize(-innerWidth).tickFormat(''))
-            .style('color', '#e2e8f0')
-            .style('stroke-dasharray', '4,4');
+            .select('.domain').remove();
 
+        // Area
         const area = d3.area()
             .x(d => xScale(d.date))
             .y0(yScale(0))
@@ -62,56 +64,57 @@ function renderMonthlyTrend() {
 
         svg.append('path')
             .datum(monthlyData)
+            .attr('class', 'area-path')
             .attr('fill', COLORS.finesLight)
-            .attr('opacity', 0.3)
             .attr('d', area);
 
+        // Line
         const line = d3.line()
             .x(d => xScale(d.date))
             .y(d => yScale(d.fines));
 
         svg.append('path')
             .datum(monthlyData)
+            .attr('class', 'line-path')
             .attr('fill', 'none')
             .attr('stroke', COLORS.fines)
             .attr('stroke-width', 2.5)
-            .attr('stroke-linecap', 'round')
             .attr('d', line);
 
+        // X-axis
         svg.append('g')
+            .attr('class', 'axis axis-x')
             .attr('transform', `translate(0,${innerHeight})`)
-            .call(d3.axisBottom(xScale).ticks(8).tickFormat(d3.timeFormat('%b %Y')))
-            .style('color', '#64748b')
-            .style('font-size', '10px');
+            .call(d3.axisBottom(xScale).ticks(8).tickFormat(d3.timeFormat('%b %Y')));
 
+        // Y-axis
         svg.append('g')
-            .call(d3.axisLeft(yScale).ticks(6).tickFormat(d => d >= 1e6 ? (d / 1e6).toFixed(1) + 'M' : d))
-            .style('color', '#64748b')
-            .style('font-size', '10px');
+            .attr('class', 'axis axis-y-left')
+            .call(d3.axisLeft(yScale).ticks(6).tickFormat(d => d >= 1e6 ? (d / 1e6).toFixed(1) + 'M' : d));
 
+        // X-axis label
         svg.append('text')
+            .attr('class', 'axis-label axis-label-x')
             .attr('x', innerWidth / 2)
             .attr('y', innerHeight + 38)
             .attr('text-anchor', 'middle')
-            .style('font-size', '11px')
-            .style('fill', '#5b6e8c')
-            .style('font-weight', '500')
-            .text('Date');
+            .text('Year');
 
+        // Y-axis label
         svg.append('text')
+            .attr('class', 'axis-label axis-label-y')
             .attr('x', -innerHeight / 2)
             .attr('y', -50)
             .attr('text-anchor', 'middle')
             .attr('transform', 'rotate(-90)')
-            .style('font-size', '11px')
-            .style('fill', '#5b6e8c')
-            .style('font-weight', '500')
             .text('Total Fines ($)');
 
+        // Data dots
         svg.selectAll('.trend-dot')
             .data(monthlyData)
             .enter()
             .append('circle')
+            .attr('class', 'trend-dot')
             .attr('cx', d => xScale(d.date))
             .attr('cy', d => yScale(d.fines))
             .attr('r', 5)
@@ -119,22 +122,21 @@ function renderMonthlyTrend() {
             .attr('stroke', 'white')
             .attr('stroke-width', 2)
             .style('cursor', 'pointer')
-            .style('opacity', 0.7)
             .on('mouseenter', function (event, d) {
-                d3.select(this).attr('r', 8).style('opacity', 1);
+                d3.select(this).attr('r', 8);
                 showTooltip(event, `
-                    <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;">${d3.timeFormat('%b %Y')(d.date)}</div>
-                    <div>$${d.fines.toLocaleString()}</div>
+                    <div class="tooltip-title">${d3.timeFormat('%b %Y')(d.date)}</div>
+                    <div class="tooltip-value">$${d.fines.toLocaleString()}</div>
                 `);
             })
             .on('mousemove', function (event, d) {
                 showTooltip(event, `
-                    <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;">${d3.timeFormat('%b %Y')(d.date)}</div>
-                    <div>$${d.fines.toLocaleString()}</div>
+                    <div class="tooltip-title">${d3.timeFormat('%b %Y')(d.date)}</div>
+                    <div class="tooltip-value">$${d.fines.toLocaleString()}</div>
                 `);
             })
             .on('mouseleave', function () {
-                d3.select(this).attr('r', 5).style('opacity', 0.7);
+                d3.select(this).attr('r', 5);
                 hideTooltip();
             });
 

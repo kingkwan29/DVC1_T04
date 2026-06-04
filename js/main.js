@@ -1,4 +1,6 @@
 // js/main.js
+// Main Application Entry Point
+
 async function exportAsPNG() {
     const mainContent = document.querySelector('.main-content');
     const originalOverflow = mainContent.style.overflow;
@@ -132,7 +134,7 @@ async function loadAllData() {
                 location: d.LOCATION,
                 ageGroup: d.AGE_GROUP,
                 metric: d.METRIC,
-                method: d.DETECTION_METHOD || 'unspecified',  // 添加这一行
+                method: d.DETECTION_METHOD || 'unspecified',
                 fines: parseNumber(d.FINES),
                 arrests: parseNumber(d.ARRESTS),
                 charges: parseNumber(d.CHARGES)

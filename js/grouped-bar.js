@@ -1,3 +1,6 @@
+// js/grouped-bar.js - Grouped Bar Chart
+// All inline styles removed, using CSS classes from chart.css
+
 function renderGroupedBarChart() {
     const container = document.getElementById('groupedBarChart');
     if (!container) return;
@@ -103,126 +106,111 @@ function renderGroupedBarChart() {
 
         // Grid lines
         svg.append('g')
+            .attr('class', 'grid-lines')
             .call(d3.axisLeft(yScaleFines).ticks(5).tickSize(-innerWidth).tickFormat(''))
-            .style('stroke', '#E2E8F0')
-            .style('stroke-dasharray', '2,4')
-            .style('opacity', 0.3)
             .select('.domain').remove();
 
         const colors = { fines: '#2E86AB', arrests: '#E63946' };
 
         // Left Y-axis: Fines
         svg.append('g')
+            .attr('class', 'axis axis-left axis-fines')
             .call(d3.axisLeft(yScaleFines).ticks(5).tickFormat(d => {
                 if (d >= 1e6) return (d / 1e6).toFixed(1) + 'M';
                 if (d >= 1e3) return (d / 1e3).toFixed(0) + 'K';
                 return d;
-            }))
-            .style('color', colors.fines)
-            .style('font-size', '14px')
-            .style('font-weight', '600');
+            }));
 
         // Right Y-axis: Arrests
         svg.append('g')
+            .attr('class', 'axis axis-right axis-arrests')
             .attr('transform', `translate(${innerWidth}, 0)`)
             .call(d3.axisRight(yScaleArrests).ticks(5).tickFormat(d => {
                 if (d >= 1e6) return (d / 1e6).toFixed(1) + 'M';
                 if (d >= 1e3) return (d / 1e3).toFixed(0) + 'K';
                 return d;
-            }))
-            .style('color', colors.arrests)
-            .style('font-size', '14px')
-            .style('font-weight', '600');
+            }));
 
         // X-axis
         svg.append('g')
+            .attr('class', 'axis axis-bottom')
             .attr('transform', `translate(0,${innerHeight})`)
-            .call(d3.axisBottom(xScale))
-            .style('color', '#2D3748')
-            .style('font-size', '14px')
-            .style('font-weight', '600');
+            .call(d3.axisBottom(xScale));
 
         // X-axis label
         svg.append('text')
+            .attr('class', 'axis-label axis-label-x')
             .attr('x', innerWidth / 2)
-            .attr('y', innerHeight + 50)
+            .attr('y', innerHeight + 48)
             .attr('text-anchor', 'middle')
-            .style('font-size', '15px')
-            .style('fill', '#2D3748')
-            .style('font-weight', '700')
             .text('Age Group');
 
         // Left Y-axis label
         svg.append('text')
+            .attr('class', 'axis-label axis-label-y-left')
             .attr('x', -innerHeight / 2)
             .attr('y', -55)
             .attr('text-anchor', 'middle')
             .attr('transform', 'rotate(-90)')
-            .style('font-size', '14px')
             .style('fill', colors.fines)
-            .style('font-weight', '700')
             .text('Fines ($)');
 
         // Right Y-axis label
         svg.append('text')
+            .attr('class', 'axis-label axis-label-y-right')
             .attr('x', -innerHeight / 2)
             .attr('y', innerWidth + 68)
             .attr('text-anchor', 'middle')
             .attr('transform', 'rotate(-90)')
-            .style('font-size', '14px')
             .style('fill', colors.arrests)
-            .style('font-weight', '700')
             .text('Arrests (count)');
 
-        // Dual axis indicator — 15px bold, moved up slightly
+        // Dual axis indicator
         svg.append('text')
+            .attr('class', 'dual-axis-indicator')
             .attr('x', innerWidth / 2)
             .attr('y', -45)
             .attr('text-anchor', 'middle')
-            .style('font-size', '15px')
-            .style('fill', '#6B7280')
-            .style('font-weight', '700')
             .text('← Fines ($) · Arrests (count) →');
 
-        // Legend — FAR RIGHT, higher up, colored text
+        // Legend
         const legend = svg.append('g')
+            .attr('class', 'legend-group')
             .attr('transform', `translate(${innerWidth - 10}, -85)`);
 
         // Fines legend item
         legend.append('rect')
             .attr('x', 0)
             .attr('y', 0)
-            .attr('width', 18)
-            .attr('height', 18)
+            .attr('width', 16)
+            .attr('height', 16)
             .attr('fill', colors.fines)
             .attr('rx', 3);
 
         legend.append('text')
-            .attr('x', 26)
-            .attr('y', 14)
-            .text('Fines ($)')
-            .style('font-size', '15px')
-            .style('fill', colors.fines)  // BLUE text
-            .style('font-weight', '700');
+            .attr('class', 'legend-text legend-text-fines')
+            .attr('x', 24)
+            .attr('y', 13)
+            .style('fill', colors.fines)
+            .text('Fines');
 
-        // Arrests legend item — PURE RED
+        // Arrests legend item
         legend.append('rect')
             .attr('x', 0)
-            .attr('y', 28)
-            .attr('width', 18)
-            .attr('height', 18)
+            .attr('y', 24)
+            .attr('width', 16)
+            .attr('height', 16)
             .attr('fill', colors.arrests)
             .attr('rx', 3);
 
         legend.append('text')
-            .attr('x', 26)
-            .attr('y', 42)
-            .text('Arrests')
-            .style('font-size', '15px')
-            .style('fill', colors.arrests)  // RED text
-            .style('font-weight', '700');
+            .attr('class', 'legend-text legend-text-arrests')
+            .attr('x', 24)
+            .attr('y', 37)
+            .style('fill', colors.arrests)
+            .text('Arrests');
 
-        // Draw bars — Arrests pure red
+        // Draw bars
         subgroups.forEach(subgroup => {
             const isFines = subgroup === 'fines';
             const yScale = isFines ? yScaleFines : yScaleArrests;
@@ -231,45 +219,41 @@ function renderGroupedBarChart() {
                 .data(data)
                 .enter()
                 .append('rect')
+                .attr('class', `bar bar-${subgroup}`)
                 .attr('x', d => xScale(d.displayLabel) + xSubgroup(subgroup))
                 .attr('y', innerHeight)
                 .attr('width', xSubgroup.bandwidth())
                 .attr('height', 0)
                 .attr('fill', colors[subgroup])
-                .attr('opacity', 0.9)
-                .attr('rx', 3)
+                .attr('rx', 4)
                 .style('cursor', 'pointer')
                 .on('mouseenter', function (event, d) {
                     d3.select(this).attr('opacity', 1);
                     const ratio = d.fines > 0 ? (d.arrests / (d.fines / 1000)).toFixed(1) : '0';
                     showTooltip(event, `
-                        <div style="font-weight:700;color:#93c5fd;margin-bottom:8px;font-size:14px;">${d.displayLabel}</div>
-                        <div style="margin-bottom:4px;"><span style="color:${colors.fines};">●</span> Fines: ${formatCurrency(d.fines)}</div>
-                        <div style="margin-bottom:4px;"><span style="color:${colors.arrests};">●</span> Arrests: ${formatNumber(d.arrests)}</div>
-                        <div style="margin-bottom:4px;"><span style="color:#6B7280;">◆</span> Charges: ${formatNumber(d.charges)}</div>
-                        <div style="margin-top:6px;padding-top:6px;border-top:1px solid #374151;font-size:12px;color:#9CA3AF;">
-                            Ratio: ${ratio} arrests per $1K fines
-                        </div>
+                        <div class="tooltip-title">${d.displayLabel}</div>
+                        <div class="tooltip-row"><span style="color:${colors.fines};">●</span> Fines: ${formatCurrency(d.fines)}</div>
+                        <div class="tooltip-row"><span style="color:${colors.arrests};">●</span> Arrests: ${formatNumber(d.arrests)}</div>
+                        <div class="tooltip-row"><span style="color:#6B7280;">◆</span> Charges: ${formatNumber(d.charges)}</div>
+                        <div class="tooltip-footer">Ratio: ${ratio} arrests per $1K fines</div>
                     `);
                 })
                 .on('mousemove', function (event, d) {
                     const ratio = d.fines > 0 ? (d.arrests / (d.fines / 1000)).toFixed(1) : '0';
                     showTooltip(event, `
-                        <div style="font-weight:700;color:#93c5fd;margin-bottom:8px;font-size:14px;">${d.displayLabel}</div>
-                        <div style="margin-bottom:4px;"><span style="color:${colors.fines};">●</span> Fines: ${formatCurrency(d.fines)}</div>
-                        <div style="margin-bottom:4px;"><span style="color:${colors.arrests};">●</span> Arrests: ${formatNumber(d.arrests)}</div>
-                        <div style="margin-bottom:4px;"><span style="color:#6B7280;">◆</span> Charges: ${formatNumber(d.charges)}</div>
-                        <div style="margin-top:6px;padding-top:6px;border-top:1px solid #374151;font-size:12px;color:#9CA3AF;">
-                            Ratio: ${ratio} arrests per $1K fines
-                        </div>
+                        <div class="tooltip-title">${d.displayLabel}</div>
+                        <div class="tooltip-row"><span style="color:${colors.fines};">●</span> Fines: ${formatCurrency(d.fines)}</div>
+                        <div class="tooltip-row"><span style="color:${colors.arrests};">●</span> Arrests: ${formatNumber(d.arrests)}</div>
+                        <div class="tooltip-row"><span style="color:#6B7280;">◆</span> Charges: ${formatNumber(d.charges)}</div>
+                        <div class="tooltip-footer">Ratio: ${ratio} arrests per $1K fines</div>
                     `);
                 })
                 .on('mouseleave', function () {
-                    d3.select(this).attr('opacity', 0.9);
+                    d3.select(this).attr('opacity', 0.85);
                     hideTooltip();
                 })
                 .transition()
-                .duration(600)
+                .duration(500)
                 .attr('y', d => yScale(isFines ? d.fines : d.arrests))
                 .attr('height', d => innerHeight - yScale(isFines ? d.fines : d.arrests));
         });
@@ -283,19 +267,17 @@ function renderGroupedBarChart() {
                 .data(data)
                 .enter()
                 .append('text')
+                .attr('class', `data-label data-label-${subgroup}`)
                 .attr('x', d => xScale(d.displayLabel) + xSubgroup(subgroup) + xSubgroup.bandwidth() / 2)
                 .attr('y', d => {
                     const value = isFines ? d.fines : d.arrests;
-                    return yScale(value) - 10;
+                    return yScale(value) - 6;
                 })
                 .attr('text-anchor', 'middle')
                 .text(d => formatCompact(isFines ? d.fines : d.arrests))
-                .style('font-size', '13px')
-                .style('fill', colors[subgroup])
-                .style('font-weight', '700')
                 .style('opacity', 0)
                 .transition()
-                .duration(650)
+                .duration(550)
                 .style('opacity', 1);
         });
 

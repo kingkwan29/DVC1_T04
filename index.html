@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bitre Data Dashboard</title>
+    <title>Bitre Data Dashboard | Poppins Design</title>
+    <!-- Poppins Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/chart.css">
 </head>
 
 <body>
@@ -36,7 +37,6 @@
                         <option value="WA">WA</option>
                     </select>
                 </div>
-
                 <div class="filter-group">
                     <label for="filterAge">Age Group</label>
                     <select id="filterAge">
@@ -48,7 +48,6 @@
                         <option value="65 and over">65+</option>
                     </select>
                 </div>
-
                 <div class="filter-group">
                     <label for="filterMethod">Detection Method</label>
                     <select id="filterMethod">
@@ -62,13 +61,11 @@
                         <option value="All Methods">Unregistered Method</option>
                     </select>
                 </div>
-
                 <div class="export-group">
-                    <button id="exportPNG" class="export-btn">📸 Export as PNG</button>
-                    <button id="exportCSV" class="export-btn">📎 Export Data (CSV)</button>
+                    <button id="exportPNG" class="export-btn">Export as PNG</button>
+                    <button id="exportCSV" class="export-btn">Export Data (CSV)</button>
                 </div>
             </div>
-
             <div class="sidebar-footer">
                 <span>BITRE · 2024 | D3.js v7</span>
             </div>
@@ -76,71 +73,46 @@
 
         <main class="main-content">
             <div class="kpi-row" id="kpiRow">
-                <div class="kpi-card">
-                    <span class="kpi-label">Total Fines</span>
-                    <span class="kpi-number" id="kpiFines">—</span>
-                </div>
-                <div class="kpi-card">
-                    <span class="kpi-label">Total Arrests</span>
-                    <span class="kpi-number" id="kpiArrests">—</span>
-                </div>
-                <div class="kpi-card">
-                    <span class="kpi-label">Total Charges</span>
-                    <span class="kpi-number" id="kpiCharges">—</span>
-                </div>
+                <div class="kpi-card"><span class="kpi-label">Total Fines</span><span class="kpi-number"
+                        id="kpiFines">—</span></div>
+                <div class="kpi-card"><span class="kpi-label">Total Arrests</span><span class="kpi-number"
+                        id="kpiArrests">—</span></div>
+                <div class="kpi-card"><span class="kpi-label">Total Charges</span><span class="kpi-number"
+                        id="kpiCharges">—</span></div>
             </div>
 
             <div class="chart-grid">
                 <div class="chart-card full-width">
                     <div class="chart-header">
-                        <div class="header-left">
-                            <span class="chart-title">Monthly Fines Trend</span>
-                            <span class="chart-sub">Area Chart · 2008–2024</span>
-                        </div>
-                        <div class="chart-actions">
-                            <button class="chart-action-btn" data-chart="trend">⤓</button>
-                        </div>
+                        <div class="header-left"><span class="chart-title">Monthly Fines Trend</span><span
+                                class="chart-sub">Area Chart · 2008–2024</span></div>
+                        <div class="chart-actions"><button class="chart-action-btn" data-chart="trend">⤓</button></div>
                     </div>
                     <div class="chart-body" id="trendChart"></div>
                 </div>
-
                 <div class="chart-card half-width">
                     <div class="chart-header">
-                        <div class="header-left">
-                            <span class="chart-title">Fines vs Arrests by Age</span>
-                            <span class="chart-sub">Grouped Bar Chart · fines ($K) vs arrests</span>
-                        </div>
-                        <div class="chart-actions">
-                            <button class="chart-action-btn" data-chart="grouped">⤓</button>
+                        <div class="header-left"><span class="chart-title">Fines vs Arrests by Age</span><span
+                                class="chart-sub">Grouped Bar Chart · fines ($K) vs arrests</span></div>
+                        <div class="chart-actions"><button class="chart-action-btn" data-chart="grouped">⤓</button>
                         </div>
                     </div>
                     <div class="chart-body" id="groupedBarChart"></div>
                 </div>
-
                 <div class="chart-card half-width">
                     <div class="chart-header">
-                        <div class="header-left">
-                            <span class="chart-title">Metric Distribution</span>
-                            <span class="chart-sub">Horizontal Bar Chart · fines by violation type</span>
-                        </div>
-                        <div class="chart-actions">
-                            <button class="chart-action-btn" data-chart="hbar">⤓</button>
-                        </div>
+                        <div class="header-left"><span class="chart-title">Metric Distribution</span><span
+                                class="chart-sub">Horizontal Bar Chart · fines by violation type</span></div>
+                        <div class="chart-actions"><button class="chart-action-btn" data-chart="hbar">⤓</button></div>
                     </div>
                     <div class="chart-body" id="hbarChart"></div>
                 </div>
-
-                <!-- 核心任务 1: 改造底部大图容器，标题更新为 Enforcement Severity: Fines vs. Arrests by Jurisdiction -->
                 <div class="chart-card full-width">
                     <div class="chart-header">
-                        <div class="header-left">
-                            <span class="chart-title">Enforcement Severity: Fines vs. Arrests by Jurisdiction</span>
-                            <span class="chart-sub">Dual X‑Axis · fines (top) vs arrests (bottom) · insight: massive
-                                fines, minimal arrests</span>
-                        </div>
-                        <div class="chart-actions">
-                            <button class="chart-action-btn" data-chart="vbar">⤓</button>
-                        </div>
+                        <div class="header-left"><span class="chart-title">Enforcement Severity: Fines vs. Arrests by
+                                Jurisdiction</span><span class="chart-sub">Dual X‑Axis · fines (top) vs arrests (bottom)
+                                · insight: massive fines, minimal arrests</span></div>
+                        <div class="chart-actions"><button class="chart-action-btn" data-chart="vbar">⤓</button></div>
                     </div>
                     <div class="chart-body" id="vbarChart"></div>
                 </div>

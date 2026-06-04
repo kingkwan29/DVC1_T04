@@ -1,5 +1,5 @@
 // js/kpi.js
-// Dynamic KPI Cards
+// KPI Cards Renderer
 
 function renderKPI() {
     if (!intersectionData || intersectionData.length === 0) {
@@ -62,14 +62,6 @@ function updateKpiSubtitle() {
         if (kpiRow && kpiRow.parentNode) {
             kpiSubtitle = document.createElement('div');
             kpiSubtitle.className = 'kpi-subtitle';
-            kpiSubtitle.style.cssText = `
-                font-size: 11px;
-                color: #94a3b8;
-                text-align: center;
-                margin-top: -5px;
-                margin-bottom: 5px;
-                font-weight: 500;
-            `;
             kpiRow.parentNode.insertBefore(kpiSubtitle, kpiRow.nextSibling);
         }
     }

@@ -26,22 +26,7 @@ let tooltipDiv = null;
 function getTooltip() {
     if (!tooltipDiv) {
         tooltipDiv = document.createElement('div');
-        tooltipDiv.style.position = 'fixed';
-        tooltipDiv.style.backgroundColor = 'rgba(15, 23, 42, 0.95)';
-        tooltipDiv.style.color = '#f8fafc';
-        tooltipDiv.style.padding = '12px 18px';
-        tooltipDiv.style.borderRadius = '10px';
-        tooltipDiv.style.fontSize = '13px';
-        tooltipDiv.style.fontFamily = 'Inter, sans-serif';
-        tooltipDiv.style.pointerEvents = 'none';
-        tooltipDiv.style.zIndex = '10000';
-        tooltipDiv.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
-        tooltipDiv.style.border = '1px solid rgba(255,255,255,0.1)';
-        tooltipDiv.style.fontWeight = '500';
-        tooltipDiv.style.lineHeight = '1.6';
-        tooltipDiv.style.maxWidth = '300px';
-        tooltipDiv.style.opacity = '0';
-        tooltipDiv.style.transition = 'opacity 0.15s ease';
+        tooltipDiv.className = 'chart-tooltip';
         document.body.appendChild(tooltipDiv);
     }
     return tooltipDiv;
@@ -56,14 +41,14 @@ function showTooltip(event, html) {
     let y = event.clientY - 20;
 
     const tooltipRect = tooltip.getBoundingClientRect();
-    if (x + 250 > window.innerWidth) {
-        x = event.clientX - 260;
+    if (x + 280 > window.innerWidth) {
+        x = event.clientX - 290;
     }
     if (y < 10) {
         y = event.clientY + 20;
     }
-    if (y + 100 > window.innerHeight) {
-        y = window.innerHeight - 110;
+    if (y + 150 > window.innerHeight) {
+        y = window.innerHeight - 160;
     }
 
     tooltip.style.left = x + 'px';
