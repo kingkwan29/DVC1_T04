@@ -88,7 +88,9 @@ async function loadAllData() {
     showLoadingStates();
 
     try {
-        const [kpiRaw, monthlyRaw, geoRaw, intersectionRaw] = await Promise.all([
+        // Load raw data for trend chart filtering + existing datasets
+        const [rawRaw, kpiRaw, monthlyRaw, geoRaw, intersectionRaw] = await Promise.all([
+            d3.csv('data/Clean Police Enforcement 2024.csv'),
             d3.csv('data/global_kpi.csv'),
             d3.csv('data/monthly_time_series_trend.csv'),
             d3.csv('data/geographic_spatial_distribution.csv'),
@@ -96,11 +98,30 @@ async function loadAllData() {
         ]);
 
         console.log('Data loaded:', {
+            raw: rawRaw?.length,
             kpi: kpiRaw?.length,
             monthly: monthlyRaw?.length,
             geo: geoRaw?.length,
             intersection: intersectionRaw?.length
         });
+
+        // Parse raw data for trend chart filtering
+        if (rawRaw && rawRaw.length > 0) {
+            rawData = rawRaw.map(d => ({
+                year: parseNumber(d.YEAR),
+                month: parseNumber(d.MONTH),
+                monthPadded: String(d.MONTH).padStart(2, '0'),
+                jurisdiction: d.JURISDICTION,
+                location: d.LOCATION,
+                ageGroup: d.AGE_GROUP,
+                metric: d.METRIC,
+                detectionMethod: d.DETECTION_METHOD,
+                fines: parseNumber(d.FINES),
+                arrests: parseNumber(d.ARRESTS),
+                charges: parseNumber(d.CHARGES),
+                date: new Date(parseNumber(d.YEAR), parseNumber(d.MONTH) - 1, 1)
+            }));
+        }
 
         if (kpiRaw && kpiRaw.length > 0) {
             kpiData = {

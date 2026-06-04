@@ -69,14 +69,6 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-.brand-version {
-    font-size: 11px;
-    color: #7E8B9C;
-    font-weight: 500;
-    margin-top: 6px;
-    display: block;
-}
-
 .sidebar-filters {
     display: flex;
     flex-direction: column;

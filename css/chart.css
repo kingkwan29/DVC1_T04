@@ -364,3 +364,133 @@
     text-anchor: start;
     font-family: 'Poppins', sans-serif;
 }
+
+/* ===== Trend Chart Styles ===== */
+
+#trendChart {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Note */
+.trend-note {
+    position: absolute;
+    bottom: 6px;
+    left: 70px;
+    font-size: 11px;
+    color: #94a3b8;
+    font-style: italic;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+/* Grid Lines */
+.grid-lines line {
+    stroke: #e2e8f0;
+    stroke-width: 1;
+}
+
+.grid-lines path {
+    display: none;
+}
+
+/* Area Path */
+.area-path {
+    transition: opacity 0.2s ease;
+}
+
+/* Line Path */
+.line-path {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+/* Axes */
+.axis text {
+    font-size: 11px;
+    fill: #64748b;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.axis path,
+.axis line {
+    stroke: #cbd5e1;
+    stroke-width: 1;
+}
+
+.axis-x .domain {
+    stroke: #cbd5e1;
+}
+
+.axis-y-left .domain {
+    display: none;
+}
+
+/* Axis Labels */
+.axis-label {
+    font-size: 12px;
+    fill: #475569;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Data Dots */
+.trend-dot {
+    transition: r 0.15s ease, filter 0.15s ease;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.12));
+}
+
+.trend-dot:hover {
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+}
+
+/* Transition Reference Line */
+.transition-line {
+    pointer-events: none;
+}
+
+.transition-label {
+    font-size: 10px;
+    fill: #94a3b8;
+    font-style: italic;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Tooltip (if not already defined globally) */
+.tooltip {
+    position: absolute;
+    background: rgba(15, 23, 42, 0.92);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(4px);
+    line-height: 1.5;
+}
+
+.tooltip-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #e2e8f0;
+    font-size: 12px;
+}
+
+.tooltip-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+}

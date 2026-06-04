@@ -1,35 +1,38 @@
-// js/kpi.js
-// KPI Cards Renderer
-
 function renderKPI() {
-    if (!intersectionData || intersectionData.length === 0) {
-        document.getElementById('kpiFines').textContent = '--';
-        document.getElementById('kpiArrests').textContent = '--';
-        document.getElementById('kpiCharges').textContent = '--';
-        return;
-    }
-
-    let filtered = [...intersectionData];
+    // Try to get data from intersectionData first, fall back to geoData for jurisdiction-specific queries
+    let filtered = [];
+    let usingGeoData = false;
 
     if (state.jurisdiction !== 'all') {
-        const jurisMap = {
-            'ACT': 'ACT', 'NSW': 'NSW', 'NT': 'NT', 'QLD': 'QLD',
-            'SA': 'SA', 'TAS': 'TAS', 'VIC': 'VIC', 'WA': 'WA'
-        };
-        const targetLoc = jurisMap[state.jurisdiction];
-        if (targetLoc) {
-            filtered = filtered.filter(d => d.location === targetLoc);
-        } else {
-            filtered = filtered.filter(d => d.location === 'All Regions');
+        // When a specific jurisdiction is selected, use geoData
+        // because intersectionData doesn't have jurisdiction-level granularity
+        if (geoData && geoData.length > 0) {
+            const jurisData = geoData.find(d => d.jurisdiction === state.jurisdiction);
+            if (jurisData) {
+                filtered = [jurisData];
+                usingGeoData = true;
+            }
         }
     }
 
-    if (state.age !== 'all') {
-        filtered = filtered.filter(d => d.ageGroup === state.age);
-    }
+    // If no geoData match or jurisdiction is 'all', use intersectionData
+    if (filtered.length === 0 && intersectionData && intersectionData.length > 0) {
+        filtered = [...intersectionData];
 
-    if (state.method !== 'all' && filtered.length > 0 && filtered[0].method !== undefined) {
-        filtered = filtered.filter(d => d.method === state.method);
+        // For 'all' jurisdiction, use 'All Regions' data
+        if (state.jurisdiction === 'all') {
+            filtered = filtered.filter(d => d.location === 'All Regions');
+        }
+
+        // Apply age filter
+        if (state.age !== 'all') {
+            filtered = filtered.filter(d => d.ageGroup === state.age);
+        }
+
+        // Apply method filter
+        if (state.method !== 'all' && filtered.length > 0 && filtered[0].method !== undefined) {
+            filtered = filtered.filter(d => d.method === state.method);
+        }
     }
 
     const totalFines = d3.sum(filtered, d => d.fines);
@@ -52,10 +55,10 @@ function renderKPI() {
     if (kpiArrests) kpiArrests.textContent = totalArrests.toLocaleString();
     if (kpiCharges) kpiCharges.textContent = totalCharges.toLocaleString();
 
-    updateKpiSubtitle();
+    updateKpiSubtitle(usingGeoData);
 }
 
-function updateKpiSubtitle() {
+function updateKpiSubtitle(usingGeoData) {
     let kpiSubtitle = document.querySelector('.kpi-subtitle');
     if (!kpiSubtitle) {
         const kpiRow = document.querySelector('.kpi-row');
@@ -74,6 +77,9 @@ function updateKpiSubtitle() {
 
         if (filterStatus.length === 0) {
             kpiSubtitle.textContent = 'Showing national totals across all ages and detection methods';
+        } else if (usingGeoData) {
+            // When using geoData, age and method filters don't apply
+            kpiSubtitle.textContent = `Jurisdiction: ${state.jurisdiction} (aggregate data)`;
         } else {
             kpiSubtitle.textContent = `Filtered by: ${filterStatus.join(' · ')}`;
         }
