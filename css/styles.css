@@ -40,35 +40,6 @@ body {
     overflow: hidden;
 }
 
-/* ----- SIDEBAR ----- */
-.sidebar {
-    width: 280px;
-    min-width: 280px;
-    background: #FFFFFF;
-    border-right: 1px solid #E9EDF2;
-    display: flex;
-    flex-direction: column;
-    padding: 28px 22px;
-    height: 100vh;
-    position: sticky;
-    top: 0;
-    overflow-y: auto;
-}
-
-.sidebar-brand {
-    margin-bottom: 32px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #F1F5F9;
-}
-
-.brand-name {
-    font-size: 22px;
-    font-weight: 800;
-    color: #0F2B3D;
-    letter-spacing: -0.3px;
-    font-family: 'Poppins', sans-serif;
-}
-
 /* ===== KPI ROW ===== */
 .kpi-row {
     display: grid;
@@ -230,10 +201,40 @@ body {
     }
 }
 
+/* ----- SIDEBAR ----- */
+.sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: #FFFFFF;
+    border-right: 1px solid #E9EDF2;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 22px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+}
+
+.sidebar-brand {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #1C4E6E;
+}
+
+.brand-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0F2B3D;
+    letter-spacing: -0.3px;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===== SIDEBAR FILTERS - Deep Contrast Blue Theme ===== */
 .sidebar-filters {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 28px;
     flex: 1;
 }
 
@@ -244,36 +245,82 @@ body {
 }
 
 .filter-group label {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
-    color: #45607A;
+    color: #1C4E6E;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.8px;
     font-family: 'Poppins', sans-serif;
 }
 
 .filter-group select {
-    padding: 12px 14px;
-    border-radius: 14px;
-    border: 1px solid #E2E8F0;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid #1C4E6E;
     background: #FFFFFF;
     font-size: 14px;
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
-    color: #1F3A4B;
+    color: #1A2C3E;
     outline: none;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231C4E6E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
 }
 
 .filter-group select:hover {
-    border-color: #5189C1;
-    background: #FEFEFE;
+    border-color: #0F2B3D;
+    background-color: #F5F8FC;
+    box-shadow: 0 2px 10px rgba(28, 78, 110, 0.15);
 }
 
 .filter-group select:focus {
-    border-color: #2C6280;
-    box-shadow: 0 0 0 3px rgba(44, 98, 128, 0.15);
+    border-color: #0F2B3D;
+    box-shadow: 0 0 0 4px rgba(28, 78, 110, 0.2);
+}
+
+.export-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+    padding-top: 24px;
+    border-top: 2px solid #E2E8F0;
+}
+
+.export-btn {
+    background: #FFFFFF;
+    border: 2px solid #1C4E6E;
+    border-radius: 12px;
+    padding: 11px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    color: #1C4E6E;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+.export-btn:hover {
+    background: #1C4E6E;
+    color: white;
+    border-color: #1C4E6E;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(28, 78, 110, 0.3);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 28px;
+    font-size: 10px;
+    color: #6B7A8F;
+    font-weight: 500;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
 }
 
 .export-group {
@@ -328,48 +375,8 @@ body {
     background: #F8FAFE;
 }
 
-/* ----- KPI ROW ----- */
-.kpi-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
 
-.kpi-card {
-    background: #FFFFFF;
-    border-radius: 28px;
-    padding: 22px 24px;
-    border: 1px solid #EAF0F6;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-    transition: all 0.2s;
-}
-
-.kpi-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 28px -12px rgba(0, 0, 0, 0.1);
-    border-color: #CDE1F0;
-}
-
-.kpi-label {
-    font-size: 13px;
-    color: #000000;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-}
-
-.kpi-number {
-    font-size: 38px;
-    font-weight: 800;
-    color: #1C4E6E;
-    display: block;
-    margin-top: 8px;
-    letter-spacing: -0.8px;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* ----- CHART CARDS (layout only - styling moved to chart.css) ----- */
+/* ----- CHART CARDS (layout only） ----- */
 .chart-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
