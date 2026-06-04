@@ -12,16 +12,6 @@ let monthlyData = [];
 let geoData = [];
 let intersectionData = [];
 let rawData = [];           // Full dataset from Clean Police Enforcement 2024.csv
-
-const COLORS = {
-    fines: '#3b82f6',
-    arrests: '#f59e0b',
-    charges: '#10b981',
-    finesLight: '#93c5fd',
-    arrestsLight: '#fcd34d',
-    chargesLight: '#6ee7b7'
-};
-
 let tooltipDiv = null;
 
 function getTooltip() {

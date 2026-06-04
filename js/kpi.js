@@ -1,11 +1,10 @@
+// js/kpi.js
+
 function renderKPI() {
-    // Try to get data from intersectionData first, fall back to geoData for jurisdiction-specific queries
     let filtered = [];
     let usingGeoData = false;
 
     if (state.jurisdiction !== 'all') {
-        // When a specific jurisdiction is selected, use geoData
-        // because intersectionData doesn't have jurisdiction-level granularity
         if (geoData && geoData.length > 0) {
             const jurisData = geoData.find(d => d.jurisdiction === state.jurisdiction);
             if (jurisData) {
@@ -15,21 +14,17 @@ function renderKPI() {
         }
     }
 
-    // If no geoData match or jurisdiction is 'all', use intersectionData
     if (filtered.length === 0 && intersectionData && intersectionData.length > 0) {
         filtered = [...intersectionData];
 
-        // For 'all' jurisdiction, use 'All Regions' data
         if (state.jurisdiction === 'all') {
             filtered = filtered.filter(d => d.location === 'All Regions');
         }
 
-        // Apply age filter
         if (state.age !== 'all') {
             filtered = filtered.filter(d => d.ageGroup === state.age);
         }
 
-        // Apply method filter
         if (state.method !== 'all' && filtered.length > 0 && filtered[0].method !== undefined) {
             filtered = filtered.filter(d => d.method === state.method);
         }
@@ -67,21 +62,28 @@ function updateKpiSubtitle(usingGeoData) {
             kpiSubtitle.className = 'kpi-subtitle';
             kpiRow.parentNode.insertBefore(kpiSubtitle, kpiRow.nextSibling);
         }
+        kpiSubtitle = document.querySelector('.kpi-subtitle');
     }
 
     if (kpiSubtitle) {
         const filterStatus = [];
+
         if (state.jurisdiction !== 'all') filterStatus.push(`Jurisdiction: ${state.jurisdiction}`);
         if (state.age !== 'all') filterStatus.push(`Age: ${state.age === '65 and over' ? '65+' : state.age}`);
         if (state.method !== 'all') filterStatus.push(`Method: ${state.method}`);
 
         if (filterStatus.length === 0) {
-            kpiSubtitle.textContent = 'Showing national totals across all ages and detection methods';
+            kpiSubtitle.textContent = 'National totals across all ages and detection methods';
+            kpiSubtitle.removeAttribute('data-filtered');
+            kpiSubtitle.removeAttribute('data-jurisdiction');
         } else if (usingGeoData) {
-            // When using geoData, age and method filters don't apply
-            kpiSubtitle.textContent = `Jurisdiction: ${state.jurisdiction} (aggregate data)`;
+            kpiSubtitle.textContent = `${state.jurisdiction} · Aggregate jurisdiction data`;
+            kpiSubtitle.setAttribute('data-jurisdiction', 'true');
+            kpiSubtitle.removeAttribute('data-filtered');
         } else {
-            kpiSubtitle.textContent = `Filtered by: ${filterStatus.join(' · ')}`;
+            kpiSubtitle.textContent = filterStatus.join(' · ');
+            kpiSubtitle.setAttribute('data-filtered', 'true');
+            kpiSubtitle.removeAttribute('data-jurisdiction');
         }
     }
 }

@@ -1,5 +1,5 @@
-// js/trend.js
-// Monthly Trend Area Chart - Filtered Version
+// js/trend.js - Monthly Trend Area Chart
+// All inline styles moved to chart.css
 
 function renderMonthlyTrend() {
     const container = document.getElementById('trendChart');
@@ -7,7 +7,6 @@ function renderMonthlyTrend() {
 
     container.innerHTML = '';
 
-    // Use the globally computed monthlyData from state.js
     const data = monthlyData;
 
     if (!data || data.length === 0) {
@@ -66,11 +65,11 @@ function renderMonthlyTrend() {
         .attr('y2', '100%');
     gradient.append('stop')
         .attr('offset', '0%')
-        .attr('stop-color', COLORS.fines)
+        .attr('stop-color', '#3b82f6')
         .attr('stop-opacity', 0.25);
     gradient.append('stop')
         .attr('offset', '100%')
-        .attr('stop-color', COLORS.fines)
+        .attr('stop-color', '#3b82f6')
         .attr('stop-opacity', 0.02);
 
     // Grid lines
@@ -105,10 +104,8 @@ function renderMonthlyTrend() {
         .datum(data)
         .attr('class', 'line-path')
         .attr('fill', 'none')
-        .attr('stroke', COLORS.fines)
+        .attr('stroke', '#3b82f6')
         .attr('stroke-width', 2.5)
-        .attr('stroke-linecap', 'round')
-        .attr('stroke-linejoin', 'round')
         .attr('d', line);
 
     // X-axis
@@ -152,7 +149,7 @@ function renderMonthlyTrend() {
         .attr('cx', d => xScale(d.date))
         .attr('cy', d => yScale(d.fines))
         .attr('r', 4)
-        .attr('fill', COLORS.fines)
+        .attr('fill', '#3b82f6')
         .attr('stroke', 'white')
         .attr('stroke-width', 2)
         .style('cursor', 'pointer')
@@ -184,17 +181,12 @@ function renderMonthlyTrend() {
                 .attr('x1', xScale(transitionDate))
                 .attr('x2', xScale(transitionDate))
                 .attr('y1', 0)
-                .attr('y2', innerHeight)
-                .attr('stroke', '#94a3b8')
-                .attr('stroke-width', 1)
-                .attr('stroke-dasharray', '4,4')
-                .attr('opacity', 0.5);
+                .attr('y2', innerHeight);
 
             svg.append('text')
                 .attr('class', 'transition-label')
                 .attr('x', xScale(transitionDate) + 6)
                 .attr('y', 12)
-                .attr('text-anchor', 'start')
                 .text('Monthly data starts');
         }
     }
