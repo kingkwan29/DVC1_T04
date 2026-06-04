@@ -1,4 +1,4 @@
-// js/vbar.js
+// js/vbar.js - All inline styles moved to chart.css
 
 function renderVBarChart() {
     const container = document.getElementById('vbarChart');
@@ -10,7 +10,6 @@ function renderVBarChart() {
     if (!noticeDiv) {
         const div = document.createElement('div');
         div.className = 'vbar-notice';
-        div.style.cssText = 'font-size: 10px; color: #64748b; font-style: italic; text-align: center; padding: 6px 12px; background: #f1f5f9; border-radius: 8px; margin-bottom: 12px;';
         div.textContent = 'Jurisdiction view currently displays aggregate data across all detection methods.';
         container.appendChild(div);
     }
@@ -73,60 +72,44 @@ function renderVBarChart() {
 
         const centerX = halfWidth;
 
+        // Legend Group
         const legendGroup = svg.append('g')
+            .attr('class', 'legend-group')
             .attr('transform', `translate(${innerWidth - 140}, -15)`);
 
         legendGroup.append('rect')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', 12)
-            .attr('height', 12)
-            .attr('fill', '#1e40af')
-            .attr('rx', 2);
+            .attr('x', 0).attr('y', 0).attr('width', 12).attr('height', 12)
+            .attr('fill', '#1e40af');
 
         legendGroup.append('text')
-            .attr('x', 16)
-            .attr('y', 10)
-            .text('Fines (w/ arrests)')
-            .style('font-size', '10px')
-            .style('fill', '#475569');
+            .attr('x', 16).attr('y', 10)
+            .text('Fines (w/ arrests)');
 
         legendGroup.append('rect')
-            .attr('x', 0)
-            .attr('y', 18)
-            .attr('width', 12)
-            .attr('height', 12)
-            .attr('fill', '#94a3b8')
-            .attr('rx', 2);
+            .attr('x', 0).attr('y', 18).attr('width', 12).attr('height', 12)
+            .attr('fill', '#8B5CF6');
 
         legendGroup.append('text')
-            .attr('x', 16)
-            .attr('y', 28)
-            .text('Fines (no arrests)')
-            .style('font-size', '10px')
-            .style('fill', '#475569');
+            .attr('x', 16).attr('y', 28)
+            .text('Fines (no arrests)');
 
         legendGroup.append('rect')
-            .attr('x', 0)
-            .attr('y', 36)
-            .attr('width', 12)
-            .attr('height', 12)
-            .attr('fill', '#b91c1c')
-            .attr('rx', 2);
+            .attr('x', 0).attr('y', 36).attr('width', 12).attr('height', 12)
+            .attr('fill', '#b91c1c');
 
         legendGroup.append('text')
-            .attr('x', 16)
-            .attr('y', 46)
-            .text('Arrests')
-            .style('font-size', '10px')
-            .style('fill', '#475569');
+            .attr('x', 16).attr('y', 46)
+            .text('Arrests');
 
+        // Grid lines
         svg.append('g')
+            .attr('class', 'grid-lines')
             .call(d3.axisTop(xFinesScale).ticks(6).tickSize(-innerHeight).tickFormat(''))
-            .style('color', '#e2e8f0')
-            .style('stroke-dasharray', '3,3');
+            .select('.domain').remove();
 
+        // Top Axis (Fines)
         const leftAxisGroup = svg.append('g')
+            .attr('class', 'axis axis-top-fines')
             .attr('transform', `translate(0, -10)`);
 
         leftAxisGroup.call(d3.axisTop(xFinesScale).ticks(6)
@@ -134,145 +117,134 @@ function renderVBarChart() {
                 if (d >= 1e6) return (d / 1e6).toFixed(1) + 'M';
                 if (d >= 1e3) return (d / 1e3).toFixed(0) + 'K';
                 return d;
-            }))
-            .style('color', '#1e40af')
-            .style('font-size', '10px')
-            .style('font-weight', '600');
+            }));
 
+        // Fines label
         svg.append('text')
+            .attr('class', 'axis-label-fines')
             .attr('x', halfWidth / 2)
-            .attr('y', -28)
-            .attr('text-anchor', 'middle')
-            .style('font-size', '12px')
-            .style('fill', '#1e40af')
-            .style('font-weight', '700')
+            .attr('y', -40)
             .text('Fines ($)');
 
+        // Bottom Axis (Arrests)
         const rightAxisGroup = svg.append('g')
+            .attr('class', 'axis axis-bottom-arrests')
             .attr('transform', `translate(${centerX}, ${innerHeight + 10})`);
 
         rightAxisGroup.call(d3.axisBottom(xArrestsScale).ticks(6)
-            .tickFormat(d => d.toLocaleString()))
-            .style('color', '#b91c1c')
-            .style('font-size', '10px')
-            .style('font-weight', '600');
+            .tickFormat(d => d.toLocaleString()));
 
+        // Arrests label
         svg.append('text')
+            .attr('class', 'axis-label-arrests')
             .attr('x', centerX + halfWidth / 2)
-            .attr('y', innerHeight + 40)
-            .attr('text-anchor', 'middle')
-            .style('font-size', '12px')
-            .style('fill', '#b91c1c')
-            .style('font-weight', '700')
+            .attr('y', innerHeight + 50)
             .text('Arrests (count)');
 
+        // Left Axis (Jurisdiction)
         svg.append('g')
-            .call(d3.axisLeft(yScale))
-            .style('color', '#334155')
-            .style('font-size', '11px')
-            .style('font-weight', '600');
+            .attr('class', 'axis axis-left-jurisdiction')
+            .call(d3.axisLeft(yScale));
 
+        // Center line
         svg.append('line')
-            .attr('x1', centerX)
-            .attr('y1', 0)
-            .attr('x2', centerX)
-            .attr('y2', innerHeight)
-            .attr('stroke', '#94a3b8')
-            .attr('stroke-width', 1.5)
-            .attr('stroke-dasharray', '5,5');
+            .attr('class', 'center-line')
+            .attr('x1', centerX).attr('y1', 0)
+            .attr('x2', centerX).attr('y2', innerHeight);
 
+        // Fines bars
         svg.selectAll('.bar-fines')
             .data(sorted)
             .enter()
             .append('rect')
+            .attr('class', 'bar-fines')
             .attr('y', d => yScale(d.jurisdiction))
             .attr('x', d => centerX - xFinesScale(d.fines))
             .attr('height', bandHeight)
             .attr('width', 0)
-            .attr('fill', d => d.arrests === 0 ? '#94a3b8' : '#1e40af')
-            .attr('opacity', d => d.arrests === 0 ? 0.5 : 0.85)
-            .attr('rx', 4)
+            .attr('fill', d => d.arrests === 0 ? '#8B5CF6' : '#1e40af')
+            .attr('data-has-arrests', d => d.arrests !== 0)
             .style('cursor', 'pointer')
             .on('mouseenter', function (event, d) {
                 d3.select(this).attr('opacity', 1);
                 const ratio = d.arrests === 0 ? 'No arrests' : (d.arrests / (d.fines / 1e6)).toFixed(1) + ' arrests per $1M fine';
                 showTooltip(event, `
-                    <div style="font-weight:700;margin-bottom:6px;">${d.jurisdiction}</div>
-                    <div>Fines: $${d.fines.toLocaleString()}</div>
-                    <div>Arrests: ${d.arrests === 0 ? '0' : d.arrests.toLocaleString()}</div>
-                    <div>Charges: ${d.charges.toLocaleString()}</div>
-                    <div>Ratio: ${ratio}</div>
+                    <div class="tooltip-title">${d.jurisdiction}</div>
+                    <div class="tooltip-row">Fines: $${d.fines.toLocaleString()}</div>
+                    <div class="tooltip-row">Arrests: ${d.arrests === 0 ? '0' : d.arrests.toLocaleString()}</div>
+                    <div class="tooltip-row">Charges: ${d.charges.toLocaleString()}</div>
+                    <div class="tooltip-footer">Ratio: ${ratio}</div>
                 `);
             })
             .on('mousemove', function (event, d) {
                 const ratio = d.arrests === 0 ? 'No arrests' : (d.arrests / (d.fines / 1e6)).toFixed(1) + ' arrests per $1M fine';
                 showTooltip(event, `
-                    <div style="font-weight:700;margin-bottom:6px;">${d.jurisdiction}</div>
-                    <div>Fines: $${d.fines.toLocaleString()}</div>
-                    <div>Arrests: ${d.arrests === 0 ? '0' : d.arrests.toLocaleString()}</div>
-                    <div>Charges: ${d.charges.toLocaleString()}</div>
-                    <div>Ratio: ${ratio}</div>
+                    <div class="tooltip-title">${d.jurisdiction}</div>
+                    <div class="tooltip-row">Fines: $${d.fines.toLocaleString()}</div>
+                    <div class="tooltip-row">Arrests: ${d.arrests === 0 ? '0' : d.arrests.toLocaleString()}</div>
+                    <div class="tooltip-row">Charges: ${d.charges.toLocaleString()}</div>
+                    <div class="tooltip-footer">Ratio: ${ratio}</div>
                 `);
             })
             .on('mouseleave', function () {
-                d3.select(this).attr('opacity', d => d.arrests === 0 ? 0.5 : 0.85);
+                d3.select(this).attr('opacity', d => d.arrests === 0 ? 0.7 : 0.85);
                 hideTooltip();
             })
             .transition()
             .duration(500)
             .attr('width', d => xFinesScale(d.fines));
 
+        // Fines data labels
         svg.selectAll('.label-fines')
             .data(sorted)
             .enter()
             .append('text')
+            .attr('class', 'label-fines')
+            .attr('data-has-arrests', d => d.arrests !== 0)
             .attr('x', d => centerX - xFinesScale(d.fines) - 5)
             .attr('y', d => yScale(d.jurisdiction) + bandHeight / 2 + 4)
-            .attr('text-anchor', 'end')
             .text(d => {
                 if (d.fines >= 1e6) return (d.fines / 1e6).toFixed(1) + 'M';
                 if (d.fines >= 1e3) return (d.fines / 1e3).toFixed(0) + 'K';
                 return d.fines;
             })
-            .style('font-size', '10px')
-            .style('fill', d => d.arrests === 0 ? '#64748b' : '#1e3a5f')
-            .style('font-weight', '600')
             .style('opacity', 0)
             .transition()
             .duration(550)
             .style('opacity', 1);
 
+        // Arrests bars
         svg.selectAll('.bar-arrests')
             .data(sorted)
             .enter()
             .append('rect')
+            .attr('class', 'bar-arrests')
             .attr('y', d => yScale(d.jurisdiction))
             .attr('x', centerX)
             .attr('height', bandHeight)
             .attr('width', 0)
             .attr('fill', d => d.arrests === 0 ? '#e2e8f0' : '#b91c1c')
-            .attr('opacity', d => d.arrests === 0 ? 0.6 : 0.85)
-            .attr('rx', 4)
+            .attr('data-has-arrests', d => d.arrests !== 0)
             .style('cursor', 'pointer')
             .on('mouseenter', function (event, d) {
                 d3.select(this).attr('opacity', 1);
                 const ratio = d.arrests === 0 ? 'No arrests' : (d.arrests / (d.fines / 1e6)).toFixed(1) + ' arrests per $1M fine';
                 showTooltip(event, `
-                    <div style="font-weight:700;margin-bottom:6px;">${d.jurisdiction}</div>
-                    <div>Fines: $${d.fines.toLocaleString()}</div>
-                    <div>Arrests: ${d.arrests === 0 ? '0' : d.arrests.toLocaleString()}</div>
-                    <div>Charges: ${d.charges.toLocaleString()}</div>
-                    <div>Ratio: ${ratio}</div>
+                    <div class="tooltip-title">${d.jurisdiction}</div>
+                    <div class="tooltip-row">Fines: $${d.fines.toLocaleString()}</div>
+                    <div class="tooltip-row">Arrests: ${d.arrests === 0 ? '0' : d.arrests.toLocaleString()}</div>
+                    <div class="tooltip-row">Charges: ${d.charges.toLocaleString()}</div>
+                    <div class="tooltip-footer">Ratio: ${ratio}</div>
                 `);
             })
             .on('mousemove', function (event, d) {
                 const ratio = d.arrests === 0 ? 'No arrests' : (d.arrests / (d.fines / 1e6)).toFixed(1) + ' arrests per $1M fine';
                 showTooltip(event, `
-                    <div style="font-weight:700;margin-bottom:6px;">${d.jurisdiction}</div>
-                    <div>Fines: $${d.fines.toLocaleString()}</div>
-                    <div>Arrests: ${d.arrests === 0 ? '0' : d.arrests.toLocaleString()}</div>
-                    <div>Charges: ${d.charges.toLocaleString()}</div>
-                    <div>Ratio: ${ratio}</div>
+                    <div class="tooltip-title">${d.jurisdiction}</div>
+                    <div class="tooltip-row">Fines: $${d.fines.toLocaleString()}</div>
+                    <div class="tooltip-row">Arrests: ${d.arrests === 0 ? '0' : d.arrests.toLocaleString()}</div>
+                    <div class="tooltip-row">Charges: ${d.charges.toLocaleString()}</div>
+                    <div class="tooltip-footer">Ratio: ${ratio}</div>
                 `);
             })
             .on('mouseleave', function () {
@@ -283,38 +255,31 @@ function renderVBarChart() {
             .duration(500)
             .attr('width', d => xArrestsScale(d.arrests));
 
+        // Arrests data labels
         svg.selectAll('.label-arrests')
             .data(sorted.filter(d => d.arrests > 0))
             .enter()
             .append('text')
+            .attr('class', 'label-arrests')
             .attr('x', d => centerX + xArrestsScale(d.arrests) + 5)
             .attr('y', d => yScale(d.jurisdiction) + bandHeight / 2 + 4)
-            .attr('text-anchor', 'start')
             .text(d => d.arrests.toLocaleString())
-            .style('font-size', '10px')
-            .style('fill', '#7f1d1d')
-            .style('font-weight', '600')
             .style('opacity', 0)
             .transition()
             .duration(550)
             .style('opacity', 1);
 
+        // Chart notes
         svg.append('text')
+            .attr('class', 'chart-note')
             .attr('x', 0)
             .attr('y', innerHeight + 55)
-            .attr('text-anchor', 'start')
-            .style('font-size', '9px')
-            .style('fill', '#94a3b8')
-            .style('font-style', 'italic')
             .text('Note: Fines and arrests use independent scales.');
 
         svg.append('text')
+            .attr('class', 'chart-note')
             .attr('x', 0)
             .attr('y', innerHeight + 70)
-            .attr('text-anchor', 'start')
-            .style('font-size', '9px')
-            .style('fill', '#94a3b8')
-            .style('font-style', 'italic')
             .text('Source: BITRE · Enforcement Statistics Annual Report');
 
     }, 50);

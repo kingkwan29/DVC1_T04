@@ -1,6 +1,3 @@
-// js/grouped-bar.js - Grouped Bar Chart
-// All inline styles removed, using CSS classes from chart.css
-
 function renderGroupedBarChart() {
     const container = document.getElementById('groupedBarChart');
     if (!container) return;
@@ -13,8 +10,10 @@ function renderGroupedBarChart() {
     }
 
     let filtered = [...intersectionData];
+    // Always use 'All Regions' - this chart shows age breakdown across ALL jurisdictions
     filtered = filtered.filter(d => d.location === 'All Regions');
 
+    // Apply method filter only (NOT jurisdiction filter)
     if (state.method === 'all') {
         filtered = filtered.filter(d => d.method !== 'All Methods');
         filtered = filtered.filter(d => d.method !== 'Camera');
@@ -23,7 +22,10 @@ function renderGroupedBarChart() {
         filtered = filtered.filter(d => d.method === state.method);
     }
 
-    filtered = applyAllFilters(filtered);
+    // Apply age filter if specific age selected
+    if (state.age !== 'all') {
+        filtered = filtered.filter(d => d.ageGroup === state.age);
+    }
 
     const ageGroupsOrder = ['0-16', '17-25', '26-39', '40-64', '65 and over', 'All Ages'];
     const existingAgeGroups = [...new Set(filtered.map(d => d.ageGroup))];

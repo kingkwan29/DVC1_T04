@@ -6,12 +6,12 @@ function renderHBarChart() {
     }
 }
 
-function getNiceTicks(maxValue, count) {
-    // Generate exactly 'count' nice ticks from 0 to maxValue
-    const ticks = [];
+function getNiceTicks(maxValue, maxTicks) {
+    // Generate at most 'maxTicks' evenly-spaced nice ticks from 0 to maxValue
+    if (maxValue <= 0) return [0];
 
-    // Find nice step size
-    const roughStep = maxValue / (count - 1);
+    // Determine nice step size
+    const roughStep = maxValue / (maxTicks - 1);
     const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
     const normalized = roughStep / magnitude;
 
@@ -21,16 +21,19 @@ function getNiceTicks(maxValue, count) {
     else if (normalized <= 5) step = 5 * magnitude;
     else step = 10 * magnitude;
 
-    // Generate ticks
+    const ticks = [];
     let current = 0;
-    while (current <= maxValue && ticks.length < count) {
+    while (current <= maxValue && ticks.length < maxTicks) {
         ticks.push(current);
         current += step;
     }
 
-    // Ensure max value is included if close to last tick
-    if (ticks[ticks.length - 1] < maxValue) {
-        ticks.push(maxValue);
+    // Ensure max value is included if close to last tick or if we have room
+    const lastTick = ticks[ticks.length - 1];
+    if (lastTick < maxValue && (maxValue - lastTick) > step * 0.1) {
+        if (ticks.length < maxTicks) {
+            ticks.push(maxValue);
+        }
     }
 
     return ticks;
@@ -92,20 +95,21 @@ function renderViolationChart() {
 
     let filtered = [...intersectionData];
 
+    // Apply age filter if specific age selected
     if (state.age !== 'all') {
         filtered = filtered.filter(d => d.ageGroup === state.age);
     }
 
+    // Always use 'All Regions' - this chart shows violation breakdown across ALL jurisdictions
     filtered = filtered.filter(d => d.location === 'All Regions');
 
+    // Apply method filter only (NOT jurisdiction filter)
     if (state.method === 'all') {
         filtered = filtered.filter(d => d.method !== 'All Methods');
         filtered = filtered.filter(d => d.method !== 'Camera');
     } else {
         filtered = filtered.filter(d => d.method === state.method);
     }
-
-    filtered = applyAllFilters(filtered);
 
     const metrics = ['mobile_phone_use', 'non_wearing_seatbelts', 'speed_fines', 'unlicensed_driving'];
     const metricLabels = {
@@ -143,8 +147,6 @@ function renderViolationChart() {
     data = data.sort((a, b) => b.fines - a.fines);
 
     const maxFines = d3.max(data, d => d.fines);
-    // Use linear scale always - symlog causes visual compression issues
-    const useSymlog = false;
 
     setTimeout(() => {
         const rect = container.getBoundingClientRect();
@@ -172,13 +174,16 @@ function renderViolationChart() {
             .range([0, innerHeight])
             .padding(0.3);
 
-        // Always use linear scale with 5 nice ticks
+        // Always use linear scale
         const xMax = maxFines * 1.1;
         const xScale = d3.scaleLinear()
             .domain([0, xMax])
             .range([0, innerWidth]);
 
-        const ticks = getNiceTicks(xMax, 5);
+        // Calculate max ticks that can fit (each label needs ~55px for "$XXXK" format)
+        const labelWidth = 55;
+        const maxTicks = Math.max(2, Math.min(5, Math.floor(innerWidth / labelWidth)));
+        const ticks = getNiceTicks(xMax, maxTicks);
 
         // Grid lines
         svg.append('g')
@@ -186,7 +191,7 @@ function renderViolationChart() {
             .call(d3.axisTop(xScale).tickValues(ticks).tickSize(-innerHeight).tickFormat(''))
             .select('.domain').remove();
 
-        // Bottom axis with 5 ticks
+        // Bottom axis with calculated ticks
         svg.append('g')
             .attr('class', 'axis axis-bottom')
             .attr('transform', `translate(0,${innerHeight})`)
@@ -297,76 +302,31 @@ function renderGeoChart() {
 
     container.innerHTML = '';
 
-    if (!intersectionData || intersectionData.length === 0) {
+    // When a specific jurisdiction is selected, use geoData instead of intersectionData
+    // because intersectionData doesn't have jurisdiction-level granularity
+    const targetJurisdiction = state.jurisdiction;
+
+    // Check if we have geoData
+    if (!geoData || geoData.length === 0) {
         container.innerHTML = '<div class="loading-state">Loading data...</div>';
         return;
     }
 
-    const targetJurisdiction = state.jurisdiction;
-
-    let filtered = [...intersectionData];
-    filtered = filtered.filter(d => d.location !== 'All Regions');
-    filtered = filtered.filter(d => d.ageGroup === 'All Ages');
-
+    // Filter geoData by jurisdiction
+    let filtered = [...geoData];
     if (targetJurisdiction !== 'all') {
-        filtered = filtered.filter(d => d.location === targetJurisdiction);
+        filtered = filtered.filter(d => d.jurisdiction === targetJurisdiction);
     }
 
-    if (state.method === 'all') {
-        filtered = filtered.filter(d => d.method !== 'All Methods');
-        filtered = filtered.filter(d => d.method !== 'Camera');
-    } else {
-        filtered = filtered.filter(d => d.method === state.method);
-    }
-
-    const locationGroups = {};
-    filtered.forEach(d => {
-        const loc = d.location;
-        if (!locationGroups[loc]) {
-            locationGroups[loc] = { fines: 0, arrests: 0, charges: 0, location: loc };
-        }
-        locationGroups[loc].fines += d.fines;
-        locationGroups[loc].arrests += d.arrests;
-        locationGroups[loc].charges += d.charges;
-    });
-
-    let data = Object.values(locationGroups);
-
-    const locationOrder = [
-        'Major Cities of Australia',
-        'Inner Regional Australia',
-        'Outer Regional Australia',
-        'Remote Australia',
-        'Very Remote Australia'
-    ];
-
-    const locationLabels = {
-        'Major Cities of Australia': 'Major Cities',
-        'Inner Regional Australia': 'Inner Regional',
-        'Outer Regional Australia': 'Outer Regional',
-        'Remote Australia': 'Remote',
-        'Very Remote Australia': 'Very Remote'
-    };
-
-    data = data.sort((a, b) => {
-        const idxA = locationOrder.indexOf(a.location);
-        const idxB = locationOrder.indexOf(b.location);
-        return idxA - idxB;
-    });
-
-    data = data.map(d => ({
-        ...d,
-        displayLabel: locationLabels[d.location] || d.location
-    }));
-
-    if (!data.length) {
-        let reason = `No geographic data available for ${targetJurisdiction}`;
-        if (state.method !== 'all') {
-            reason += ` with detection method "${state.method}"`;
-        }
-        container.innerHTML = `<div class="no-data-state">${reason}</div>`;
+    if (!filtered.length) {
+        container.innerHTML = `<div class="no-data-state">No data available for ${targetJurisdiction}</div>`;
         return;
     }
+
+    // Sort by fines descending
+    const data = filtered.sort((a, b) => b.fines - a.fines);
+
+    const maxFines = d3.max(data, d => d.fines);
 
     setTimeout(() => {
         const rect = container.getBoundingClientRect();
@@ -385,23 +345,25 @@ function renderGeoChart() {
             .attr('height', '100%')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('role', 'img')
-            .attr('aria-label', 'Horizontal bar chart showing fines by geographic location')
+            .attr('aria-label', 'Horizontal bar chart showing fines by jurisdiction')
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
         const yScale = d3.scaleBand()
-            .domain(data.map(d => d.displayLabel))
+            .domain(data.map(d => d.jurisdiction))
             .range([0, innerHeight])
             .padding(0.3);
 
-        const maxFines = d3.max(data, d => d.fines);
-        // Always use linear scale with 5 nice ticks
+        // Always use linear scale
         const xMax = maxFines * 1.1;
         const xScale = d3.scaleLinear()
             .domain([0, xMax])
             .range([0, innerWidth]);
 
-        const ticks = getNiceTicks(xMax, 5);
+        // Calculate max ticks that can fit
+        const labelWidth = 55;
+        const maxTicks = Math.max(2, Math.min(5, Math.floor(innerWidth / labelWidth)));
+        const ticks = getNiceTicks(xMax, maxTicks);
 
         // Grid lines
         svg.append('g')
@@ -409,7 +371,7 @@ function renderGeoChart() {
             .call(d3.axisTop(xScale).tickValues(ticks).tickSize(-innerHeight).tickFormat(''))
             .select('.domain').remove();
 
-        // Bottom axis with 5 ticks
+        // Bottom axis
         svg.append('g')
             .attr('class', 'axis axis-bottom')
             .attr('transform', `translate(0,${innerHeight})`)
@@ -430,28 +392,36 @@ function renderGeoChart() {
             .attr('class', 'axis axis-left')
             .call(d3.axisLeft(yScale));
 
+        // Jurisdiction colors
+        const jurisdictionColors = {
+            'ACT': '#2E86AB',
+            'NSW': '#F9844A',
+            'NT': '#43AA8B',
+            'QLD': '#E63946',
+            'SA': '#6A4C93',
+            'TAS': '#F4A261',
+            'VIC': '#2A9D8F',
+            'WA': '#E76F51'
+        };
+
         // Draw bars
         svg.selectAll('rect.bar')
             .data(data)
             .enter()
             .append('rect')
             .attr('class', 'bar')
-            .attr('y', d => yScale(d.displayLabel))
+            .attr('y', d => yScale(d.jurisdiction))
             .attr('x', 0)
             .attr('height', yScale.bandwidth())
             .attr('width', 0)
-            .attr('fill', d => getEnhancedColor(getLocationColor(d.location), d.fines, maxFines))
-            .attr('stroke', d => {
-                const baseColor = getLocationColor(d.location);
-                return d.fines / maxFines < 0.05 ? d3.color(baseColor).darker(0.5).formatHex() : 'none';
-            })
-            .attr('stroke-width', d => d.fines / maxFines < 0.05 ? 2 : 0)
+            .attr('fill', d => jurisdictionColors[d.jurisdiction] || '#2E86AB')
+            .attr('rx', 4)
             .style('cursor', 'pointer')
             .on('mouseenter', function (event, d) {
                 d3.select(this).attr('opacity', 1);
                 const ratio = d.fines > 0 ? (d.arrests / (d.fines / 1000)).toFixed(1) : '0';
                 showTooltip(event, `
-                    <div class="tooltip-title">${d.displayLabel}</div>
+                    <div class="tooltip-title">${d.jurisdiction}</div>
                     <div class="tooltip-row">Fines: ${formatCurrency(d.fines)}</div>
                     <div class="tooltip-row">Arrests: ${formatNumber(d.arrests)}</div>
                     <div class="tooltip-row">Charges: ${formatNumber(d.charges)}</div>
@@ -461,7 +431,7 @@ function renderGeoChart() {
             .on('mousemove', function (event, d) {
                 const ratio = d.fines > 0 ? (d.arrests / (d.fines / 1000)).toFixed(1) : '0';
                 showTooltip(event, `
-                    <div class="tooltip-title">${d.displayLabel}</div>
+                    <div class="tooltip-title">${d.jurisdiction}</div>
                     <div class="tooltip-row">Fines: ${formatCurrency(d.fines)}</div>
                     <div class="tooltip-row">Arrests: ${formatNumber(d.arrests)}</div>
                     <div class="tooltip-row">Charges: ${formatNumber(d.charges)}</div>
@@ -482,13 +452,10 @@ function renderGeoChart() {
             .enter()
             .append('circle')
             .attr('class', 'bar-dot')
-            .attr('cy', d => yScale(d.displayLabel) + yScale.bandwidth() / 2)
+            .attr('cy', d => yScale(d.jurisdiction) + yScale.bandwidth() / 2)
             .attr('cx', 0)
-            .attr('r', d => {
-                const ratio = d.fines / maxFines;
-                return ratio < 0.05 ? 6 : (ratio < 0.2 ? 5 : 4);
-            })
-            .attr('fill', d => d3.color(getEnhancedColor(getLocationColor(d.location), d.fines, maxFines)).darker(0.4).formatHex())
+            .attr('r', 4)
+            .attr('fill', d => d3.color(jurisdictionColors[d.jurisdiction] || '#2E86AB').darker(0.4).formatHex())
             .style('opacity', 0)
             .transition()
             .delay(400)
@@ -503,7 +470,7 @@ function renderGeoChart() {
             .append('text')
             .attr('class', 'hbar-value')
             .attr('x', d => xScale(d.fines) + 6)
-            .attr('y', d => yScale(d.displayLabel) + yScale.bandwidth() / 2 + 5)
+            .attr('y', d => yScale(d.jurisdiction) + yScale.bandwidth() / 2 + 5)
             .attr('text-anchor', 'start')
             .text(d => formatCurrency(d.fines))
             .style('opacity', 0)
