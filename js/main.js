@@ -204,6 +204,7 @@ function safeAddEvent(element, eventType, handler) {
     }
 }
 
+// 保持你原本的原始 select 事件监听逻辑（不需要任何改动，无缝衔接）
 safeAddEvent(document.getElementById('filterJurisdiction'), 'change', function (e) {
     state.jurisdiction = e.target.value;
     refreshAllCharts();
@@ -255,3 +256,101 @@ window.addEventListener('resize', () => {
 });
 
 loadAllData();
+
+// main.js for page navigation
+function initPageNavigation() {
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const homePage = document.getElementById('homePage');
+    const aboutPage = document.getElementById('aboutPage');
+
+    if (!navButtons.length) return;
+
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.getAttribute('data-page');
+
+            // Update active states
+            navButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Show/hide pages
+            if (page === 'home') {
+                homePage.classList.add('active-page');
+                aboutPage.classList.remove('active-page');
+                // Refresh charts when returning to home
+                if (typeof refreshAllCharts === 'function') {
+                    setTimeout(refreshAllCharts, 100);
+                }
+            } else if (page === 'about') {
+                homePage.classList.remove('active-page');
+                aboutPage.classList.add('active-page');
+            }
+        });
+    });
+}
+
+function initCustomDropdowns() {
+    const dropdownConfigs = [
+        { containerId: 'containerJurisdiction', selectId: 'filterJurisdiction' },
+        { containerId: 'containerAge', selectId: 'filterAge' },
+        { containerId: 'containerMethod', selectId: 'filterMethod' }
+    ];
+
+    dropdownConfigs.forEach(cfg => {
+        const container = document.getElementById(cfg.containerId);
+        if (!container) return;
+
+        const trigger = container.querySelector('.custom-select-trigger');
+        const options = container.querySelectorAll('.custom-option');
+        const realSelect = document.getElementById(cfg.selectId);
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            dropdownConfigs.forEach(otherCfg => {
+                if (otherCfg.containerId !== cfg.containerId) {
+                    document.getElementById(otherCfg.containerId)?.classList.remove('open');
+                }
+            });
+
+            container.classList.toggle('open');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const val = option.getAttribute('data-value');
+                const text = option.textContent;
+
+                trigger.textContent = text;
+                options.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+
+                container.classList.remove('open');
+
+                if (realSelect) {
+                    realSelect.value = val;
+                    realSelect.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+    });
+
+    document.addEventListener('click', () => {
+        dropdownConfigs.forEach(cfg => {
+            document.getElementById(cfg.containerId)?.classList.remove('open');
+        });
+    });
+}
+
+function initAllAppModules() {
+    initPageNavigation();
+    initCustomDropdowns();
+}
+
+// Call initialization when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAllAppModules);
+} else {
+    initAllAppModules();
+}

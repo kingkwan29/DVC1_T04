@@ -1,11 +1,12 @@
-/* ============================================
-   BITRE DASHBOARD 
-   Chart styles moved to chart.css
-   ============================================ */
-
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -13,17 +14,18 @@ html,
 body {
     height: 100%;
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #F4F7FC;
+    background: #EBF1F6;
     color: #1A2C3E;
 }
 
+/* ----- CUSTOM SCROLLBAR ----- */
 ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #E2E8F0;
+    background: #D5E1ED;
     border-radius: 10px;
 }
 
@@ -32,7 +34,7 @@ body {
     border-radius: 10px;
 }
 
-/* ----- LAYOUT ----- */
+/* ----- GLOBAL APP LAYOUT ----- */
 .app-layout {
     display: flex;
     height: 100vh;
@@ -40,46 +42,284 @@ body {
     overflow: hidden;
 }
 
-/* ===== KPI ROW ===== */
+/* ===== SIDEBAR AREA ===== */
+.sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: #FFFFFF;
+    border-right: 1px solid #D5E1ED;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 22px;
+    height: 100vh;
+    position: relative;
+    overflow: visible;
+}
+
+.sidebar-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: unset;
+    overflow: visible;
+}
+
+/* Navigation Group */
+.nav-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 0;
+    flex-shrink: 0;
+}
+
+.nav-btn {
+    flex: 1;
+    background: #F8FAFE;
+    border: 1px solid #DCE5F0;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    color: #4A627A;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+.nav-btn:hover {
+    background: #EFF6FC;
+    border-color: #1C4E6E;
+    color: #1C4E6E;
+    transform: translateY(-1px);
+}
+
+.nav-btn.active {
+    background: linear-gradient(135deg, #E8F2F9 0%, #DCE8F2 100%);
+    border-color: #1C4E6E;
+    color: #1C4E6E;
+    box-shadow: 0 2px 6px rgba(28, 78, 110, 0.1);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: visible;
+}
+
+.filter-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1C4E6E;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    padding-left: 20px;
+}
+
+.filter-group label::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: #2E86AB;
+    font-size: 12px;
+}
+
+/* ===== CUSTOM DROPDOWN SYSTEM ===== */
+.custom-select-container {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-trigger {
+    padding: 10px 42px 10px 14px;
+    border-radius: 12px;
+    border: 2px solid #BDD4E8;
+    background: #FFFFFF;
+    font-size: 12.5px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #1A2C3E;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231C4E6E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.custom-select-container:hover .custom-select-trigger {
+    border-color: #1C4E6E;
+    background-color: #F5F8FC;
+    box-shadow: 0 2px 10px rgba(28, 78, 110, 0.12);
+}
+
+.custom-select-container.open .custom-select-trigger {
+    border-color: #0F2B3D;
+    box-shadow: 0 0 0 3px rgba(28, 78, 110, 0.2);
+}
+
+.custom-options-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    background: #FFFFFF;
+    border: 2px solid #0F2B3D;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(15, 43, 61, 0.15);
+    z-index: 9999;
+    display: none;
+    max-height: 280px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.custom-select-container.open .custom-options-menu {
+    display: block;
+}
+
+.custom-option {
+    padding: 8px 14px;
+    font-size: 12.5px;
+    color: #1A2C3E;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    width: 100%;
+}
+
+.custom-option:hover {
+    background: #EFF6FC;
+    color: #1C4E6E;
+}
+
+.custom-option.selected {
+    background: #1C4E6E;
+    color: #FFFFFF;
+}
+
+.custom-options-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-options-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-options-menu::-webkit-scrollbar-thumb {
+    background: #BDD4E8;
+    border-radius: 10px;
+}
+
+.custom-options-menu::-webkit-scrollbar-thumb:hover {
+    background: #1C4E6E;
+}
+
+.filter-group:last-of-type {
+    margin-bottom: 0;
+}
+
+/* ===== SIDEBAR FOOTER (OPTIMIZED ALIGNMENT) ===== */
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 6px;
+    padding-bottom: 4px;
+    flex-shrink: 0;
+    text-align: left;
+    border-left: 3px solid #2E86AB;
+    padding-left: 16px;
+    position: relative;
+}
+
+.sidebar-footer p {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1C4E6E;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+}
+
+.sidebar-footer span {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6B7A8F;
+    font-family: 'Poppins', sans-serif;
+    display: block;
+}
+
+/* ===== MAIN CONTENT CONTAINER ===== */
+.main-content {
+    flex: 1;
+    padding: 16px 32px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100vh;
+    overflow-y: auto;
+    background: #EBF1F6;
+}
+
+.page-content {
+    display: none;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.page-content.active-page {
+    display: flex;
+}
+
+/* ===== KPI ROW AREA ===== */
 .kpi-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 }
 
 .kpi-card {
     background: #FFFFFF;
     border-radius: 28px;
     padding: 24px 28px;
-    border: 1px solid #E9EDF2;
+    border: 1px solid #D5E1ED;
     transition: all 0.3s ease;
     position: relative;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .kpi-card:hover {
     transform: translateY(-4px);
     border-color: #2E86AB;
-    box-shadow: 0 20px 30px -12px rgba(46, 134, 171, 0.15);
+    box-shadow: 0 20px 30px -12px rgba(46, 134, 171, 0.12);
 }
 
 .kpi-card:nth-child(2):hover {
     border-color: #43AA8B;
-    box-shadow: 0 20px 30px -12px rgba(67, 170, 139, 0.15);
+    box-shadow: 0 20px 30px -12px rgba(67, 170, 139, 0.12);
 }
 
 .kpi-card:nth-child(3):hover {
     border-color: #E63946;
-    box-shadow: 0 20px 30px -12px rgba(230, 57, 70, 0.15);
+    box-shadow: 0 20px 30px -12px rgba(230, 57, 70, 0.12);
 }
 
 .kpi-label {
-    font-size: 12px;
-    color: #6B7A8F;
+    font-size: 13px;
+    color: #1A2C3E;
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-weight: 600;
+    font-weight: 800;
     font-family: 'Poppins', sans-serif;
     display: block;
     margin-bottom: 8px;
@@ -109,274 +349,52 @@ body {
     transition: transform 0.3s ease;
 }
 
-.kpi-decoration {
-    position: absolute;
-    bottom: 20px;
-    right: 24px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: rgba(46, 134, 171, 0.06);
-    transition: all 0.3s ease;
-}
-
-.kpi-card:nth-child(2) .kpi-decoration {
-    background: rgba(67, 170, 139, 0.06);
-}
-
-.kpi-card:nth-child(3) .kpi-decoration {
-    background: rgba(230, 57, 70, 0.06);
-}
-
-.kpi-card:hover .kpi-decoration {
-    transform: scale(1.1);
-    background: rgba(46, 134, 171, 0.1);
-}
-
-/* ===== KPI SUBTITLE ===== */
 .kpi-subtitle {
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    margin-top: 8px;
-    margin-bottom: 0;
-    padding: 16px 24px;
+    display: none !important;
+}
+
+/* ===== ABOUT PAGE CONTAINER ===== */
+.about-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 40px;
     background: #FFFFFF;
-    border-radius: 28px;
-    display: block;
-    width: 100%;
-    font-size: 12px;
-    font-weight: 700;
-    color: #000000;
-    letter-spacing: 0.3px;
-    border: 1px solid #E9EDF2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-    transition: all 0.3s ease;
-    position: relative;
+    border-radius: 32px;
+    border: 1px solid #D5E1ED;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
 
-.kpi-subtitle::before {
-    font-size: 12px;
-    margin-right: 8px;
-    display: inline-block;
-    opacity: 0.7;
+.about-container h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1C4E6E;
+    margin-bottom: 12px;
 }
 
-.kpi-subtitle:hover {
-    transform: translateY(-2px);
-    border-color: #000000;
-    box-shadow: 0 12px 24px -12px rgba(46, 134, 171, 0.15);
-    color: #000000;
-}
-
-.kpi-subtitle:hover::before {
-    opacity: 1;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .kpi-row {
-        gap: 16px;
-    }
-
-    .kpi-card {
-        padding: 18px 20px;
-        border-radius: 20px;
-    }
-
-    .kpi-number {
-        font-size: 32px;
-    }
-
-    .kpi-decoration {
-        width: 45px;
-        height: 45px;
-        bottom: 14px;
-        right: 18px;
-    }
-
-    .kpi-subtitle {
-        padding: 12px 16px;
-        font-size: 11px;
-        border-radius: 20px;
-    }
-}
-
-/* ----- SIDEBAR ----- */
-.sidebar {
-    width: 280px;
-    min-width: 280px;
-    background: #FFFFFF;
-    border-right: 1px solid #E9EDF2;
-    display: flex;
-    flex-direction: column;
-    padding: 28px 22px;
-    height: 100vh;
-    position: sticky;
-    top: 0;
-    overflow-y: auto;
-}
-
-.sidebar-brand {
+.about-container>p {
+    font-size: 16px;
+    color: #6B7A8F;
     margin-bottom: 32px;
     padding-bottom: 20px;
-    border-bottom: 2px solid #1C4E6E;
+    border-bottom: 2px solid #E9EDF2;
 }
 
-.brand-name {
-    font-size: 22px;
-    font-weight: 800;
-    color: #0F2B3D;
-    letter-spacing: -0.3px;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* ===== SIDEBAR FILTERS - Deep Contrast Blue Theme ===== */
-.sidebar-filters {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    flex: 1;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.filter-group label {
-    font-size: 14px;
+.about-info h3 {
+    font-size: 18px;
     font-weight: 700;
-    color: #1C4E6E;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    font-family: 'Poppins', sans-serif;
+    color: #2E86AB;
+    margin-top: 24px;
+    margin-bottom: 8px;
 }
 
-.filter-group select {
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 2px solid #1C4E6E;
-    background: #FFFFFF;
+.about-info p {
     font-size: 14px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    color: #1A2C3E;
-    outline: none;
-    transition: all 0.25s ease;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231C4E6E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
+    color: #4A627A;
+    line-height: 1.6;
+    margin-bottom: 16px;
 }
 
-.filter-group select:hover {
-    border-color: #0F2B3D;
-    background-color: #F5F8FC;
-    box-shadow: 0 2px 10px rgba(28, 78, 110, 0.15);
-}
-
-.filter-group select:focus {
-    border-color: #0F2B3D;
-    box-shadow: 0 0 0 4px rgba(28, 78, 110, 0.2);
-}
-
-.export-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 8px;
-    padding-top: 24px;
-    border-top: 2px solid #E2E8F0;
-}
-
-.export-btn {
-    background: #FFFFFF;
-    border: 2px solid #1C4E6E;
-    border-radius: 12px;
-    padding: 11px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-    color: #1C4E6E;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    text-align: center;
-}
-
-.export-btn:hover {
-    background: #1C4E6E;
-    color: white;
-    border-color: #1C4E6E;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(28, 78, 110, 0.3);
-}
-
-.sidebar-footer {
-    margin-top: auto;
-    padding-top: 28px;
-    font-size: 10px;
-    color: #6B7A8F;
-    font-weight: 500;
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-}
-
-.export-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 18px;
-    padding-top: 20px;
-    border-top: 1px solid #ECF1F6;
-}
-
-.export-btn {
-    background: #F9FBFD;
-    border: 1px solid #DFE6EF;
-    border-radius: 14px;
-    padding: 10px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-    color: #2C6280;
-    cursor: pointer;
-    transition: 0.2s;
-    text-align: center;
-}
-
-.export-btn:hover {
-    background: #2C6280;
-    color: white;
-    border-color: #2C6280;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(44, 98, 128, 0.2);
-}
-
-.sidebar-footer {
-    margin-top: auto;
-    padding-top: 28px;
-    font-size: 10px;
-    color: #8A99AA;
-    font-weight: 500;
-    text-align: center;
-}
-
-/* ----- MAIN CONTENT ----- */
-.main-content {
-    flex: 1;
-    padding: 24px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    height: 100vh;
-    overflow-y: auto;
-    background: #F8FAFE;
-}
-
-
-/* ----- CHART CARDS (layout only） ----- */
+/* ===== CHART STRUCTURE LAYOUT BLOCK ===== */
 .chart-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -386,9 +404,9 @@ body {
 .chart-card {
     background: #FFFFFF;
     border-radius: 28px;
-    padding: 20px 24px 20px 24px;
+    padding: 20px 24px;
     border: 1px solid #ECF2F8;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
     transition: box-shadow 0.2s;
     display: flex;
     flex-direction: column;
@@ -396,7 +414,7 @@ body {
 }
 
 .chart-card:hover {
-    box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.06);
 }
 
 .full-width {
@@ -408,7 +426,6 @@ body {
     grid-column: span 1;
 }
 
-/* Chart Header (titles - kept in main CSS for consistency) */
 .chart-header {
     display: flex;
     justify-content: space-between;
@@ -456,7 +473,6 @@ body {
     opacity: 1;
 }
 
-/* Chart Body Container */
 .chart-body {
     flex: 1;
     min-height: 280px;
@@ -464,23 +480,7 @@ body {
     position: relative;
 }
 
-.chart-body svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-/* Special container for vbarChart */
-#vbarChart {
-    min-height: 440px;
-    overflow: visible;
-}
-
-.chart-card.full-width:has(#vbarChart) {
-    min-height: 520px;
-}
-
-/* ----- RESPONSIVE ----- */
+/* ----- MEDIA RESPONSIVE QUERIES ----- */
 @media (max-width: 1000px) {
     .chart-grid {
         grid-template-columns: 1fr;
@@ -495,6 +495,22 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+    .kpi-row {
+        gap: 16px;
+        margin-bottom: 12px;
+    }
+
+    .kpi-card {
+        padding: 18px 20px;
+        border-radius: 20px;
+    }
+
+    .kpi-number {
+        font-size: 32px;
+    }
+}
+
 @media (max-width: 720px) {
     .app-layout {
         flex-direction: column;
@@ -506,38 +522,39 @@ body {
         min-width: unset;
         padding: 20px;
         border-right: none;
-        border-bottom: 1px solid #E2E8F0;
+        border-bottom: 1px solid #D5E1ED;
+        overflow-y: auto;
+    }
+
+    .sidebar-footer {
+        display: none;
     }
 
     .sidebar-filters {
         flex-direction: row;
         flex-wrap: wrap;
         gap: 14px;
+        overflow: visible;
+        padding-bottom: 20px;
     }
 
     .filter-group {
         flex: 1;
         min-width: 140px;
-    }
-
-    .export-group {
-        flex-direction: row;
-        margin-top: 0;
+        overflow: visible;
     }
 
     .kpi-row {
         grid-template-columns: 1fr;
+        margin-bottom: 12px;
     }
 
     .main-content {
         padding: 20px;
     }
 
-    .chart-card.full-width {
-        min-height: 560px;
-    }
-
-    #vbarChart {
-        min-height: 500px;
+    .nav-group {
+        flex-direction: row;
+        gap: 10px;
     }
 }

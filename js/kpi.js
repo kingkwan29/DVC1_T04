@@ -1,10 +1,39 @@
 // js/kpi.js
+let globalKPI = null;
+
+async function loadGlobalKPI() {
+    try {
+        const response = await fetch('data/global_kpi.csv');
+        const csvText = await response.text();
+        const rows = d3.csvParse(csvText);
+        if (rows.length > 0) {
+            globalKPI = {
+                fines: +rows[0].FINES || 0,
+                arrests: +rows[0].ARRESTS || 0,
+                charges: +rows[0].CHARGES || 0
+            };
+        }
+    } catch (e) {
+        console.warn('Failed to load global_kpi.csv, will compute from intersectionData', e);
+        globalKPI = null;
+    }
+}
 
 function renderKPI() {
     let filtered = [];
     let usingGeoData = false;
+    let isGlobalView = false;
 
-    if (state.jurisdiction !== 'all') {
+    if (state.jurisdiction === 'all' && state.age === 'all' && state.method === 'all') {
+        if (globalKPI) {
+            updateKPIDisplay(globalKPI.fines, globalKPI.arrests, globalKPI.charges);
+            updateKpiSubtitle(true, true);
+            return;
+        }
+        filtered = [...intersectionData];
+        isGlobalView = true;
+    }
+    else if (state.jurisdiction !== 'all') {
         if (geoData && geoData.length > 0) {
             const jurisData = geoData.find(d => d.jurisdiction === state.jurisdiction);
             if (jurisData) {
@@ -12,28 +41,37 @@ function renderKPI() {
                 usingGeoData = true;
             }
         }
+        if (filtered.length === 0 && intersectionData && intersectionData.length > 0) {
+            filtered = [...intersectionData];
+            filtered = filtered.filter(d => d.jurisdiction === state.jurisdiction);
+        }
+    }
+    else {
+        filtered = [...intersectionData];
+        isGlobalView = true;
     }
 
-    if (filtered.length === 0 && intersectionData && intersectionData.length > 0) {
-        filtered = [...intersectionData];
-
-        if (state.jurisdiction === 'all') {
-            filtered = filtered.filter(d => d.location === 'All Regions');
-        }
-
+    if (!usingGeoData && filtered.length > 0) {
         if (state.age !== 'all') {
             filtered = filtered.filter(d => d.ageGroup === state.age);
         }
-
-        if (state.method !== 'all' && filtered.length > 0 && filtered[0].method !== undefined) {
-            filtered = filtered.filter(d => d.method === state.method);
+        if (state.method !== 'all') {
+            const hasMethod = filtered.some(d => d.method !== undefined && d.method !== null);
+            if (hasMethod) {
+                filtered = filtered.filter(d => d.method === state.method);
+            }
         }
     }
 
-    const totalFines = d3.sum(filtered, d => d.fines);
-    const totalArrests = d3.sum(filtered, d => d.arrests);
-    const totalCharges = d3.sum(filtered, d => d.charges);
+    const totalFines = d3.sum(filtered, d => Number(d.fines) || 0);
+    const totalArrests = d3.sum(filtered, d => Number(d.arrests) || 0);
+    const totalCharges = d3.sum(filtered, d => Number(d.charges) || 0);
 
+    updateKPIDisplay(totalFines, totalArrests, totalCharges);
+    updateKpiSubtitle(usingGeoData, isGlobalView);
+}
+
+function updateKPIDisplay(totalFines, totalArrests, totalCharges) {
     const kpiFines = document.getElementById('kpiFines');
     const kpiArrests = document.getElementById('kpiArrests');
     const kpiCharges = document.getElementById('kpiCharges');
@@ -49,41 +87,11 @@ function renderKPI() {
     }
     if (kpiArrests) kpiArrests.textContent = totalArrests.toLocaleString();
     if (kpiCharges) kpiCharges.textContent = totalCharges.toLocaleString();
-
-    updateKpiSubtitle(usingGeoData);
 }
 
-function updateKpiSubtitle(usingGeoData) {
-    let kpiSubtitle = document.querySelector('.kpi-subtitle');
-    if (!kpiSubtitle) {
-        const kpiRow = document.querySelector('.kpi-row');
-        if (kpiRow && kpiRow.parentNode) {
-            kpiSubtitle = document.createElement('div');
-            kpiSubtitle.className = 'kpi-subtitle';
-            kpiRow.parentNode.insertBefore(kpiSubtitle, kpiRow.nextSibling);
-        }
-        kpiSubtitle = document.querySelector('.kpi-subtitle');
-    }
-
+function updateKpiSubtitle(usingGeoData, isGlobalView) {
+    const kpiSubtitle = document.getElementById('kpiSubtitle');
     if (kpiSubtitle) {
-        const filterStatus = [];
-
-        if (state.jurisdiction !== 'all') filterStatus.push(`Jurisdiction: ${state.jurisdiction}`);
-        if (state.age !== 'all') filterStatus.push(`Age: ${state.age === '65 and over' ? '65+' : state.age}`);
-        if (state.method !== 'all') filterStatus.push(`Method: ${state.method}`);
-
-        if (filterStatus.length === 0) {
-            kpiSubtitle.textContent = 'National totals across all ages and detection methods';
-            kpiSubtitle.removeAttribute('data-filtered');
-            kpiSubtitle.removeAttribute('data-jurisdiction');
-        } else if (usingGeoData) {
-            kpiSubtitle.textContent = `${state.jurisdiction} · Aggregate jurisdiction data`;
-            kpiSubtitle.setAttribute('data-jurisdiction', 'true');
-            kpiSubtitle.removeAttribute('data-filtered');
-        } else {
-            kpiSubtitle.textContent = filterStatus.join(' · ');
-            kpiSubtitle.setAttribute('data-filtered', 'true');
-            kpiSubtitle.removeAttribute('data-jurisdiction');
-        }
+        kpiSubtitle.style.display = 'none';
     }
 }
