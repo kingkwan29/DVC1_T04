@@ -354,3 +354,20 @@ if (document.readyState === 'loading') {
 } else {
     initAllAppModules();
 }
+// For Pagination function
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('page-btn')) {
+        const targetPage = e.target.getAttribute('data-page');
+
+        document.querySelectorAll('.chart-page').forEach(p => p.style.display = 'none');
+        document.getElementById(`page${targetPage}`).style.display = 'block';
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-page') === targetPage);
+        });
+
+        document.querySelector('.main-content').scrollTop = 0;
+        if (typeof refreshAllCharts === 'function') {
+            refreshAllCharts();
+        }
+    }
+});

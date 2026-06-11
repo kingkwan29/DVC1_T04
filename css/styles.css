@@ -558,3 +558,39 @@ body {
         gap: 10px;
     }
 }
+
+.chart-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+
+.page-btn {
+    padding: 8px 24px;
+    border: none;
+    border-radius: 12px;
+    background: #EBF1F6;
+    color: #1C4E6E;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid #1C4E6E;
+    transition: all 0.3s ease;
+}
+
+.page-btn.active {
+    background: #1C4E6E;
+    color: #FFFFFF;
+}
+
+.page-btn:hover {
+    background: #2E86AB;
+    color: white;
+}

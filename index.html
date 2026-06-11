@@ -118,7 +118,6 @@
 
         <main class="main-content">
             <div id="homePage" class="page-content active-page">
-                <!-- KPI Card Elements -->
                 <div class="kpi-row" id="kpiRow">
                     <div class="kpi-card"><span class="kpi-label">Total Fines</span><span class="kpi-number"
                             id="kpiFines">—</span></div>
@@ -128,60 +127,58 @@
                             id="kpiCharges">—</span></div>
                 </div>
 
-                <div class="chart-grid">
-                    <div class="chart-card full-width">
-                        <div class="chart-header">
-                            <div class="header-left"><span class="chart-title">Monthly Fines Trend</span><span
-                                    class="chart-sub">Area Chart · 2008–2024</span></div>
-                            <div class="chart-actions"><button class="chart-action-btn" data-chart="trend">⤓</button>
+                <div class="chart-page" id="page1">
+                    <div class="chart-grid">
+                        <div class="chart-card full-width">
+                            <div class="chart-header">
+                                <div class="header-left"><span class="chart-title">Monthly Fines Trend</span><span
+                                        class="chart-sub">Area Chart · 2008–2024</span></div>
+                                <div class="chart-actions"><button class="chart-action-btn"
+                                        data-chart="trend">⤓</button></div>
                             </div>
+                            <div class="chart-body" id="trendChart"></div>
                         </div>
-                        <div class="chart-body" id="trendChart"></div>
+                        <div class="chart-card half-width">
+                            <div class="chart-header">
+                                <div class="header-left"><span class="chart-title">Fines vs Arrests by Age</span><span
+                                        class="chart-sub">Grouped Bar Chart · fines ($K) vs arrests</span></div>
+                                <div class="chart-actions"><button class="chart-action-btn"
+                                        data-chart="grouped">⤓</button></div>
+                            </div>
+                            <div class="chart-body" id="groupedBarChart"></div>
+                        </div>
+                        <div class="chart-card half-width">
+                            <div class="chart-header">
+                                <div class="header-left"><span class="chart-title">Metric Distribution</span><span
+                                        class="chart-sub">Horizontal Bar Chart · fines by violation type</span></div>
+                                <div class="chart-actions"><button class="chart-action-btn" data-chart="hbar">⤓</button>
+                                </div>
+                            </div>
+                            <div class="chart-body" id="hbarChart"></div>
+                        </div>
                     </div>
-                    <div class="chart-card half-width">
-                        <div class="chart-header">
-                            <div class="header-left"><span class="chart-title">Fines vs Arrests by Age</span><span
-                                    class="chart-sub">Grouped Bar Chart · fines ($K) vs arrests</span></div>
-                            <div class="chart-actions"><button class="chart-action-btn" data-chart="grouped">⤓</button>
-                            </div>
-                        </div>
-                        <div class="chart-body" id="groupedBarChart"></div>
-                    </div>
-                    <div class="chart-card half-width">
-                        <div class="chart-header">
-                            <div class="header-left"><span class="chart-title">Metric Distribution</span><span
-                                    class="chart-sub">Horizontal Bar Chart · fines by violation type</span></div>
-                            <div class="chart-actions"><button class="chart-action-btn" data-chart="hbar">⤓</button>
-                            </div>
-                        </div>
-                        <div class="chart-body" id="hbarChart"></div>
-                    </div>
-                    <div class="chart-card full-width">
-                        <div class="chart-header">
-                            <div class="header-left"><span class="chart-title">Enforcement Severity: Fines vs. Arrests
-                                    by Jurisdiction</span><span class="chart-sub">Dual X‑Axis · fines (top) vs arrests
-                                    (bottom)</span></div>
-                            <div class="chart-actions"><button class="chart-action-btn" data-chart="vbar">⤓</button>
-                            </div>
-                        </div>
-                        <div class="chart-body" id="vbarChart"></div>
+                    <div class="pagination-controls">
+                        <button class="page-btn active" data-page="1">1</button>
+                        <button class="page-btn" data-page="2">2</button>
                     </div>
                 </div>
-            </div>
 
-            <div id="aboutPage" class="page-content">
-                <div class="about-container">
-                    <h1>About Bitre Dashboard</h1>
-                    <p>Police Enforcement Data Analytics Platform</p>
-                    <div class="about-info">
-                        <h3>Data Sources</h3>
-                        <p>Comprehensive enforcement data from all Australian states and territories (2008-2024)</p>
-                        <h3>Key Metrics</h3>
-                        <p>Fines, Arrests, and Charges tracked across jurisdictions, age groups, and detection methods
-                        </p>
-                        <h3>Visualization Principles</h3>
-                        <p>Designed following core data visualization best practices including Gestalt principles,
-                            colorblind accessibility, and preattentive processing</p>
+                <div class="chart-page" id="page2" style="display: none;">
+                    <div class="chart-grid">
+                        <div class="chart-card full-width">
+                            <div class="chart-header">
+                                <div class="header-left"><span class="chart-title">Enforcement Severity: Fines vs.
+                                        Arrests by Jurisdiction</span><span class="chart-sub">Dual X‑Axis · fines (top)
+                                        vs arrests (bottom)</span></div>
+                                <div class="chart-actions"><button class="chart-action-btn" data-chart="vbar">⤓</button>
+                                </div>
+                            </div>
+                            <div class="chart-body" id="vbarChart"></div>
+                        </div>
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" data-page="1">1</button>
+                        <button class="page-btn active" data-page="2">2</button>
                     </div>
                 </div>
             </div>

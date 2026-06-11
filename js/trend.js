@@ -1,19 +1,22 @@
 // js/trend.js - Monthly Trend Area Chart
+
 function renderMonthlyTrend() {
     const container = document.getElementById('trendChart');
     if (!container) return;
+
+    // Clear previous content
     container.innerHTML = '';
 
     const data = monthlyData;
     if (!data || data.length === 0) {
-        container.innerHTML = '<div class="loading-state">No data for selected filters</div>';
+        container.innerHTML = '<div class="loading-state">No data available</div>';
         return;
     }
 
-    const margin = { top: 30, right: 30, bottom: 50, left: 70 };
+    const margin = { top: 30, right: 30, bottom: 60, left: 70 };
     const rect = container.getBoundingClientRect();
-    const width = Math.max(rect.width - 40, 500);
-    const height = Math.max(rect.height - 40, 260);
+    const width = Math.max(rect.width, 500);
+    const height = Math.max(rect.height, 260);
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -25,30 +28,78 @@ function renderMonthlyTrend() {
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const xScale = d3.scaleTime().domain(d3.extent(data, d => d.date)).range([0, innerWidth]);
-    const yMax = d3.max(data, d => d.fines) * 1.05 || 1;
-    const yScale = d3.scaleLinear().domain([0, yMax]).range([innerHeight, 0]).nice();
+    const xScale = d3.scaleTime()
+        .domain(d3.extent(data, d => d.date))
+        .range([0, innerWidth]);
 
-    // Line generator
-    const line = d3.line().x(d => xScale(d.date)).y(d => yScale(d.fines)).curve(d3.curveMonotoneX);
+    const yMax = d3.max(data, d => d.fines) * 1.1 || 1;
+    const yScale = d3.scaleLinear()
+        .domain([0, yMax])
+        .range([innerHeight, 0])
+        .nice();
 
-    // Area & Line Path
-    svg.append('path').datum(data).attr('fill', '#dbeafe').attr('opacity', 0.5).attr('d', d3.area().x(d => xScale(d.date)).y0(innerHeight).y1(d => yScale(d.fines)).curve(d3.curveMonotoneX));
-    svg.append('path').datum(data).attr('fill', 'none').attr('stroke', '#3b82f6').attr('stroke-width', 2.5).attr('d', line);
+    // Area Generator
+    const area = d3.area()
+        .x(d => xScale(d.date))
+        .y0(innerHeight)
+        .y1(d => yScale(d.fines))
+        .curve(d3.curveMonotoneX);
 
-    // X & Y Axis
-    svg.append('g').attr('transform', `translate(0,${innerHeight})`).call(d3.axisBottom(xScale).ticks(d3.timeYear.every(2)).tickFormat(d3.timeFormat('%b %Y')));
-    svg.append('g').call(d3.axisLeft(yScale).ticks(6).tickFormat(d => d >= 1e6 ? (d / 1e6).toFixed(1) + 'M' : (d / 1e3).toFixed(0) + 'K'));
+    // Line Generator
+    const line = d3.line()
+        .x(d => xScale(d.date))
+        .y(d => yScale(d.fines))
+        .curve(d3.curveMonotoneX);
 
-    // --- INTERACTIVE VERTICAL RULER ---
+    // Draw Area
+    svg.append('path')
+        .datum(data)
+        .attr('fill', '#dbeafe')
+        .attr('opacity', 0.6)
+        .attr('d', area);
+
+    // Draw Line
+    svg.append('path')
+        .datum(data)
+        .attr('fill', 'none')
+        .attr('stroke', '#3b82f6')
+        .attr('stroke-width', 2.5)
+        .attr('class', 'line-path')
+        .attr('d', line);
+
+    // X-Axis
+    svg.append('g')
+        .attr('class', 'axis axis-x')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(d3.axisBottom(xScale).ticks(d3.timeYear.every(2)).tickFormat(d3.timeFormat('%b %Y')));
+
+    // Y-Axis
+    svg.append('g')
+        .attr('class', 'axis axis-y-left')
+        .call(d3.axisLeft(yScale).ticks(6).tickFormat(d => d >= 1e6 ? (d / 1e6).toFixed(1) + 'M' : (d / 1e3).toFixed(0) + 'K'));
+
+    // X-Axis Label
+    svg.append('text')
+        .attr('class', 'axis-label axis-label-x')
+        .attr('x', innerWidth / 2)
+        .attr('y', innerHeight + 45)
+        .attr('text-anchor', 'middle')
+        .text('Year');
+
+    // Y-Axis Label
+    svg.append('text')
+        .attr('class', 'axis-label axis-label-y')
+        .attr('x', -innerHeight / 2)
+        .attr('y', -50)
+        .attr('text-anchor', 'middle')
+        .attr('transform', 'rotate(-90)')
+        .text('Total Fines ($)');
+
+    // Interaction Layer
     const focus = svg.append('g').attr('class', 'focus').style('display', 'none');
-
-    // Vertical line
-    focus.append('line').attr('class', 'hover-line').attr('y1', 0).attr('y2', innerHeight).attr('stroke', '#3b82f6').attr('stroke-width', 1).attr('stroke-dasharray', '3 3');
-    // Circle at intersection
+    focus.append('line').attr('class', 'hover-line').attr('y1', 0).attr('y2', innerHeight);
     focus.append('circle').attr('r', 5).attr('fill', '#3b82f6').attr('stroke', '#fff');
 
-    // Overlay to capture mouse events
     svg.append('rect')
         .attr('width', innerWidth)
         .attr('height', innerHeight)
