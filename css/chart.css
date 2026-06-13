@@ -108,14 +108,12 @@
 #trendChart .axis-label-x {
     text-anchor: middle;
     font-weight: 700 !important;
-    /* Bolded X Label */
     font-size: 13px;
 }
 
 #trendChart .axis-label-y {
     text-anchor: middle;
     font-weight: 700 !important;
-    /* Bolded Y Label */
     font-size: 13px;
 }
 
@@ -399,7 +397,6 @@
 /* Area Chart Bars - High contrast */
 #metricMethodAreaChart .area-bar {
     transition: opacity 0.2s ease;
-    fill: #4A90D9;
 }
 
 #metricMethodAreaChart .area-bar:hover {
