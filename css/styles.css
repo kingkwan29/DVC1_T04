@@ -18,7 +18,6 @@ body {
     color: #1A2C3E;
 }
 
-/* ----- CUSTOM SCROLLBAR ----- */
 ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
@@ -34,7 +33,6 @@ body {
     border-radius: 10px;
 }
 
-/* ----- GLOBAL APP LAYOUT ----- */
 .app-layout {
     display: flex;
     height: 100vh;
@@ -42,7 +40,6 @@ body {
     overflow: hidden;
 }
 
-/* ===== SIDEBAR AREA ===== */
 .sidebar {
     width: 280px;
     min-width: 280px;
@@ -64,7 +61,6 @@ body {
     overflow: visible;
 }
 
-/* Navigation Group */
 .nav-group {
     display: flex;
     gap: 12px;
@@ -129,7 +125,6 @@ body {
     font-size: 12px;
 }
 
-/* ===== CUSTOM DROPDOWN SYSTEM ===== */
 .custom-select-container {
     position: relative;
     width: 100%;
@@ -230,7 +225,6 @@ body {
     margin-bottom: 0;
 }
 
-/* ===== SIDEBAR FOOTER ===== */
 .sidebar-footer {
     margin-top: auto;
     padding-top: 6px;
@@ -259,7 +253,6 @@ body {
     display: block;
 }
 
-/* ===== MAIN CONTENT CONTAINER ===== */
 .main-content {
     flex: 1;
     padding: 16px 32px 24px 32px;
@@ -271,7 +264,6 @@ body {
     background: #EBF1F6;
 }
 
-/* ===== PAGE CONTENT VISIBILITY ===== */
 .page-content {
     display: none;
     flex-direction: column;
@@ -282,7 +274,6 @@ body {
     display: flex;
 }
 
-/* ===== CHART PAGE VISIBILITY ===== */
 .chart-page {
     display: none;
     flex-direction: column;
@@ -293,7 +284,6 @@ body {
     display: flex;
 }
 
-/* ===== KPI ROW AREA ===== */
 .kpi-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -361,7 +351,6 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* ===== CHART STRUCTURE LAYOUT ===== */
 .chart-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -447,7 +436,6 @@ body {
     position: relative;
 }
 
-/* ===== PAGINATION CONTROLS ===== */
 .pagination-controls {
     display: flex;
     justify-content: center;
@@ -478,7 +466,6 @@ body {
     color: white;
 }
 
-/* ===== MEDIA RESPONSIVE QUERIES ===== */
 @media (max-width: 1000px) {
     .chart-grid {
         grid-template-columns: 1fr;
