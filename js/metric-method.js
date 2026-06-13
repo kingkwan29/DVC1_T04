@@ -158,9 +158,9 @@ function renderMetricMethodAreaChart() {
 
     const rect = container.getBoundingClientRect();
     const width = Math.max(rect.width - 40, 400);
-    const height = Math.max(rect.height - 40, 320);
+    const height = Math.max(rect.height - 40, 220);
 
-    const margin = { top: 50, right: 80, bottom: 70, left: 85 };
+    const margin = { top: 35, right: 60, bottom: 55, left: 70 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -189,41 +189,56 @@ function renderMetricMethodAreaChart() {
         .domain([0, maxFines * 1.1])
         .range([innerHeight, 0]);
 
-    const labelWidth = 55;
-    const maxTicks = Math.max(2, Math.min(5, Math.floor(innerWidth / labelWidth)));
+    const labelWidth = 75;
+    const maxTicks = Math.max(2, Math.min(4, Math.floor(innerWidth / labelWidth)));
     const ticks = getNiceTicks(maxFines * 1.1, maxTicks);
 
-    svg.append('g')
+    const yAxisGroup = svg.append('g')
         .attr('class', 'axis axis-left')
-        .call(d3.axisLeft(y).tickValues(ticks).tickFormat(d => formatCurrency(d)));
+        .call(d3.axisLeft(y).tickValues(ticks).tickFormat(d => formatCurrency(d)).tickSize(0).tickPadding(8));
 
-    svg.append('g')
+    yAxisGroup.selectAll('text')
+        .style('font-size', '10px')
+        .style('font-weight', '500')
+        .style('fill', '#4A5568');
+
+    const xAxisGroup = svg.append('g')
         .attr('class', 'axis axis-bottom')
         .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(x))
-        .selectAll('text')
-        .attr('transform', 'rotate(-15)')
-        .style('text-anchor', 'end');
+        .call(d3.axisBottom(x).tickSize(0).tickPadding(8));
+
+    xAxisGroup.selectAll('text')
+        .style('text-anchor', 'middle')
+        .style('font-size', '10px')
+        .style('font-weight', '500')
+        .style('fill', '#4A5568')
+        .each(function (d) {
+            const self = d3.select(this);
+            let text = self.text();
+            if (text.length > 14) {
+                self.text(text.substring(0, 12) + '...');
+            }
+        });
 
     svg.append('text')
         .attr('class', 'axis-label-x')
         .attr('x', innerWidth / 2)
-        .attr('y', innerHeight + 50)
+        .attr('y', innerHeight + 42)
         .attr('text-anchor', 'middle')
         .style('fill', '#2D3748')
         .style('font-weight', '600')
-        .style('font-size', '12px')
+        .style('font-size', '11px')
         .text('Detection Method');
 
     svg.append('text')
         .attr('class', 'axis-label-y axis-label-y-left')
         .attr('x', -innerHeight / 2)
-        .attr('y', -60)
+        .attr('y', -53)
         .attr('transform', 'rotate(-90)')
         .attr('text-anchor', 'middle')
         .style('fill', '#2D3748')
         .style('font-weight', '600')
-        .style('font-size', '12px')
+        .style('font-size', '11px')
         .text('Total Fines');
 
     svg.selectAll('.area-bar')
@@ -262,7 +277,7 @@ function renderMetricMethodAreaChart() {
         .attr('x', d => x(d.method) + x.bandwidth() / 2)
         .attr('y', d => y(d.fines) - 5)
         .attr('text-anchor', 'middle')
-        .style('font-size', '10px')
+        .style('font-size', '9px')
         .style('font-weight', '600')
         .style('fill', getMetricColor(currentMetric))
         .text(d => formatCurrency(d.fines));
@@ -294,8 +309,8 @@ function renderMetricDonutChart() {
 
     const rect = container.getBoundingClientRect();
     const width = Math.max(rect.width - 40, 380);
-    const height = Math.max(rect.height - 40, 320);
-    const radius = Math.min(width, height) / 2.5;
+    const height = Math.max(rect.height - 40, 220);
+    const radius = Math.min(width, height) / 2.8;
 
     container.innerHTML = '';
 
@@ -347,8 +362,8 @@ function renderMetricDonutChart() {
             hideTooltip();
         });
 
-    const legendX = radius + 15;
-    let legendY = -radius + 20;
+    const legendX = radius + 12;
+    let legendY = -radius + 15;
 
     data.forEach((d, i) => {
         const legendRow = svg.append('g')
@@ -361,8 +376,8 @@ function renderMetricDonutChart() {
             .attr('rx', 2);
 
         legendRow.append('text')
-            .attr('x', 18)
-            .attr('y', 10)
+            .attr('x', 16)
+            .attr('y', 9)
             .style('font-size', '11px')
             .style('fill', '#2D3748')
             .style('font-weight', '500')
@@ -371,17 +386,18 @@ function renderMetricDonutChart() {
 
     svg.append('text')
         .attr('text-anchor', 'middle')
-        .attr('y', -radius - 8)
-        .style('font-size', '13px')
+        .attr('y', -radius - 28)
+        .style('font-size', '12px')
         .style('font-weight', '700')
         .style('fill', '#2D3748')
         .text('Fines by Violation Type');
 
     svg.append('text')
         .attr('text-anchor', 'middle')
-        .attr('y', -radius + 12)
-        .style('font-size', '11px')
-        .style('fill', '#718096')
+        .attr('y', -radius - 10)
+        .style('font-size', '10px')
+        .style('font-weight', '600')
+        .style('fill', '#1A1A1A')
         .text(`Total: ${formatCurrency(totalFines)}`);
 }
 
@@ -417,9 +433,9 @@ function renderMethodBarChart() {
 
     const rect = container.getBoundingClientRect();
     const width = Math.max(rect.width - 40, 400);
-    const height = Math.max(rect.height - 40, 340);
+    const height = Math.max(rect.height - 40, 240);
 
-    const margin = { top: 45, right: 120, bottom: 60, left: 145 };
+    const margin = { top: 35, right: 100, bottom: 50, left: 155 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -440,8 +456,8 @@ function renderMethodBarChart() {
         .range([0, innerHeight])
         .padding(0.2);
 
-    const labelWidth = 55;
-    const maxTicks = Math.max(2, Math.min(5, Math.floor(innerWidth / labelWidth)));
+    const labelWidth = 75;
+    const maxTicks = Math.max(2, Math.min(4, Math.floor(innerWidth / labelWidth)));
     const ticks = getNiceTicks(maxFines * 1.1, maxTicks);
 
     const xFines = d3.scaleLinear()
@@ -453,34 +469,51 @@ function renderMethodBarChart() {
         .call(d3.axisTop(xFines).tickValues(ticks).tickSize(-innerHeight).tickFormat(''))
         .select('.domain').remove();
 
-    svg.append('g')
+    const xAxisBottom = svg.append('g')
         .attr('class', 'axis axis-bottom')
         .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(xFines).tickValues(ticks).tickFormat(d => formatCurrency(d)));
+        .call(d3.axisBottom(xFines).tickValues(ticks).tickFormat(d => formatCurrency(d)).tickSize(0).tickPadding(8));
+
+    xAxisBottom.selectAll('text')
+        .style('font-size', '9px')
+        .style('font-weight', '500')
+        .style('fill', '#4A5568');
 
     svg.append('g')
         .attr('class', 'axis axis-left')
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y).tickSize(0).tickPadding(6));
+
+    svg.select('.axis-left').selectAll('text')
+        .style('font-size', '10px')
+        .style('font-weight', '500')
+        .style('fill', '#4A5568')
+        .each(function (d) {
+            const self = d3.select(this);
+            let text = self.text();
+            if (text.length > 20) {
+                self.text(text.substring(0, 18) + '...');
+            }
+        });
 
     svg.append('text')
         .attr('class', 'axis-label-x')
         .attr('x', innerWidth / 2)
-        .attr('y', innerHeight + 45)
+        .attr('y', innerHeight + 30)
         .attr('text-anchor', 'middle')
-        .style('fill', '#2D3748')
-        .style('font-weight', '600')
-        .style('font-size', '12px')
+        .style('fill', '#1A1A1A')
+        .style('font-weight', '700')
+        .style('font-size', '11px')
         .text('Total Fines');
 
     svg.append('text')
         .attr('class', 'axis-label-y axis-label-y-left')
-        .attr('x', -innerHeight / 2)
-        .attr('y', -110)
+        .attr('x', -innerHeight / 2 + 2)
+        .attr('y', -135)
         .attr('transform', 'rotate(-90)')
         .attr('text-anchor', 'middle')
         .style('fill', '#2D3748')
         .style('font-weight', '600')
-        .style('font-size', '12px')
+        .style('font-size', '11px')
         .text('Detection Method');
 
     svg.selectAll('.method-bar-fines')
@@ -522,7 +555,7 @@ function renderMethodBarChart() {
         .attr('x', d => xFines(d.fines) + 6)
         .attr('y', d => y(d.method) + y.bandwidth() / 2 + 5)
         .attr('text-anchor', 'start')
-        .style('font-size', '10px')
+        .style('font-size', '9px')
         .style('font-weight', '600')
         .style('fill', '#4A90D9')
         .style('opacity', 0)
@@ -532,7 +565,7 @@ function renderMethodBarChart() {
         .style('opacity', 1);
 
     const legend = svg.append('g')
-        .attr('transform', `translate(${innerWidth + 10}, 10)`);
+        .attr('transform', `translate(${innerWidth + 10}, -15)`);
 
     legend.append('rect')
         .attr('width', 12)
@@ -541,11 +574,11 @@ function renderMethodBarChart() {
         .attr('rx', 2);
 
     legend.append('text')
-        .attr('x', 18)
-        .attr('y', 10)
-        .style('font-size', '11px')
+        .attr('x', 16)
+        .attr('y', 9)
+        .style('font-size', '10px')
         .style('fill', '#2D3748')
-        .style('font-weight', '500')
+        .style('font-weight', '700')
         .text('Total Fines');
 }
 
