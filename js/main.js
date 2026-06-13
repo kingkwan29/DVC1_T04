@@ -88,7 +88,6 @@ async function loadAllData() {
     showLoadingStates();
 
     try {
-        // Load raw data for trend chart filtering + existing datasets
         const [rawRaw, kpiRaw, monthlyRaw, geoRaw, intersectionRaw] = await Promise.all([
             d3.csv('data/Clean Police Enforcement 2024.csv'),
             d3.csv('data/global_kpi.csv'),
@@ -105,7 +104,6 @@ async function loadAllData() {
             intersection: intersectionRaw?.length
         });
 
-        // Parse raw data for trend chart filtering
         if (rawRaw && rawRaw.length > 0) {
             rawData = rawRaw.map(d => ({
                 year: parseNumber(d.YEAR),
@@ -204,7 +202,6 @@ function safeAddEvent(element, eventType, handler) {
     }
 }
 
-// 保持你原本的原始 select 事件监听逻辑（不需要任何改动，无缝衔接）
 safeAddEvent(document.getElementById('filterJurisdiction'), 'change', function (e) {
     state.jurisdiction = e.target.value;
     refreshAllCharts();
@@ -257,11 +254,11 @@ window.addEventListener('resize', () => {
 
 loadAllData();
 
-// main.js for page navigation
+// main.js for page navigation - Updated for Home and Dashboard only
 function initPageNavigation() {
     const navButtons = document.querySelectorAll('.nav-btn');
     const homePage = document.getElementById('homePage');
-    const aboutPage = document.getElementById('aboutPage');
+    const dashboardPage = document.getElementById('dashboardPage');
 
     if (!navButtons.length) return;
 
@@ -269,21 +266,18 @@ function initPageNavigation() {
         btn.addEventListener('click', () => {
             const page = btn.getAttribute('data-page');
 
-            // Update active states
             navButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            // Show/hide pages
             if (page === 'home') {
                 homePage.classList.add('active-page');
-                aboutPage.classList.remove('active-page');
-                // Refresh charts when returning to home
+                dashboardPage.classList.remove('active-page');
+            } else if (page === 'dashboard') {
+                homePage.classList.remove('active-page');
+                dashboardPage.classList.add('active-page');
                 if (typeof refreshAllCharts === 'function') {
                     setTimeout(refreshAllCharts, 100);
                 }
-            } else if (page === 'about') {
-                homePage.classList.remove('active-page');
-                aboutPage.classList.add('active-page');
             }
         });
     });
@@ -348,13 +342,12 @@ function initAllAppModules() {
     initCustomDropdowns();
 }
 
-// Call initialization when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAllAppModules);
 } else {
     initAllAppModules();
 }
-// For Pagination function
+
 document.addEventListener('click', function (e) {
     if (e.target.classList.contains('page-btn')) {
         const targetPage = e.target.getAttribute('data-page');

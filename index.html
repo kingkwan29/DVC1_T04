@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Bitre Data Dashboard</title>
-    <!-- Poppins Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
@@ -19,15 +18,14 @@
         <aside class="sidebar">
             <div class="nav-group">
                 <button class="nav-btn active" data-page="home">
-                    <span>🏠 Home</span>
+                    <span>Home</span>
                 </button>
-                <button class="nav-btn" data-page="about">
-                    <span>ℹ️ About</span>
+                <button class="nav-btn" data-page="dashboard">
+                    <span>Dashboard</span>
                 </button>
             </div>
 
             <div class="sidebar-filters">
-                <!-- 1. Jurisdiction Custom Filter -->
                 <div class="filter-group">
                     <label>Jurisdiction</label>
                     <div class="custom-select-container" id="containerJurisdiction">
@@ -57,7 +55,6 @@
                     </select>
                 </div>
 
-                <!-- 2. Age Group Custom Filter -->
                 <div class="filter-group">
                     <label>Age Group</label>
                     <div class="custom-select-container" id="containerAge">
@@ -81,7 +78,6 @@
                     </select>
                 </div>
 
-                <!-- 3. Detection Method Custom Filter -->
                 <div class="filter-group">
                     <label>Detection Method</label>
                     <div class="custom-select-container" id="containerMethod">
@@ -118,6 +114,10 @@
 
         <main class="main-content">
             <div id="homePage" class="page-content active-page">
+                <!-- Empty page -->
+            </div>
+
+            <div id="dashboardPage" class="page-content">
                 <div class="kpi-row" id="kpiRow">
                     <div class="kpi-card"><span class="kpi-label">Total Fines</span><span class="kpi-number"
                             id="kpiFines">—</span></div>
