@@ -1,4 +1,4 @@
-// js/state.js
+// js/state.js - Updated
 // Global State and Data
 
 const state = {
@@ -11,7 +11,7 @@ let kpiData = {};
 let monthlyData = [];
 let geoData = [];
 let intersectionData = [];
-let rawData = [];           // Full dataset from Clean Police Enforcement 2024.csv
+let rawData = [];
 let tooltipDiv = null;
 
 function getTooltip() {
@@ -51,7 +51,6 @@ function hideTooltip() {
     tooltip.style.opacity = '0';
 }
 
-// Aggregate monthly data from rawData based on current filters
 function computeMonthlyData() {
     if (!rawData || rawData.length === 0) return;
 
@@ -72,8 +71,8 @@ function computeMonthlyData() {
             'Mobile camera': 'Mobile camera',
             'Red light camera': 'Red light camera',
             'Manual Action': 'Manual Action',
-            'Camera (Unspecified)': 'Camera',
-            'All Methods': 'All Methods'
+            'Camera': 'Camera',
+            'Average speed camera': 'Average speed camera'
         };
         const targetMethod = methodMap[state.method];
         if (targetMethod) {
@@ -105,33 +104,6 @@ function computeMonthlyData() {
     monthlyData = result;
 }
 
-function applyAllFilters(data) {
-    let result = [...data];
-
-    if (state.jurisdiction !== 'all') {
-        const jurisMap = {
-            'ACT': 'ACT', 'NSW': 'NSW', 'NT': 'NT', 'QLD': 'QLD',
-            'SA': 'SA', 'TAS': 'TAS', 'VIC': 'VIC', 'WA': 'WA'
-        };
-        const targetLoc = jurisMap[state.jurisdiction];
-        if (targetLoc) {
-            result = result.filter(d => d.location === targetLoc);
-        } else {
-            result = result.filter(d => d.location === 'All Regions');
-        }
-    }
-
-    if (state.age !== 'all') {
-        result = result.filter(d => d.ageGroup === state.age);
-    }
-
-    if (state.method !== 'all' && result.length > 0 && result[0].method !== undefined) {
-        result = result.filter(d => d.method === state.method);
-    }
-
-    return result;
-}
-
 function applyJurisdictionFilter(data) {
     if (state.jurisdiction === 'all') return data;
     return data.filter(d => d.jurisdiction === state.jurisdiction);
@@ -143,5 +115,5 @@ function refreshAllCharts() {
     if (typeof renderMonthlyTrend === 'function') renderMonthlyTrend();
     if (typeof renderGroupedBarChart === 'function') renderGroupedBarChart();
     if (typeof renderHBarChart === 'function') renderHBarChart();
-    if (typeof renderVBarChart === 'function') renderVBarChart();
+    if (typeof refreshMetricMethodCharts === 'function') refreshMetricMethodCharts();
 }

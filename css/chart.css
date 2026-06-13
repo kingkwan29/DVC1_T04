@@ -357,155 +357,201 @@
 }
 
 /* ============================================
-   VBAR CHART 
+   METRIC METHOD CHARTS - Color Blind Friendly
    ============================================ */
 
-/* VBar Notice */
-.vbar-notice {
-    font-size: 10px;
-    color: #000000;
-    font-style: italic;
-    text-align: center;
-    padding: 6px 12px;
-    background: #f1f5f9;
-    border-radius: 8px;
-    margin-bottom: 12px;
+/* Metric Selector Buttons */
+.metric-selector-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.metric-selector-btn {
+    padding: 6px 18px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    background: white;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.metric-selector-btn:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+}
+
+.metric-selector-btn.active {
+    background: #4A90D9;
+    color: white;
+    border-color: #4A90D9;
+}
+
+/* Area Chart Bars - High contrast */
+#metricMethodAreaChart .area-bar {
+    transition: opacity 0.2s ease;
+    fill: #4A90D9;
+}
+
+#metricMethodAreaChart .area-bar:hover {
+    opacity: 1;
+    filter: brightness(0.95);
+}
+
+/* Axes - Clear black lines for contrast */
+#metricMethodAreaChart .axis text {
+    font-size: 11px;
+    fill: #1A1A1A !important;
     font-family: 'Poppins', sans-serif;
 }
 
-/* VBar Grid Lines */
-#vbarChart .grid-lines .tick line {
-    stroke: #e2e8f0;
-    stroke-dasharray: 3, 3;
+#metricMethodAreaChart .axis path,
+#metricMethodAreaChart .axis line {
+    stroke: #1A1A1A !important;
+    stroke-width: 1;
 }
 
-/* VBar Top Axis (Fines) */
-#vbarChart .axis-top-fines .tick text {
-    font-size: 10px;
+#metricMethodAreaChart .axis-label-x,
+#metricMethodAreaChart .axis-label-y-left {
+    font-size: 12px;
     font-weight: 600;
-    fill: #1e40af;
+    fill: #2D3748;
 }
 
-#vbarChart .axis-top-fines .tick line,
-#vbarChart .axis-top-fines path {
-    stroke: #1e40af;
+/* Method Bar Chart - Position-based assessment (Law 7) */
+#methodBarChart .method-bar-fines {
+    transition: opacity 0.2s ease;
+    fill: #4A90D9;
 }
 
-/* VBar Bottom Axis (Arrests) */
-#vbarChart .axis-bottom-arrests .tick text {
-    font-size: 10px;
-    font-weight: 600;
-    fill: #b91c1c;
+#methodBarChart .method-bar-fines:hover {
+    opacity: 1;
+    filter: brightness(0.95);
 }
 
-#vbarChart .axis-bottom-arrests .tick line,
-#vbarChart .axis-bottom-arrests path {
-    stroke: #b91c1c;
+#methodBarChart .axis text {
+    font-size: 11px;
+    fill: #1A1A1A !important;
+    font-family: 'Poppins', sans-serif;
 }
 
-/* VBar Left Axis (Jurisdiction) */
-#vbarChart .axis-left-jurisdiction .tick text {
+#methodBarChart .axis path,
+#methodBarChart .axis line {
+    stroke: #1A1A1A !important;
+    stroke-width: 1;
+}
+
+#methodBarChart .axis-left .tick text {
     font-size: 11px;
     font-weight: 600;
-    fill: #000000;
+    fill: #2D3748;
 }
 
-/* VBar Axis Labels */
-#vbarChart .axis-label-fines {
+#methodBarChart .axis-label-x,
+#methodBarChart .axis-label-y-left {
     font-size: 12px;
-    font-weight: 700;
-    fill: #1e40af;
-    text-anchor: middle;
+    font-weight: 600;
+    fill: #2D3748;
 }
 
-#vbarChart .axis-label-arrests {
+/* Donut Chart - Color blind friendly palette (Law 5) */
+#metricDonutChart svg {
+    display: block;
+    margin: 0 auto;
+}
+
+#metricDonutChart path {
+    transition: opacity 0.2s ease, filter 0.2s ease;
+    cursor: pointer;
+}
+
+#metricDonutChart path:hover {
+    filter: brightness(0.92);
+}
+
+/* Loading and empty states */
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 200px;
+    color: #94a3b8;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+/* Responsive adjustments (Law 9 - most data in least space) */
+@media (max-width: 768px) {
+    .metric-selector-group {
+        gap: 8px;
+        padding: 10px 12px;
+    }
+
+    .metric-selector-btn {
+        padding: 4px 12px;
+        font-size: 11px;
+    }
+
+    #methodBarChart .axis-left .tick text {
+        font-size: 9px;
+    }
+
+    #metricDonutChart svg {
+        transform: scale(0.92);
+    }
+
+    #metricMethodAreaChart .value-label {
+        font-size: 8px !important;
+    }
+}
+
+/* Tooltip styling - Integrated text (Law 13) */
+.chart-tooltip {
+    position: fixed;
+    background: #1F2F3E;
+    color: #F0F6FE;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
     font-size: 12px;
+    pointer-events: none;
+    z-index: 10000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    max-width: 300px;
+    opacity: 0;
+    transition: opacity 0.15s;
+    line-height: 1.5;
+}
+
+.chart-tooltip .tooltip-title {
     font-weight: 700;
-    fill: #b91c1c;
-    text-anchor: middle;
+    color: #93c5fd;
+    margin-bottom: 8px;
+    font-size: 13px;
+    letter-spacing: 0.3px;
 }
 
-/* VBar Center Line */
-#vbarChart .center-line {
-    stroke: #94a3b8;
-    stroke-width: 1.5;
-    stroke-dasharray: 5, 5;
+.chart-tooltip .tooltip-row {
+    margin-bottom: 5px;
 }
 
-/* VBar Legend Group */
-#vbarChart .legend-group text {
-    font-size: 10px;
-    fill: #475569;
-    font-weight: 700;
-    font-family: 'Poppins', sans-serif;
-}
-
-#vbarChart .legend-group rect {
-    rx: 2;
-}
-
-/* VBar Fines Bars */
-#vbarChart .bar-fines {
-    rx: 4;
-}
-
-#vbarChart .bar-fines[data-has-arrests="true"] {
-    fill: #1e40af;
-    opacity: 0.85;
-}
-
-#vbarChart .bar-fines[data-has-arrests="false"] {
-    fill: #8B5CF6;
-    opacity: 0.7;
-}
-
-#vbarChart .bar-fines:hover {
-    opacity: 1;
-}
-
-/* VBar Arrests Bars */
-#vbarChart .bar-arrests {
-    fill: #b91c1c;
-    opacity: 0.85;
-    rx: 4;
-}
-
-#vbarChart .bar-arrests[data-has-arrests="false"] {
-    fill: #e2e8f0;
-    opacity: 0.6;
-}
-
-#vbarChart .bar-arrests:hover {
-    opacity: 1;
-}
-
-/* VBar Data Labels */
-#vbarChart .label-fines {
-    font-size: 10px;
-    font-weight: 600;
-    text-anchor: end;
-}
-
-#vbarChart .label-fines[data-has-arrests="true"] {
-    fill: #1e3a5f;
-}
-
-#vbarChart .label-fines[data-has-arrests="false"] {
-    fill: #7C3AED;
-}
-
-#vbarChart .label-arrests {
-    font-size: 10px;
-    font-weight: 600;
-    fill: #7f1d1d;
-    text-anchor: start;
-}
-
-/* VBar Chart Notes */
-#vbarChart .chart-note {
-    font-size: 9px;
-    fill: #94a3b8;
-    font-style: italic;
-    text-anchor: start;
-    font-family: 'Poppins', sans-serif;
+.chart-tooltip .tooltip-footer {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid #374151;
+    font-size: 11px;
+    color: #9CA3AF;
 }

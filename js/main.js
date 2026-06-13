@@ -164,6 +164,9 @@ async function loadAllData() {
 
         setTimeout(() => {
             refreshAllCharts();
+            if (typeof initMetricMethodModule === 'function') {
+                initMetricMethodModule();
+            }
         }, 100);
 
     } catch (error) {
@@ -204,17 +207,47 @@ function safeAddEvent(element, eventType, handler) {
 
 safeAddEvent(document.getElementById('filterJurisdiction'), 'change', function (e) {
     state.jurisdiction = e.target.value;
+
+    const trigger = document.querySelector('#containerJurisdiction .custom-select-trigger');
+    if (trigger) {
+        const selectedOption = document.querySelector('#containerJurisdiction .custom-option.selected');
+        if (selectedOption) trigger.textContent = selectedOption.textContent;
+    }
+
     refreshAllCharts();
+    if (typeof refreshMetricMethodCharts === 'function') {
+        refreshMetricMethodCharts();
+    }
 });
 
 safeAddEvent(document.getElementById('filterAge'), 'change', function (e) {
     state.age = e.target.value;
+
+    const trigger = document.querySelector('#containerAge .custom-select-trigger');
+    if (trigger) {
+        const selectedOption = document.querySelector('#containerAge .custom-option.selected');
+        if (selectedOption) trigger.textContent = selectedOption.textContent;
+    }
+
     refreshAllCharts();
+    if (typeof refreshMetricMethodCharts === 'function') {
+        refreshMetricMethodCharts();
+    }
 });
 
 safeAddEvent(document.getElementById('filterMethod'), 'change', function (e) {
     state.method = e.target.value;
+
+    const trigger = document.querySelector('#containerMethod .custom-select-trigger');
+    if (trigger) {
+        const selectedOption = document.querySelector('#containerMethod .custom-option.selected');
+        if (selectedOption) trigger.textContent = selectedOption.textContent;
+    }
+
     refreshAllCharts();
+    if (typeof refreshMetricMethodCharts === 'function') {
+        refreshMetricMethodCharts();
+    }
 });
 
 safeAddEvent(document.getElementById('exportPNG'), 'click', exportAsPNG);
@@ -229,7 +262,10 @@ if (chartGrid) {
                 'trend': 'monthly-trend',
                 'grouped': 'grouped-bar-chart',
                 'hbar': 'metric-hbar',
-                'vbar': 'jurisdiction-vbar'
+                'vbar': 'jurisdiction-vbar',
+                'metric-area': 'metric-method-area',
+                'metric-donut': 'metric-donut',
+                'method-bar': 'method-bar'
             };
             const chartType = btn.getAttribute('data-chart');
             const filename = chartMap[chartType] || 'chart';
@@ -237,7 +273,10 @@ if (chartGrid) {
                 'trend': 'trendChart',
                 'grouped': 'groupedBarChart',
                 'hbar': 'hbarChart',
-                'vbar': 'vbarChart'
+                'vbar': 'vbarChart',
+                'metric-area': 'metricMethodAreaChart',
+                'metric-donut': 'metricDonutChart',
+                'method-bar': 'methodBarChart'
             };
             exportChartSVG(chartIdMap[chartType], filename);
         }
@@ -248,13 +287,17 @@ let resizeTimer;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-        if (dataLoaded) refreshAllCharts();
+        if (dataLoaded) {
+            refreshAllCharts();
+            if (typeof refreshMetricMethodCharts === 'function') {
+                refreshMetricMethodCharts();
+            }
+        }
     }, 200);
 });
 
 loadAllData();
 
-// main.js for page navigation - Updated for Home and Dashboard only
 function initPageNavigation() {
     const navButtons = document.querySelectorAll('.nav-btn');
     const homePage = document.getElementById('homePage');
@@ -275,7 +318,15 @@ function initPageNavigation() {
             } else if (page === 'dashboard') {
                 homePage.classList.remove('active-page');
                 dashboardPage.classList.add('active-page');
-                if (typeof refreshAllCharts === 'function') {
+
+                const activePage = document.querySelector('.chart-page.active-page');
+                if (activePage && activePage.id === 'page2') {
+                    setTimeout(() => {
+                        if (typeof refreshMetricMethodCharts === 'function') {
+                            refreshMetricMethodCharts();
+                        }
+                    }, 150);
+                } else if (typeof refreshAllCharts === 'function') {
                     setTimeout(refreshAllCharts, 100);
                 }
             }
@@ -352,15 +403,24 @@ document.addEventListener('click', function (e) {
     if (e.target.classList.contains('page-btn')) {
         const targetPage = e.target.getAttribute('data-page');
 
-        document.querySelectorAll('.chart-page').forEach(p => p.style.display = 'none');
-        document.getElementById(`page${targetPage}`).style.display = 'block';
+        document.querySelectorAll('.chart-page').forEach(p => p.classList.remove('active-page'));
+        const pageToShow = targetPage === '1' ? document.getElementById('page1') : document.getElementById('page2');
+        if (pageToShow) pageToShow.classList.add('active-page');
+
         document.querySelectorAll('.page-btn').forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('data-page') === targetPage);
         });
 
         document.querySelector('.main-content').scrollTop = 0;
-        if (typeof refreshAllCharts === 'function') {
-            refreshAllCharts();
+
+        if (targetPage === '2') {
+            setTimeout(() => {
+                if (typeof refreshMetricMethodCharts === 'function') {
+                    refreshMetricMethodCharts();
+                }
+            }, 150);
+        } else if (targetPage === '1' && typeof refreshAllCharts === 'function') {
+            setTimeout(refreshAllCharts, 100);
         }
     }
 });

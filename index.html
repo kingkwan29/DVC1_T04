@@ -165,15 +165,46 @@
 
                 <div class="chart-page" id="page2" style="display: none;">
                     <div class="chart-grid">
+                        <!-- Metric Selector -->
                         <div class="chart-card full-width">
                             <div class="chart-header">
-                                <div class="header-left"><span class="chart-title">Enforcement Severity: Fines vs.
-                                        Arrests by Jurisdiction</span><span class="chart-sub">Dual X‑Axis · fines (top)
-                                        vs arrests (bottom)</span></div>
-                                <div class="chart-actions"><button class="chart-action-btn" data-chart="vbar">⤓</button>
+                                <div class="header-left">
+                                    <span class="chart-title">Fines by Detection Method</span>
+                                    <span class="chart-sub">Area Chart · Select violation type below</span>
+                                </div>
+                                <div class="chart-actions">
+                                    <button class="chart-action-btn" data-chart="metric-area">⤓</button>
                                 </div>
                             </div>
-                            <div class="chart-body" id="vbarChart"></div>
+                            <div id="metricSelectorContainer"></div>
+                            <div class="chart-body" id="metricMethodAreaChart"></div>
+                        </div>
+
+                        <!-- Two Column Layout -->
+                        <div class="chart-card half-width">
+                            <div class="chart-header">
+                                <div class="header-left">
+                                    <span class="chart-title">Violation Type Distribution</span>
+                                    <span class="chart-sub">Donut Chart · fines by category</span>
+                                </div>
+                                <div class="chart-actions">
+                                    <button class="chart-action-btn" data-chart="metric-donut">⤓</button>
+                                </div>
+                            </div>
+                            <div class="chart-body" id="metricDonutChart"></div>
+                        </div>
+
+                        <div class="chart-card half-width">
+                            <div class="chart-header">
+                                <div class="header-left">
+                                    <span class="chart-title">Detection Method Comparison</span>
+                                    <span class="chart-sub">Horizontal Bar Chart · fines by method</span>
+                                </div>
+                                <div class="chart-actions">
+                                    <button class="chart-action-btn" data-chart="method-bar">⤓</button>
+                                </div>
+                            </div>
+                            <div class="chart-body" id="methodBarChart"></div>
                         </div>
                     </div>
                     <div class="pagination-controls">
@@ -192,6 +223,7 @@
     <script src="js/grouped-bar.js"></script>
     <script src="js/hbar.js"></script>
     <script src="js/vbar.js"></script>
+    <script src="js/metric-method.js"></script>
     <script src="js/main.js"></script>
 </body>
 
