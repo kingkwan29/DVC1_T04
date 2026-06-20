@@ -1,5 +1,5 @@
 // js/metric-method.js
-// Metrics and Detection Method Analysis with Proper Filter Support
+// Metrics and Detection Method Analysis with Proper Filter Support - Lollipop Variant
 
 let metricMethodData = [];
 let currentMetric = 'speed_fines';
@@ -176,22 +176,30 @@ function renderMetricMethodAreaChart() {
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const methods = [...new Set(filtered.map(d => d.method))];
-    methods.sort();
+    const methods = [...new Set(filtered.map(d => d.method))].sort();
 
     const x = d3.scaleBand()
         .domain(methods)
         .range([0, innerWidth])
-        .padding(0.25);
+        .padding(0.4);
 
-    const maxFines = d3.max(filtered, d => d.fines);
+    const maxFines = d3.max(filtered, d => d.fines) || 0;
     const y = d3.scaleLinear()
-        .domain([0, maxFines * 1.1])
+        .domain([0, maxFines * 1.15])
         .range([innerHeight, 0]);
 
     const labelWidth = 75;
     const maxTicks = Math.max(2, Math.min(4, Math.floor(innerWidth / labelWidth)));
-    const ticks = getNiceTicks(maxFines * 1.1, maxTicks);
+    const ticks = getNiceTicks(maxFines * 1.15, maxTicks);
+
+    svg.append('g')
+        .attr('class', 'grid-lines')
+        .call(d3.axisLeft(y).tickValues(ticks).tickSize(-innerWidth).tickFormat(''))
+        .select('.domain').remove();
+
+    svg.selectAll('.grid-lines line')
+        .style('stroke', '#E2E8F0')
+        .style('stroke-dasharray', '3,3');
 
     const yAxisGroup = svg.append('g')
         .attr('class', 'axis axis-left')
@@ -215,9 +223,7 @@ function renderMetricMethodAreaChart() {
         .each(function (d) {
             const self = d3.select(this);
             let text = self.text();
-            if (text.length > 14) {
-                self.text(text.substring(0, 12) + '...');
-            }
+            if (text.length > 14) self.text(text.substring(0, 12) + '...');
         });
 
     svg.append('text')
@@ -241,21 +247,32 @@ function renderMetricMethodAreaChart() {
         .style('font-size', '11px')
         .text('Total Fines');
 
-    svg.selectAll('.area-bar')
+    const themeColor = getMetricColor(currentMetric);
+
+    svg.selectAll('.lollipop-line')
         .data(filtered)
         .enter()
-        .append('rect')
-        .attr('class', 'area-bar')
-        .attr('x', d => x(d.method))
-        .attr('y', d => y(d.fines))
-        .attr('width', x.bandwidth())
-        .attr('height', d => innerHeight - y(d.fines))
-        .attr('fill', getMetricColor(currentMetric))
-        .attr('opacity', 0.85)
-        .attr('rx', 4)
+        .append('line')
+        .attr('class', 'lollipop-line')
+        .attr('x1', d => x(d.method) + x.bandwidth() / 2)
+        .attr('x2', d => x(d.method) + x.bandwidth() / 2)
+        .attr('y1', innerHeight)
+        .attr('y2', d => y(d.fines))
+        .attr('stroke', themeColor)
+        .attr('stroke-width', 2.5);
+
+    svg.selectAll('.lollipop-head')
+        .data(filtered)
+        .enter()
+        .append('circle')
+        .attr('class', 'lollipop-head')
+        .attr('cx', d => x(d.method) + x.bandwidth() / 2)
+        .attr('cy', d => y(d.fines))
+        .attr('r', 6)
+        .attr('fill', themeColor)
         .style('cursor', 'pointer')
         .on('mouseenter', function (event, d) {
-            d3.select(this).attr('opacity', 1);
+            d3.select(this).attr('r', 8);
             showTooltip(event, `
                 <div class="tooltip-title">${formatMethodName(d.method)}</div>
                 <div class="tooltip-row"><strong>Violation:</strong> ${formatMetricName(d.metric)}</div>
@@ -266,7 +283,7 @@ function renderMetricMethodAreaChart() {
             `);
         })
         .on('mouseleave', function () {
-            d3.select(this).attr('opacity', 0.85);
+            d3.select(this).attr('r', 6);
             hideTooltip();
         });
 
@@ -274,12 +291,13 @@ function renderMetricMethodAreaChart() {
         .data(filtered)
         .enter()
         .append('text')
+        .attr('class', 'value-label')
         .attr('x', d => x(d.method) + x.bandwidth() / 2)
-        .attr('y', d => y(d.fines) - 5)
+        .attr('y', d => y(d.fines) - 10)
         .attr('text-anchor', 'middle')
         .style('font-size', '9px')
         .style('font-weight', '600')
-        .style('fill', getMetricColor(currentMetric))
+        .style('fill', themeColor)
         .text(d => formatCurrency(d.fines));
 }
 

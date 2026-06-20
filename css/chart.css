@@ -1,3 +1,6 @@
+/* ==========================================================================
+   Global Typography and Base SVG Overrides
+   ========================================================================== */
 .chart-body svg text,
 .chart-body svg tspan {
     font-family: 'Poppins', sans-serif;
@@ -8,6 +11,9 @@
     stroke: #E2E8F0;
 }
 
+/* ==========================================================================
+   Trend Chart Layout Section
+   ========================================================================== */
 #trendChart {
     width: 100%;
     height: 100%;
@@ -128,16 +134,9 @@
     text-anchor: start;
 }
 
-#trendChart .loading-state {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: #94a3b8;
-    font-size: 14px;
-    font-family: 'Poppins', sans-serif;
-}
-
+/* ==========================================================================
+   Grouped and Horizontal Bar Components
+   ========================================================================== */
 #groupedBarChart .axis-fines .tick text {
     font-size: 14px;
     font-weight: 600;
@@ -193,16 +192,15 @@
     stroke: #1A1A1A !important;
 }
 
+/* ==========================================================================
+   Labels, Indicators, Typography Tokens
+   ========================================================================== */
 .axis-label-x {
-    font-size: 15px;
-    font-weight: 700;
-    fill: #2D3748;
+    font-size: 12px !important;
 }
 
 .axis-label-y-left {
-    font-size: 14px;
-    font-weight: 700;
-    fill: #2E86AB;
+    font-size: 11px !important;
 }
 
 .axis-label-y-right {
@@ -258,6 +256,9 @@
     fill: #E63946;
 }
 
+/* ==========================================================================
+   Interactive Chart Utilities
+   ========================================================================== */
 .bar {
     opacity: 0.9;
     rx: 4;
@@ -285,85 +286,86 @@
     pointer-events: none;
 }
 
-.chart-tooltip {
-    position: fixed;
-    background: #1F2F3E;
-    color: #F0F6FE;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    pointer-events: none;
-    z-index: 10000;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 280px;
-    opacity: 0;
-    transition: opacity 0.15s;
-}
-
-.chart-tooltip .tooltip-title {
-    font-weight: 700;
-    color: #93c5fd;
-    margin-bottom: 6px;
-    font-size: 13px;
-}
-
-.chart-tooltip .tooltip-row {
-    margin-bottom: 4px;
-}
-
-.chart-tooltip .tooltip-footer {
-    margin-top: 6px;
-    padding-top: 6px;
-    border-top: 1px solid #374151;
-    font-size: 11px;
-    color: #9CA3AF;
-}
-
+/* ==========================================================================
+   Metric Selector Modules (Sleek, Segmented Pill Redesign)
+   ========================================================================== */
 .metric-selector-group {
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
-    gap: 8px;
-    padding: 8px 12px;
-    background: #f8fafc;
-    border-radius: 10px;
-    margin-bottom: 12px;
-    border: 1px solid #e2e8f0;
+    gap: 6px;
+    padding: 6px;
+    background: #F1F5F9;
+    border-radius: 30px;
+    margin-bottom: 24px;
+    border: 1px solid #E2E8F0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
 .metric-selector-btn {
-    padding: 4px 14px;
+    padding: 8px 18px;
     font-family: 'Poppins', sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
-    color: #475569;
-    background: white;
-    border: 1.5px solid #cbd5e1;
-    border-radius: 20px;
+    color: #64748B;
+    background: transparent;
+    border: none;
+    border-radius: 24px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.2px;
 }
 
 .metric-selector-btn:hover {
-    background: #e2e8f0;
-    border-color: #94a3b8;
+    color: #1E293B;
+    background: rgba(255, 255, 255, 0.6);
 }
 
-.metric-selector-btn.active {
-    background: #4A90D9;
-    color: white;
-    border-color: #4A90D9;
+.metric-selector-btn.active[data-metric="speed_fines"] {
+    background: #43AA8B;
+    color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(67, 170, 139, 0.3);
 }
 
-#metricMethodAreaChart .area-bar {
-    transition: all 0.2s ease;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+.metric-selector-btn.active[data-metric="mobile_phone_use"] {
+    background: #2E86AB;
+    color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(46, 134, 171, 0.3);
 }
 
-#metricMethodAreaChart .area-bar:hover {
-    opacity: 1;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12)) brightness(1.02);
+.metric-selector-btn.active[data-metric="non_wearing_seatbelts"] {
+    background: #F9844A;
+    color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(249, 132, 74, 0.3);
+}
+
+.metric-selector-btn.active[data-metric="unlicensed_driving"] {
+    background: #E63946;
+    color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+}
+
+/* ==========================================================================
+   OPTION D SPECIFIC: Lollipop Graph Rendering Elements
+   ========================================================================== */
+#metricMethodAreaChart .lollipop-line {
+    transition: stroke-width 0.15s ease;
+    stroke-linecap: round;
+}
+
+#metricMethodAreaChart .lollipop-head {
+    transition: r 0.15s ease, filter 0.15s ease;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.15));
+}
+
+#metricMethodAreaChart .lollipop-head:hover {
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25)) brightness(1.05);
+}
+
+#metricMethodAreaChart .value-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    pointer-events: none;
 }
 
 #metricMethodAreaChart .axis text {
@@ -382,17 +384,13 @@
     stroke: #A0AEC0 !important;
 }
 
-#metricMethodAreaChart .axis-label-x,
-#metricMethodAreaChart .axis-label-y-left {
-    font-size: 11px;
-    font-weight: 600;
-    fill: #2D3748;
-}
-
 #metricMethodAreaChart .domain {
     stroke: #A0AEC0 !important;
 }
 
+/* ==========================================================================
+   Method Horizontal Bar & Donut Visualization Modules
+   ========================================================================== */
 #methodBarChart .method-bar-fines {
     transition: all 0.2s ease;
     fill: #4A90D9;
@@ -454,6 +452,9 @@
     transform-origin: center;
 }
 
+/* ==========================================================================
+   Structural Mechanics: Layout Fallbacks, Tooltips, Global Dimensions
+   ========================================================================== */
 .loading-state {
     display: flex;
     align-items: center;
@@ -471,31 +472,26 @@
 #metricDonutChart,
 #methodBarChart {
     min-height: 220px;
+    max-height: 280px;
     width: 100%;
 }
 
-@media (max-width: 768px) {
-    .metric-selector-group {
-        gap: 8px;
-        padding: 10px 12px;
-    }
+.chart-card {
+    padding: 16px;
+    border-radius: 12px;
+}
 
-    .metric-selector-btn {
-        padding: 4px 12px;
-        font-size: 11px;
-    }
+.chart-card .card-header {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+}
 
-    #methodBarChart .axis-left .tick text {
-        font-size: 9px;
-    }
+.chart-card .card-title {
+    font-size: 15px;
+}
 
-    #metricDonutChart svg {
-        transform: scale(0.92);
-    }
-
-    #metricMethodAreaChart .value-label {
-        font-size: 8px !important;
-    }
+.chart-card .card-subtitle {
+    font-size: 12px;
 }
 
 .chart-tooltip {
@@ -536,44 +532,9 @@
     color: #9CA3AF;
 }
 
-/* Compact chart containers */
-#metricMethodAreaChart,
-#metricDonutChart,
-#methodBarChart {
-    min-height: 220px;
-    width: 100%;
-    max-height: 280px;
-}
-
-/* Compact card styling */
-.chart-card {
-    padding: 16px;
-    border-radius: 12px;
-}
-
-.chart-card .card-header {
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-}
-
-.chart-card .card-title {
-    font-size: 15px;
-}
-
-.chart-card .card-subtitle {
-    font-size: 12px;
-}
-
-/* Reduce axis label sizes globally */
-.axis-label-x {
-    font-size: 12px !important;
-}
-
-.axis-label-y-left {
-    font-size: 11px !important;
-}
-
-/* Compact mobile styles */
+/* ==========================================================================
+   Responsive Viewport Media Queries (<= 768px Mobile Adaptation)
+   ========================================================================== */
 @media (max-width: 768px) {
 
     #metricMethodAreaChart,
@@ -584,12 +545,30 @@
     }
 
     .metric-selector-group {
+        display: flex;
+        width: 100%;
+        border-radius: 16px;
         gap: 6px;
         padding: 6px 10px;
     }
 
     .metric-selector-btn {
-        padding: 3px 10px;
-        font-size: 10px;
+        flex: 1 1 auto;
+        padding: 6px 12px;
+        font-size: 11px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    #methodBarChart .axis-left .tick text {
+        font-size: 9px;
+    }
+
+    #metricDonutChart svg {
+        transform: scale(0.92);
+    }
+
+    #metricMethodAreaChart .value-label {
+        font-size: 8px !important;
     }
 }
