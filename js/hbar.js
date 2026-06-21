@@ -1,3 +1,17 @@
+// js/hbar.js
+// Horizontal Bar Chart - Shows fines by violation type (national) or by jurisdiction (state-level)
+
+/**
+ * Main entry point - decides which chart to render based on jurisdiction filter
+ * 
+ * HOW IT DECIDES:
+ * - If jurisdiction = 'all' → show violation breakdown (renderViolationChart)
+ * - If jurisdiction is specific → show jurisdiction breakdown (renderGeoChart)
+ * 
+ * DATA SOURCES:
+ * - Violation chart: intersectionData filtered for 'All Regions'
+ * - Geo chart: geoData (pre-aggregated by jurisdiction)
+ */
 function renderHBarChart() {
     if (state.jurisdiction === 'all') {
         renderViolationChart();
@@ -6,11 +20,23 @@ function renderHBarChart() {
     }
 }
 
+/**
+ * Generates "nice" tick values for chart axes
+ * 
+ * WHY: d3's default ticks can produce ugly values like 0, 2.5, 5, 7.5
+ * This function rounds to clean numbers: 0, 5, 10, 15, 20
+ * 
+ * HOW IT WORKS:
+ * 1. Calculate rough step size: maxValue / (maxTicks - 1)
+ * 2. Find the magnitude (power of 10) of the rough step
+ * 3. Normalize to 1-10 range
+ * 4. Choose step: 1, 2, 5, or 10 (multiplied by magnitude)
+ * 5. Generate ticks from 0 to maxValue using the step
+ * 6. Ensure maxValue is included if it's significantly above last tick
+ */
 function getNiceTicks(maxValue, maxTicks) {
-    // Generate at most 'maxTicks' evenly-spaced nice ticks from 0 to maxValue
     if (maxValue <= 0) return [0];
 
-    // Determine nice step size
     const roughStep = maxValue / (maxTicks - 1);
     const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
     const normalized = roughStep / magnitude;
@@ -28,7 +54,6 @@ function getNiceTicks(maxValue, maxTicks) {
         current += step;
     }
 
-    // Ensure max value is included if close to last tick or if we have room
     const lastTick = ticks[ticks.length - 1];
     if (lastTick < maxValue && (maxValue - lastTick) > step * 0.1) {
         if (ticks.length < maxTicks) {
@@ -39,6 +64,7 @@ function getNiceTicks(maxValue, maxTicks) {
     return ticks;
 }
 
+// ---- FORMATTING HELPERS ----
 function formatCurrency(value) {
     if (value === 0) return '$0';
     if (value >= 1e6) return '$' + (value / 1e6).toFixed(1) + 'M';
@@ -53,6 +79,7 @@ function formatNumber(value) {
     return value.toLocaleString();
 }
 
+// ---- COLOR HELPERS ----
 function getViolationColor(metric) {
     const colors = {
         'mobile_phone_use': '#2E86AB',
@@ -74,6 +101,12 @@ function getLocationColor(location) {
     return colors[location] || '#2E86AB';
 }
 
+/**
+ * Makes very small bars slightly darker so they're still visible
+ * 
+ * WHY: If a bar is very short (less than 5% of max), the color is too light
+ * This function darkens it so it can still be seen
+ */
 function getEnhancedColor(baseColor, value, maxValue) {
     const ratio = value / maxValue;
     if (ratio < 0.05) {
@@ -82,6 +115,22 @@ function getEnhancedColor(baseColor, value, maxValue) {
     return baseColor;
 }
 
+// ============================================================
+// NATIONAL VIEW: Violation breakdown
+// ============================================================
+/**
+ * Shows fines by violation type (speeding, mobile phone, seatbelt, unlicensed)
+ * 
+ * FILTER LOGIC:
+ * - ALWAYS uses 'All Regions' (national view)
+ * - Applies age filter (if specific age selected)
+ * - Applies method filter (if specific method selected)
+ * - Excludes 'All Methods' and 'Camera' aggregates when method = 'all'
+ * 
+ * DATA: intersectionData
+ * SORT: by fines descending (highest first)
+ * CHART TYPE: Horizontal bar chart
+ */
 function renderViolationChart() {
     const container = document.getElementById('hbarChart');
     if (!container) return;
@@ -100,10 +149,10 @@ function renderViolationChart() {
         filtered = filtered.filter(d => d.ageGroup === state.age);
     }
 
-    // Always use 'All Regions' - this chart shows violation breakdown across ALL jurisdictions
+    // CRITICAL: ALWAYS use 'All Regions' - national view
     filtered = filtered.filter(d => d.location === 'All Regions');
 
-    // Apply method filter only (NOT jurisdiction filter)
+    // Apply method filter
     if (state.method === 'all') {
         filtered = filtered.filter(d => d.method !== 'All Methods');
         filtered = filtered.filter(d => d.method !== 'Camera');
@@ -111,6 +160,7 @@ function renderViolationChart() {
         filtered = filtered.filter(d => d.method === state.method);
     }
 
+    // Four violation types
     const metrics = ['mobile_phone_use', 'non_wearing_seatbelts', 'speed_fines', 'unlicensed_driving'];
     const metricLabels = {
         'mobile_phone_use': 'Mobile Phone Use',
@@ -119,6 +169,7 @@ function renderViolationChart() {
         'unlicensed_driving': 'Unlicensed Driving'
     };
 
+    // Aggregate fines, arrests, charges for each violation type
     let data = metrics.map(m => {
         const metricData = filtered.filter(f => f.metric === m);
         return {
@@ -134,9 +185,9 @@ function renderViolationChart() {
     if (!hasData) {
         let reason = '';
         if (state.age !== 'all') {
-            reason = 'No data for selected age group in this view. Try selecting "All Ages".';
+            reason = 'No data for selected age group. Try "All Ages".';
         } else if (state.method !== 'all') {
-            reason = 'No data for selected detection method in this view.';
+            reason = 'No data for selected detection method.';
         } else {
             reason = 'No data available for current filters.';
         }
@@ -144,6 +195,7 @@ function renderViolationChart() {
         return;
     }
 
+    // Sort by fines descending (highest first)
     data = data.sort((a, b) => b.fines - a.fines);
 
     const maxFines = d3.max(data, d => d.fines);
@@ -164,23 +216,22 @@ function renderViolationChart() {
             .attr('width', '100%')
             .attr('height', '100%')
             .attr('viewBox', `0 0 ${width} ${height}`)
-            .attr('role', 'img')
-            .attr('aria-label', 'Horizontal bar chart showing fines by violation type')
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
+        // Y-axis: violation labels (categorical)
         const yScale = d3.scaleBand()
             .domain(data.map(d => d.label))
             .range([0, innerHeight])
             .padding(0.3);
 
-        // Always use linear scale
+        // X-axis: fines amount (linear)
         const xMax = maxFines * 1.1;
         const xScale = d3.scaleLinear()
             .domain([0, xMax])
             .range([0, innerWidth]);
 
-        // Calculate max ticks that can fit (each label needs ~55px for "$XXXK" format)
+        // Generate nice ticks
         const labelWidth = 55;
         const maxTicks = Math.max(2, Math.min(5, Math.floor(innerWidth / labelWidth)));
         const ticks = getNiceTicks(xMax, maxTicks);
@@ -191,7 +242,7 @@ function renderViolationChart() {
             .call(d3.axisTop(xScale).tickValues(ticks).tickSize(-innerHeight).tickFormat(''))
             .select('.domain').remove();
 
-        // Bottom axis with calculated ticks
+        // Bottom axis
         svg.append('g')
             .attr('class', 'axis axis-bottom')
             .attr('transform', `translate(0,${innerHeight})`)
@@ -212,7 +263,7 @@ function renderViolationChart() {
             .attr('class', 'axis axis-left')
             .call(d3.axisLeft(yScale));
 
-        // Draw bars
+        // Draw bars with animation (width grows from 0)
         svg.selectAll('rect.bar')
             .data(data)
             .enter()
@@ -221,7 +272,7 @@ function renderViolationChart() {
             .attr('y', d => yScale(d.label))
             .attr('x', 0)
             .attr('height', yScale.bandwidth())
-            .attr('width', 0)
+            .attr('width', 0)  // Start at 0 for animation
             .attr('fill', d => getEnhancedColor(getViolationColor(d.metric), d.fines, maxFines))
             .attr('stroke', d => {
                 const baseColor = getViolationColor(d.metric);
@@ -258,7 +309,7 @@ function renderViolationChart() {
             .duration(500)
             .attr('width', d => Math.max(xScale(d.fines), 4));
 
-        // Dot markers
+        // Dot markers at end of bars (for visual emphasis)
         svg.selectAll('circle.bar-dot')
             .data(data)
             .enter()
@@ -278,7 +329,7 @@ function renderViolationChart() {
             .attr('cx', d => Math.max(xScale(d.fines), 4))
             .style('opacity', 1);
 
-        // Data labels
+        // Value labels at end of bars
         svg.selectAll('.hbar-value')
             .data(data.filter(d => d.fines > 0))
             .enter()
@@ -296,23 +347,36 @@ function renderViolationChart() {
     }, 50);
 }
 
+// ============================================================
+// STATE VIEW: Jurisdiction breakdown
+// ============================================================
+/**
+ * Shows fines by jurisdiction (NSW, VIC, QLD, etc.)
+ * 
+ * DATA SOURCE: geoData (NOT intersectionData)
+ * WHY: geoData has pre-aggregated fines/arrests/charges per jurisdiction
+ *      intersectionData doesn't have jurisdiction-level granularity
+ * 
+ * FILTER LOGIC:
+ * - Filters geoData by the selected jurisdiction
+ * - Does NOT apply age or method filters (geoData doesn't have these dimensions)
+ * 
+ * CHART TYPE: Horizontal bar chart with jurisdiction-specific colors
+ */
 function renderGeoChart() {
     const container = document.getElementById('hbarChart');
     if (!container) return;
 
     container.innerHTML = '';
 
-    // When a specific jurisdiction is selected, use geoData instead of intersectionData
-    // because intersectionData doesn't have jurisdiction-level granularity
     const targetJurisdiction = state.jurisdiction;
 
-    // Check if we have geoData
     if (!geoData || geoData.length === 0) {
         container.innerHTML = '<div class="loading-state">Loading data...</div>';
         return;
     }
 
-    // Filter geoData by jurisdiction
+    // Filter geoData by the selected jurisdiction
     let filtered = [...geoData];
     if (targetJurisdiction !== 'all') {
         filtered = filtered.filter(d => d.jurisdiction === targetJurisdiction);
@@ -344,23 +408,21 @@ function renderGeoChart() {
             .attr('width', '100%')
             .attr('height', '100%')
             .attr('viewBox', `0 0 ${width} ${height}`)
-            .attr('role', 'img')
-            .attr('aria-label', 'Horizontal bar chart showing fines by jurisdiction')
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
+        // Y-axis: jurisdiction names
         const yScale = d3.scaleBand()
             .domain(data.map(d => d.jurisdiction))
             .range([0, innerHeight])
             .padding(0.3);
 
-        // Always use linear scale
+        // X-axis: fines amount
         const xMax = maxFines * 1.1;
         const xScale = d3.scaleLinear()
             .domain([0, xMax])
             .range([0, innerWidth]);
 
-        // Calculate max ticks that can fit
         const labelWidth = 55;
         const maxTicks = Math.max(2, Math.min(5, Math.floor(innerWidth / labelWidth)));
         const ticks = getNiceTicks(xMax, maxTicks);
@@ -392,7 +454,7 @@ function renderGeoChart() {
             .attr('class', 'axis axis-left')
             .call(d3.axisLeft(yScale));
 
-        // Jurisdiction colors
+        // Color mapping for each jurisdiction (consistent colors across charts)
         const jurisdictionColors = {
             'ACT': '#2E86AB',
             'NSW': '#F9844A',
@@ -463,7 +525,7 @@ function renderGeoChart() {
             .attr('cx', d => Math.max(xScale(d.fines), 4))
             .style('opacity', 1);
 
-        // Data labels
+        // Value labels
         svg.selectAll('.hbar-value')
             .data(data.filter(d => d.fines > 0))
             .enter()

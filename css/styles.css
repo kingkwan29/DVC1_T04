@@ -284,6 +284,9 @@ body {
     display: flex;
 }
 
+/* ==========================================================================
+   KPI CARDS - Transparent background with colored top border
+   ========================================================================== */
 .kpi-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -292,12 +295,40 @@ body {
 }
 
 .kpi-card {
-    background: #FFFFFF;
+    background: transparent;
     border-radius: 28px;
     padding: 24px 28px;
     border: 1px solid #D5E1ED;
     transition: all 0.3s ease;
     position: relative;
+    backdrop-filter: blur(2px);
+}
+
+/* Top colored border for each KPI card */
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    border-radius: 0 0 4px 4px;
+    transition: all 0.3s ease;
+}
+
+/* Total Fines - Blue */
+.kpi-card:nth-child(1)::before {
+    background: #2E86AB;
+}
+
+/* Total Arrests - Green */
+.kpi-card:nth-child(2)::before {
+    background: #43AA8B;
+}
+
+/* Total Charges - Red */
+.kpi-card:nth-child(3)::before {
+    background: #E63946;
 }
 
 .kpi-card:hover {
@@ -314,6 +345,13 @@ body {
 .kpi-card:nth-child(3):hover {
     border-color: #E63946;
     box-shadow: 0 20px 30px -12px rgba(230, 57, 70, 0.12);
+}
+
+/* Hover effect: top border expands slightly */
+.kpi-card:hover::before {
+    left: 16px;
+    right: 16px;
+    height: 4px;
 }
 
 .kpi-label {
@@ -789,7 +827,7 @@ body {
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .data-coverage-list {
         grid-template-columns: repeat(2, 1fr);
     }

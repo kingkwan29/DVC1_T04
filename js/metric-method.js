@@ -1,57 +1,19 @@
 // js/metric-method.js
-// Metrics and Detection Method Analysis with Proper Filter Support - Lollipop Variant
+// Metrics and Detection Method Analysis - Lollipop, Donut, and Bar Charts
+// This module syncs with kpi.js to keep KPI display aligned
 
 let metricMethodData = [];
 let currentMetric = 'speed_fines';
+let isUpdatingKPI = false;
 
-function initMetricMethodData() {
-    if (!rawData || rawData.length === 0) return;
+// ============================================================
+// HELPER FUNCTIONS (self-contained so module works independently)
+// ============================================================
 
-    let filtered = rawData.filter(d =>
-        d.metric && d.detectionMethod &&
-        d.detectionMethod !== 'Camera (Unspecified)' &&
-        d.detectionMethod !== 'All Methods'
-    );
-
-    if (state.jurisdiction !== 'all') {
-        filtered = filtered.filter(d => d.jurisdiction === state.jurisdiction);
-    }
-
-    if (state.age !== 'all') {
-        filtered = filtered.filter(d => d.ageGroup === state.age);
-    }
-
-    if (state.method !== 'all') {
-        filtered = filtered.filter(d => d.detectionMethod === state.method);
-    }
-
-    const grouped = d3.rollup(
-        filtered,
-        v => ({
-            fines: d3.sum(v, d => d.fines),
-            arrests: d3.sum(v, d => d.arrests),
-            charges: d3.sum(v, d => d.charges),
-            count: v.length
-        }),
-        d => d.metric,
-        d => d.detectionMethod
-    );
-
-    metricMethodData = [];
-    for (const [metric, methodMap] of grouped) {
-        for (const [method, values] of methodMap) {
-            metricMethodData.push({
-                metric: metric,
-                method: method,
-                fines: values.fines,
-                arrests: values.arrests,
-                charges: values.charges,
-                count: values.count
-            });
-        }
-    }
-}
-
+/**
+ * Generates "nice" tick values for chart axes
+ * Ensures clean numbers like 0, 5, 10 instead of 0, 4.7, 9.3
+ */
 function getNiceTicks(maxValue, maxTicks) {
     if (maxValue <= 0) return [0];
 
@@ -82,6 +44,7 @@ function getNiceTicks(maxValue, maxTicks) {
     return ticks;
 }
 
+// ---- FORMATTING HELPERS ----
 function formatCurrency(value) {
     if (value === 0) return '$0';
     if (value >= 1e6) return '$' + (value / 1e6).toFixed(1) + 'M';
@@ -139,6 +102,135 @@ function getMetricColor(metric) {
     return colors[metric] || '#4A90D9';
 }
 
+// ============================================================
+// DATA INITIALIZATION - Groups data by metric + detection method
+// ============================================================
+
+/**
+ * Initializes metric-method data by filtering rawData based on current state
+ * 
+ * HOW FILTERS WORK:
+ * 1. Start with rawData
+ * 2. Exclude 'Camera (Unspecified)' and 'All Methods' (aggregate categories)
+ * 3. Apply jurisdiction filter (if not 'all')
+ * 4. Apply age filter (if not 'all')
+ * 5. Apply method filter (if not 'all')
+ * 6. Group by metric + detection method using d3.rollup (nested)
+ * 7. Sum fines, arrests, charges within each group
+ * 8. Flatten into array for chart rendering
+ * 9. Sync KPI display with current data
+ * 
+ * NESTED GROUPING STRUCTURE:
+ * d3.rollup(data, reducer, key1, key2)
+ * → metric → method → { fines, arrests, charges, count }
+ */
+function initMetricMethodData() {
+    if (!rawData || rawData.length === 0) return;
+
+    let filtered = rawData.filter(d =>
+        d.metric && d.detectionMethod &&
+        d.detectionMethod !== 'Camera (Unspecified)' &&
+        d.detectionMethod !== 'All Methods'
+    );
+
+    if (state.jurisdiction !== 'all') {
+        filtered = filtered.filter(d => d.jurisdiction === state.jurisdiction);
+    }
+
+    if (state.age !== 'all') {
+        filtered = filtered.filter(d => d.ageGroup === state.age);
+    }
+
+    if (state.method !== 'all') {
+        filtered = filtered.filter(d => d.detectionMethod === state.method);
+    }
+
+    // Nested grouping: metric → method → aggregated values
+    const grouped = d3.rollup(
+        filtered,
+        v => ({
+            fines: d3.sum(v, d => d.fines),
+            arrests: d3.sum(v, d => d.arrests),
+            charges: d3.sum(v, d => d.charges),
+            count: v.length
+        }),
+        d => d.metric,
+        d => d.detectionMethod
+    );
+
+    // Flatten nested structure into array
+    metricMethodData = [];
+    for (const [metric, methodMap] of grouped) {
+        for (const [method, values] of methodMap) {
+            metricMethodData.push({
+                metric: metric,
+                method: method,
+                fines: values.fines,
+                arrests: values.arrests,
+                charges: values.charges,
+                count: values.count
+            });
+        }
+    }
+
+    // Sync KPI display with current filtered data
+    syncKPIWithCurrentFilters();
+}
+
+/**
+ * Synchronizes KPI display with current filter state
+ * 
+ * WHY: This bridges the gap between metric-method module and KPI module
+ * When filters change, both charts AND KPI numbers need to update
+ * 
+ * PREVENTS INFINITE LOOPS: Uses isUpdatingKPI flag
+ * DELAY: setTimeout ensures DOM is ready before updating
+ */
+function syncKPIWithCurrentFilters() {
+    if (typeof renderKPI !== 'function') {
+        console.warn('renderKPI function not found. Make sure kpi.js is loaded.');
+        return;
+    }
+
+    if (isUpdatingKPI) return;
+    isUpdatingKPI = true;
+
+    setTimeout(() => {
+        try {
+            renderKPI();
+        } catch (error) {
+            console.error('Error updating KPI from metric-method module:', error);
+        } finally {
+            isUpdatingKPI = false;
+        }
+    }, 50);
+}
+
+// ============================================================
+// LOLLIPOP CHART - Fines by detection method for selected metric
+// ============================================================
+
+/**
+ * Renders a LOLLIPOP chart showing fines by detection method
+ * 
+ * WHAT IS A LOLLIPOP CHART?
+ * - A bar chart alternative where each bar is replaced by:
+ *   - A vertical line (the "stick") from x-axis to data point
+ *   - A circle (the "lollipop head") at the data point
+ * - Cleaner visualization when you have fewer data points
+ * - Emphasizes the data points themselves
+ * 
+ * HOW IT WORKS:
+ * 1. Uses metricMethodData filtered by currentMetric
+ * 2. X-axis: detection methods (categorical, band scale)
+ * 3. Y-axis: fines amount (linear scale)
+ * 4. For each data point:
+ *    - Draws a line from x-axis to y-position (the "stick")
+ *    - Draws a circle at y-position (the "lollipop head")
+ *    - Adds value label above the circle
+ * 5. Tooltip shows: method, violation type, fines, arrests, charges, record count
+ * 6. Color matches the selected metric's theme color
+ */
 function renderMetricMethodAreaChart() {
     const container = document.getElementById('metricMethodAreaChart');
     if (!container) return;
@@ -176,64 +268,55 @@ function renderMetricMethodAreaChart() {
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
+    // Get unique methods and sort them
     const methods = [...new Set(filtered.map(d => d.method))].sort();
 
+    // X-axis: detection methods (band scale for categorical data)
     const x = d3.scaleBand()
         .domain(methods)
         .range([0, innerWidth])
         .padding(0.4);
 
+    // Y-axis: fines amount (linear scale)
     const maxFines = d3.max(filtered, d => d.fines) || 0;
     const y = d3.scaleLinear()
         .domain([0, maxFines * 1.15])
         .range([innerHeight, 0]);
 
+    // Generate nice tick values
     const labelWidth = 75;
     const maxTicks = Math.max(2, Math.min(4, Math.floor(innerWidth / labelWidth)));
     const ticks = getNiceTicks(maxFines * 1.15, maxTicks);
 
+    // Grid lines
     svg.append('g')
         .attr('class', 'grid-lines')
         .call(d3.axisLeft(y).tickValues(ticks).tickSize(-innerWidth).tickFormat(''))
         .select('.domain').remove();
 
-    svg.selectAll('.grid-lines line')
-        .style('stroke', '#E2E8F0')
-        .style('stroke-dasharray', '3,3');
-
-    const yAxisGroup = svg.append('g')
+    // Y-axis with currency formatting
+    svg.append('g')
         .attr('class', 'axis axis-left')
         .call(d3.axisLeft(y).tickValues(ticks).tickFormat(d => formatCurrency(d)).tickSize(0).tickPadding(8));
 
-    yAxisGroup.selectAll('text')
-        .style('font-size', '10px')
-        .style('font-weight', '500')
-        .style('fill', '#4A5568');
-
-    const xAxisGroup = svg.append('g')
+    // X-axis with method names
+    svg.append('g')
         .attr('class', 'axis axis-bottom')
         .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(x).tickSize(0).tickPadding(8));
-
-    xAxisGroup.selectAll('text')
-        .style('text-anchor', 'middle')
-        .style('font-size', '10px')
-        .style('font-weight', '500')
-        .style('fill', '#4A5568')
+        .call(d3.axisBottom(x).tickSize(0).tickPadding(8))
+        .selectAll('text')
         .each(function (d) {
             const self = d3.select(this);
             let text = self.text();
             if (text.length > 14) self.text(text.substring(0, 12) + '...');
         });
 
+    // Axis labels
     svg.append('text')
         .attr('class', 'axis-label-x')
         .attr('x', innerWidth / 2)
         .attr('y', innerHeight + 42)
         .attr('text-anchor', 'middle')
-        .style('fill', '#2D3748')
-        .style('font-weight', '600')
-        .style('font-size', '11px')
         .text('Detection Method');
 
     svg.append('text')
@@ -242,13 +325,11 @@ function renderMetricMethodAreaChart() {
         .attr('y', -53)
         .attr('transform', 'rotate(-90)')
         .attr('text-anchor', 'middle')
-        .style('fill', '#2D3748')
-        .style('font-weight', '600')
-        .style('font-size', '11px')
         .text('Total Fines');
 
     const themeColor = getMetricColor(currentMetric);
 
+    // 1. The "stick" - vertical line from x-axis to data point
     svg.selectAll('.lollipop-line')
         .data(filtered)
         .enter()
@@ -261,6 +342,7 @@ function renderMetricMethodAreaChart() {
         .attr('stroke', themeColor)
         .attr('stroke-width', 2.5);
 
+    // 2. The "lollipop head" - circle at the data point with tooltip
     svg.selectAll('.lollipop-head')
         .data(filtered)
         .enter()
@@ -287,6 +369,7 @@ function renderMetricMethodAreaChart() {
             hideTooltip();
         });
 
+    // 3. Value labels above each lollipop head
     svg.selectAll('.value-label')
         .data(filtered)
         .enter()
@@ -295,12 +378,31 @@ function renderMetricMethodAreaChart() {
         .attr('x', d => x(d.method) + x.bandwidth() / 2)
         .attr('y', d => y(d.fines) - 10)
         .attr('text-anchor', 'middle')
-        .style('font-size', '9px')
-        .style('font-weight', '600')
-        .style('fill', themeColor)
         .text(d => formatCurrency(d.fines));
 }
 
+// ============================================================
+// DONUT CHART - Fines distribution by violation type
+// ============================================================
+
+/**
+ * Renders a DONUT chart showing the distribution of fines by violation type
+ * 
+ * WHAT IS A DONUT CHART?
+ * - A pie chart with a hole in the center (inner radius > 0)
+ * - Shows proportions/percentages of a whole
+ * - Center hole can show total value
+ * 
+ * HOW IT WORKS:
+ * 1. Aggregates metricMethodData by metric (violation type)
+ * 2. Sorts by fines descending
+ * 3. Uses d3.pie() to calculate arc angles from values
+ * 4. Uses d3.arc() with innerRadius (hole) and outerRadius
+ * 5. Color-blind friendly palette
+ * 6. Tooltip shows: violation type, fines amount, percentage share
+ * 7. Legend shows short names with color swatches
+ * 8. Center text shows total fines
+ */
 function renderMetricDonutChart() {
     const container = document.getElementById('metricDonutChart');
     if (!container) return;
@@ -312,6 +414,7 @@ function renderMetricDonutChart() {
         return;
     }
 
+    // Aggregate fines by metric (violation type)
     const aggregated = d3.rollup(
         metricMethodData,
         v => d3.sum(v, d => d.fines),
@@ -340,22 +443,27 @@ function renderMetricDonutChart() {
         .append('g')
         .attr('transform', `translate(${width / 2},${height / 2})`);
 
+    // Color-blind friendly palette
     const colorBlindFriendlyPalette = ['#4A90D9', '#E6635C', '#5DAF5A', '#F4A261'];
 
     const color = d3.scaleOrdinal()
         .domain(data.map(d => d.metric))
         .range(colorBlindFriendlyPalette);
 
+    // d3.pie: calculates start/end angles from values
     const pie = d3.pie()
         .value(d => d.fines)
         .sort(null);
 
+    // d3.arc: converts angles to SVG path data
+    // innerRadius > 0 creates the "donut" hole
     const arc = d3.arc()
-        .innerRadius(radius * 0.55)
+        .innerRadius(radius * 0.55)  // The hole in the middle
         .outerRadius(radius);
 
     const arcs = pie(data);
 
+    // Draw pie slices
     svg.selectAll('path')
         .data(arcs)
         .enter()
@@ -380,6 +488,7 @@ function renderMetricDonutChart() {
             hideTooltip();
         });
 
+    // Legend
     const legendX = radius + 12;
     let legendY = -radius + 15;
 
@@ -402,6 +511,7 @@ function renderMetricDonutChart() {
             .text(formatMetricShort(d.metric));
     });
 
+    // Title
     svg.append('text')
         .attr('text-anchor', 'middle')
         .attr('y', -radius - 28)
@@ -410,6 +520,7 @@ function renderMetricDonutChart() {
         .style('fill', '#2D3748')
         .text('Fines by Violation Type');
 
+    // Center total
     svg.append('text')
         .attr('text-anchor', 'middle')
         .attr('y', -radius - 10)
@@ -419,6 +530,22 @@ function renderMetricDonutChart() {
         .text(`Total: ${formatCurrency(totalFines)}`);
 }
 
+// ============================================================
+// METHOD BAR CHART - Fines by detection method (horizontal)
+// ============================================================
+
+/**
+ * Renders a horizontal bar chart showing fines by detection method
+ * 
+ * HOW IT WORKS:
+ * 1. Aggregates metricMethodData by method
+ * 2. Sorts by fines descending
+ * 3. Shows top 8 methods only
+ * 4. Horizontal bars for easy reading of method names
+ * 5. Tooltip shows: method, fines, share percentage, arrests
+ * 6. Animated bars (width grows from 0)
+ * 7. Value labels at end of each bar
+ */
 function renderMethodBarChart() {
     const container = document.getElementById('methodBarChart');
     if (!container) return;
@@ -430,6 +557,7 @@ function renderMethodBarChart() {
         return;
     }
 
+    // Aggregate by detection method
     const aggregated = d3.rollup(
         metricMethodData,
         v => ({
@@ -445,6 +573,7 @@ function renderMethodBarChart() {
         arrests: values.arrests
     })).sort((a, b) => b.fines - a.fines);
 
+    // Keep only top 8 methods
     data = data.slice(0, 8);
     const totalFines = d3.sum(data, d => d.fines);
     const maxFines = d3.max(data, d => d.fines);
@@ -469,11 +598,13 @@ function renderMethodBarChart() {
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
+    // Y-axis: method names (band scale)
     const y = d3.scaleBand()
         .domain(data.map(d => d.method))
         .range([0, innerHeight])
         .padding(0.2);
 
+    // X-axis: fines amount (linear scale)
     const labelWidth = 75;
     const maxTicks = Math.max(2, Math.min(4, Math.floor(innerWidth / labelWidth)));
     const ticks = getNiceTicks(maxFines * 1.1, maxTicks);
@@ -482,29 +613,23 @@ function renderMethodBarChart() {
         .domain([0, maxFines * 1.1])
         .range([0, innerWidth]);
 
+    // Grid lines
     svg.append('g')
         .attr('class', 'grid-lines')
         .call(d3.axisTop(xFines).tickValues(ticks).tickSize(-innerHeight).tickFormat(''))
         .select('.domain').remove();
 
-    const xAxisBottom = svg.append('g')
+    // Bottom axis
+    svg.append('g')
         .attr('class', 'axis axis-bottom')
         .attr('transform', `translate(0,${innerHeight})`)
         .call(d3.axisBottom(xFines).tickValues(ticks).tickFormat(d => formatCurrency(d)).tickSize(0).tickPadding(8));
 
-    xAxisBottom.selectAll('text')
-        .style('font-size', '9px')
-        .style('font-weight', '500')
-        .style('fill', '#4A5568');
-
+    // Y-axis
     svg.append('g')
         .attr('class', 'axis axis-left')
-        .call(d3.axisLeft(y).tickSize(0).tickPadding(6));
-
-    svg.select('.axis-left').selectAll('text')
-        .style('font-size', '10px')
-        .style('font-weight', '500')
-        .style('fill', '#4A5568')
+        .call(d3.axisLeft(y).tickSize(0).tickPadding(6))
+        .selectAll('text')
         .each(function (d) {
             const self = d3.select(this);
             let text = self.text();
@@ -513,14 +638,12 @@ function renderMethodBarChart() {
             }
         });
 
+    // Axis labels
     svg.append('text')
         .attr('class', 'axis-label-x')
         .attr('x', innerWidth / 2)
         .attr('y', innerHeight + 30)
         .attr('text-anchor', 'middle')
-        .style('fill', '#1A1A1A')
-        .style('font-weight', '700')
-        .style('font-size', '11px')
         .text('Total Fines');
 
     svg.append('text')
@@ -529,11 +652,9 @@ function renderMethodBarChart() {
         .attr('y', -135)
         .attr('transform', 'rotate(-90)')
         .attr('text-anchor', 'middle')
-        .style('fill', '#2D3748')
-        .style('font-weight', '600')
-        .style('font-size', '11px')
         .text('Detection Method');
 
+    // Draw horizontal bars with animation (width grows from 0)
     svg.selectAll('.method-bar-fines')
         .data(data)
         .enter()
@@ -542,8 +663,7 @@ function renderMethodBarChart() {
         .attr('y', d => y(d.method))
         .attr('height', y.bandwidth())
         .attr('x', 0)
-        .attr('width', 0)
-        .attr('fill', '#4A90D9')
+        .attr('width', 0)  // Start at 0 for animation
         .attr('opacity', 0.85)
         .attr('rx', 4)
         .style('cursor', 'pointer')
@@ -565,6 +685,7 @@ function renderMethodBarChart() {
         .duration(500)
         .attr('width', d => Math.max(xFines(d.fines), 4));
 
+    // Value labels at end of bars
     svg.selectAll('.label-fines')
         .data(data.filter(d => d.fines > 0))
         .enter()
@@ -573,15 +694,13 @@ function renderMethodBarChart() {
         .attr('x', d => xFines(d.fines) + 6)
         .attr('y', d => y(d.method) + y.bandwidth() / 2 + 5)
         .attr('text-anchor', 'start')
-        .style('font-size', '9px')
-        .style('font-weight', '600')
-        .style('fill', '#4A90D9')
         .style('opacity', 0)
         .text(d => formatCurrency(d.fines))
         .transition()
         .duration(550)
         .style('opacity', 1);
 
+    // Legend
     const legend = svg.append('g')
         .attr('transform', `translate(${innerWidth + 10}, -15)`);
 
@@ -600,6 +719,21 @@ function renderMethodBarChart() {
         .text('Total Fines');
 }
 
+// ============================================================
+// METRIC SELECTOR - Buttons to switch violation type
+// ============================================================
+
+/**
+ * Initializes the metric selector buttons
+ * 
+ * HOW IT WORKS:
+ * 1. Creates 4 buttons: Speed Fines, Mobile Phone Use, Seatbelt, Unlicensed
+ * 2. Clicking a button:
+ *    - Updates currentMetric variable
+ *    - Toggles active class on buttons
+ *    - Re-renders the lollipop chart with new metric
+ * 3. Each button has a data-metric attribute matching the metric key
+ */
 function initMetricSelector() {
     const container = document.getElementById('metricSelectorContainer');
     if (!container) return;
@@ -628,17 +762,29 @@ function initMetricSelector() {
     container.appendChild(btnGroup);
 }
 
+/**
+ * Refreshes all metric-method charts and syncs KPI
+ * Called when filters change
+ */
 function refreshMetricMethodCharts() {
     if (!rawData || rawData.length === 0) return;
+
+    initMetricMethodData();
     renderMetricDonutChart();
     renderMethodBarChart();
     renderMetricMethodAreaChart();
+    syncKPIWithCurrentFilters();
 }
 
+/**
+ * Initializes the entire metric-method module
+ */
 function initMetricMethodModule() {
     initMetricSelector();
     refreshMetricMethodCharts();
 }
 
+// Expose functions globally
 window.initMetricMethodModule = initMetricMethodModule;
 window.refreshMetricMethodCharts = refreshMetricMethodCharts;
+window.syncKPIWithCurrentFilters = syncKPIWithCurrentFilters;

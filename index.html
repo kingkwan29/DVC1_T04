@@ -90,7 +90,6 @@
                             <div class="custom-option" data-value="Red light camera">Red Light Camera</div>
                             <div class="custom-option" data-value="Manual Action">Manual Action</div>
                             <div class="custom-option" data-value="Camera (Unspecified)">Camera (Unspecified)</div>
-                            <div class="custom-option" data-value="All Methods">Unregistered Method</div>
                         </div>
                     </div>
                     <select id="filterMethod" style="display: none;">
@@ -257,20 +256,22 @@
 
                 <div class="chart-page" id="page2">
                     <div class="chart-grid">
+                        <!-- Lollipop Chart -->
                         <div class="chart-card full-width">
                             <div class="chart-header">
                                 <div class="header-left">
                                     <span class="chart-title">Fines by Detection Method</span>
-                                    <span class="chart-sub">Lolipop Chart · Select violation type below</span>
+                                    <span class="chart-sub">Lollipop Chart · Select violation type below</span>
                                 </div>
                                 <div class="chart-actions">
-                                    <button class="chart-action-btn" data-chart="metric-area">⤓</button>
+                                    <button class="chart-action-btn" id="exportMetricArea">⤓</button>
                                 </div>
                             </div>
                             <div id="metricSelectorContainer"></div>
                             <div class="chart-body" id="metricMethodAreaChart"></div>
                         </div>
 
+                        <!-- Donut Chart -->
                         <div class="chart-card half-width">
                             <div class="chart-header">
                                 <div class="header-left">
@@ -278,12 +279,13 @@
                                     <span class="chart-sub">Donut Chart · fines by category</span>
                                 </div>
                                 <div class="chart-actions">
-                                    <button class="chart-action-btn" data-chart="metric-donut">⤓</button>
+                                    <button class="chart-action-btn" id="exportMetricDonut">⤓</button>
                                 </div>
                             </div>
                             <div class="chart-body" id="metricDonutChart"></div>
                         </div>
 
+                        <!-- Method Bar Chart -->
                         <div class="chart-card half-width">
                             <div class="chart-header">
                                 <div class="header-left">
@@ -291,7 +293,7 @@
                                     <span class="chart-sub">Horizontal Bar Chart · fines by method</span>
                                 </div>
                                 <div class="chart-actions">
-                                    <button class="chart-action-btn" data-chart="method-bar">⤓</button>
+                                    <button class="chart-action-btn" id="exportMethodBar">⤓</button>
                                 </div>
                             </div>
                             <div class="chart-body" id="methodBarChart"></div>
@@ -312,7 +314,6 @@
     <script src="js/trend.js"></script>
     <script src="js/grouped-bar.js"></script>
     <script src="js/hbar.js"></script>
-    <script src="js/vbar.js"></script>
     <script src="js/metric-method.js"></script>
     <script src="js/main.js"></script>
 </body>

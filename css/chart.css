@@ -1,5 +1,9 @@
 /* ==========================================================================
-   Global Typography and Base SVG Overrides
+   chart.css - Consolidated Chart Styles for All Visualization Modules
+   ========================================================================== */
+
+/* ==========================================================================
+   1. GLOBAL TYPOGRAPHY & BASE SVG
    ========================================================================== */
 .chart-body svg text,
 .chart-body svg tspan {
@@ -12,7 +16,7 @@
 }
 
 /* ==========================================================================
-   Trend Chart Layout Section
+   2. TREND CHART (trend.js)
    ========================================================================== */
 #trendChart {
     width: 100%;
@@ -135,7 +139,7 @@
 }
 
 /* ==========================================================================
-   Grouped and Horizontal Bar Components
+   3. GROUPED BAR CHART (grouped-bar.js)
    ========================================================================== */
 #groupedBarChart .axis-fines .tick text {
     font-size: 14px;
@@ -170,6 +174,51 @@
     stroke: #1A1A1A !important;
 }
 
+#groupedBarChart .axis-label-y-left {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    fill: #2E86AB;
+}
+
+#groupedBarChart .axis-label-x {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    fill: #2D3748;
+}
+
+#groupedBarChart .axis-label-y-right {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    fill: #E63946;
+}
+
+#groupedBarChart .dual-axis-indicator {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    fill: #6B7280;
+}
+
+#groupedBarChart .legend-text-fines {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    fill: #2E86AB;
+}
+
+#groupedBarChart .legend-text-arrests {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    fill: #E63946;
+}
+
+/* Grouped Bar Chart - Data Labels on Bars (smaller) */
+#groupedBarChart .data-label {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+/* ==========================================================================
+   4. HORIZONTAL BAR CHART (hbar.js)
+   ========================================================================== */
 #hbarChart .axis-bottom .tick text {
     font-size: 13px;
     font-weight: 600;
@@ -192,8 +241,20 @@
     stroke: #1A1A1A !important;
 }
 
+#hbarChart .axis-label-x {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    fill: #2D3748;
+}
+
+#hbarChart .axis-label-y-left {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    fill: #2D3748;
+}
+
 /* ==========================================================================
-   Labels, Indicators, Typography Tokens
+   5. LABELS, INDICATORS & TYPOGRAPHY TOKENS (Shared)
    ========================================================================== */
 .axis-label-x {
     font-size: 12px !important;
@@ -234,8 +295,8 @@
 }
 
 .data-label {
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 600;
 }
 
 .hbar-value {
@@ -257,7 +318,7 @@
 }
 
 /* ==========================================================================
-   Interactive Chart Utilities
+   6. INTERACTIVE CHART UTILITIES (Shared)
    ========================================================================== */
 .bar {
     opacity: 0.9;
@@ -287,7 +348,7 @@
 }
 
 /* ==========================================================================
-   Metric Selector Modules (Sleek, Segmented Pill Redesign)
+   7. METRIC SELECTOR MODULE (metric-method.js)
    ========================================================================== */
 .metric-selector-group {
     display: inline-flex;
@@ -345,7 +406,7 @@
 }
 
 /* ==========================================================================
-   OPTION D SPECIFIC: Lollipop Graph Rendering Elements
+   8. LOLLIPOP CHART (metric-method.js - renderMetricMethodAreaChart)
    ========================================================================== */
 #metricMethodAreaChart .lollipop-line {
     transition: stroke-width 0.15s ease;
@@ -388,8 +449,20 @@
     stroke: #A0AEC0 !important;
 }
 
+#metricMethodAreaChart .axis-label-x {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    fill: #2D3748;
+}
+
+#metricMethodAreaChart .axis-label-y-left {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    fill: #2D3748;
+}
+
 /* ==========================================================================
-   Method Horizontal Bar & Donut Visualization Modules
+   9. METHOD BAR CHART (metric-method.js - renderMethodBarChart)
    ========================================================================== */
 #methodBarChart .method-bar-fines {
     transition: all 0.2s ease;
@@ -435,6 +508,21 @@
     stroke: #A0AEC0 !important;
 }
 
+#methodBarChart .axis-label-x {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    fill: #2D3748;
+}
+
+#methodBarChart .axis-label-y-left {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    fill: #2D3748;
+}
+
+/* ==========================================================================
+   10. DONUT CHART (metric-method.js - renderMetricDonutChart)
+   ========================================================================== */
 #metricDonutChart svg {
     display: block;
     margin: 0 auto;
@@ -453,7 +541,7 @@
 }
 
 /* ==========================================================================
-   Structural Mechanics: Layout Fallbacks, Tooltips, Global Dimensions
+   11. STRUCTURAL MECHANICS (Shared Layout)
    ========================================================================== */
 .loading-state {
     display: flex;
@@ -494,6 +582,9 @@
     font-size: 12px;
 }
 
+/* ==========================================================================
+   12. TOOLTIP SYSTEM (Shared)
+   ========================================================================== */
 .chart-tooltip {
     position: fixed;
     background: #1F2F3E;
@@ -533,7 +624,7 @@
 }
 
 /* ==========================================================================
-   Responsive Viewport Media Queries (<= 768px Mobile Adaptation)
+   13. RESPONSIVE VIEWPORT (<= 768px Mobile Adaptation)
    ========================================================================== */
 @media (max-width: 768px) {
 
@@ -570,5 +661,34 @@
 
     #metricMethodAreaChart .value-label {
         font-size: 8px !important;
+    }
+
+    #groupedBarChart .axis-label-y-left,
+    #groupedBarChart .axis-label-x,
+    #groupedBarChart .axis-label-y-right {
+        font-size: 12px !important;
+    }
+
+    #groupedBarChart .dual-axis-indicator {
+        font-size: 12px !important;
+    }
+
+    #groupedBarChart .data-label {
+        font-size: 10px !important;
+    }
+
+    #hbarChart .axis-label-x,
+    #hbarChart .axis-label-y-left {
+        font-size: 12px !important;
+    }
+
+    #metricMethodAreaChart .axis-label-x,
+    #metricMethodAreaChart .axis-label-y-left {
+        font-size: 11px !important;
+    }
+
+    #methodBarChart .axis-label-x,
+    #methodBarChart .axis-label-y-left {
+        font-size: 11px !important;
     }
 }

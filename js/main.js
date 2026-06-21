@@ -1,6 +1,13 @@
 // js/main.js
-// Main Application Entry Point
+// Main Application Entry Point - Data loading, exports, filters, navigation
 
+// ============================================================
+// EXPORT FUNCTIONS
+// ============================================================
+
+/**
+ * Exports the entire dashboard as a PNG image using html2canvas
+ */
 async function exportAsPNG() {
     const mainContent = document.querySelector('.main-content');
     const originalOverflow = mainContent.style.overflow;
@@ -26,6 +33,9 @@ async function exportAsPNG() {
     mainContent.style.overflow = originalOverflow;
 }
 
+/**
+ * Dynamically loads an external script
+ */
 function loadScript(src) {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
@@ -36,6 +46,9 @@ function loadScript(src) {
     });
 }
 
+/**
+ * Exports intersectionData as a CSV file
+ */
 function exportAsCSV() {
     if (!intersectionData.length) {
         alert('No data to export');
@@ -62,25 +75,53 @@ function exportAsCSV() {
     URL.revokeObjectURL(url);
 }
 
-function exportChartSVG(chartId, filename) {
+/**
+ * Exports a chart as JPG using html2canvas (for ALL charts now)
+ */
+async function exportChartAsImage(chartId, filename) {
     const container = document.getElementById(chartId);
-    const svg = container.querySelector('svg');
-    if (!svg) {
-        alert('No chart to export');
+    if (!container) {
+        console.error('Container not found:', chartId);
+        alert('Chart container not found');
         return;
     }
 
-    const clone = svg.cloneNode(true);
-    const serializer = new XMLSerializer();
-    let source = serializer.serializeToString(clone);
+    // Make sure html2canvas is loaded
+    if (typeof html2canvas === 'undefined') {
+        try {
+            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+        } catch (err) {
+            console.error('Failed to load html2canvas:', err);
+            alert('Failed to load export library. Please try again.');
+            return;
+        }
+    }
 
-    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-    const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${filename}.svg`;
-    link.click();
+    try {
+        // Wait a tiny bit for any pending renders
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const canvas = await html2canvas(container, {
+            scale: 2,
+            backgroundColor: '#FFFFFF',
+            logging: false,
+            useCORS: true,
+            allowTaint: true,
+            width: container.scrollWidth,
+            height: container.scrollHeight
+        });
+
+        const link = document.createElement('a');
+        link.download = `${filename}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+    } catch (err) {
+        console.error('Chart export failed:', err);
+        alert('Export failed. Please try again.');
+    }
 }
+
+// ---- DATA LOADING ----
 
 let dataLoaded = false;
 
@@ -205,6 +246,8 @@ function safeAddEvent(element, eventType, handler) {
     }
 }
 
+// ---- FILTERS ----
+
 safeAddEvent(document.getElementById('filterJurisdiction'), 'change', function (e) {
     state.jurisdiction = e.target.value;
 
@@ -250,38 +293,80 @@ safeAddEvent(document.getElementById('filterMethod'), 'change', function (e) {
     }
 });
 
+// ---- EXPORT BUTTONS ----
+
 safeAddEvent(document.getElementById('exportPNG'), 'click', exportAsPNG);
 safeAddEvent(document.getElementById('exportCSV'), 'click', exportAsCSV);
 
-const chartGrid = document.querySelector('.chart-grid');
-if (chartGrid) {
-    chartGrid.addEventListener('click', (e) => {
-        const btn = e.target.closest('.chart-action-btn');
-        if (btn) {
-            const chartMap = {
-                'trend': 'monthly-trend',
-                'grouped': 'grouped-bar-chart',
-                'hbar': 'metric-hbar',
-                'vbar': 'jurisdiction-vbar',
-                'metric-area': 'metric-method-area',
-                'metric-donut': 'metric-donut',
-                'method-bar': 'method-bar'
-            };
-            const chartType = btn.getAttribute('data-chart');
-            const filename = chartMap[chartType] || 'chart';
-            const chartIdMap = {
-                'trend': 'trendChart',
-                'grouped': 'groupedBarChart',
-                'hbar': 'hbarChart',
-                'vbar': 'vbarChart',
-                'metric-area': 'metricMethodAreaChart',
-                'metric-donut': 'metricDonutChart',
-                'method-bar': 'methodBarChart'
-            };
-            exportChartSVG(chartIdMap[chartType], filename);
-        }
+// ============================================================
+// ALL CHART EXPORT BUTTONS (ALL export as JPG now)
+// ============================================================
+
+// ---- Page 1 Chart Exports ----
+
+// Trend Chart Export
+const exportTrendBtn = document.querySelector('.chart-card.full-width .chart-action-btn[data-chart="trend"]');
+if (exportTrendBtn) {
+    exportTrendBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        console.log('Exporting Trend Chart as JPG');
+        exportChartAsImage('trendChart', 'monthly-trend');
     });
 }
+
+// Grouped Bar Chart Export
+const exportGroupedBtn = document.querySelector('.chart-card.half-width .chart-action-btn[data-chart="grouped"]');
+if (exportGroupedBtn) {
+    exportGroupedBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        console.log('Exporting Grouped Bar Chart as JPG');
+        exportChartAsImage('groupedBarChart', 'grouped-bar-chart');
+    });
+}
+
+// HBar Chart Export
+const exportHBarBtn = document.querySelector('.chart-card.half-width .chart-action-btn[data-chart="hbar"]');
+if (exportHBarBtn) {
+    exportHBarBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        console.log('Exporting HBar Chart as JPG');
+        exportChartAsImage('hbarChart', 'metric-hbar');
+    });
+}
+
+// ---- Page 2 Chart Exports ----
+
+// Lollipop Chart Export
+const exportMetricAreaBtn = document.getElementById('exportMetricArea');
+if (exportMetricAreaBtn) {
+    exportMetricAreaBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        console.log('Exporting Lollipop Chart as JPG');
+        exportChartAsImage('metricMethodAreaChart', 'metric-method-area');
+    });
+}
+
+// Donut Chart Export
+const exportMetricDonutBtn = document.getElementById('exportMetricDonut');
+if (exportMetricDonutBtn) {
+    exportMetricDonutBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        console.log('Exporting Donut Chart as JPG');
+        exportChartAsImage('metricDonutChart', 'metric-donut');
+    });
+}
+
+// Method Bar Chart Export
+const exportMethodBarBtn = document.getElementById('exportMethodBar');
+if (exportMethodBarBtn) {
+    exportMethodBarBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        console.log('Exporting Method Bar Chart as JPG');
+        exportChartAsImage('methodBarChart', 'method-bar');
+    });
+}
+
+// ---- RESIZE HANDLER ----
 
 let resizeTimer;
 window.addEventListener('resize', () => {
@@ -296,7 +381,11 @@ window.addEventListener('resize', () => {
     }, 200);
 });
 
+// ---- INITIALIZATION ----
+
 loadAllData();
+
+// ---- PAGE NAVIGATION ----
 
 function initPageNavigation() {
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -333,6 +422,8 @@ function initPageNavigation() {
         });
     });
 }
+
+// ---- CUSTOM DROPDOWN UI ----
 
 function initCustomDropdowns() {
     const dropdownConfigs = [
@@ -388,6 +479,8 @@ function initCustomDropdowns() {
     });
 }
 
+// ---- MODULE INITIALIZATION ----
+
 function initAllAppModules() {
     initPageNavigation();
     initCustomDropdowns();
@@ -398,6 +491,8 @@ if (document.readyState === 'loading') {
 } else {
     initAllAppModules();
 }
+
+// ---- PAGE SWITCHING (Page 1 vs Page 2 inside Dashboard) ----
 
 document.addEventListener('click', function (e) {
     if (e.target.classList.contains('page-btn')) {
