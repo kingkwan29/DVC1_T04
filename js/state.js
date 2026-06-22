@@ -153,7 +153,7 @@ function computeMonthlyData() {
             'Red light camera': 'Red light camera',
             'Manual Action': 'Manual Action',
             'Camera': 'Camera',
-            'Avg speed camera': 'Avg speed camera'
+            'Average speed camera': 'Average speed camera'
         };
         const targetMethod = methodMap[state.method];
         if (targetMethod) {
