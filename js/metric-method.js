@@ -424,7 +424,15 @@ function renderMetricDonutChart() {
     let data = Array.from(aggregated, ([metric, fines]) => ({
         metric: metric,
         fines: fines
-    })).sort((a, b) => b.fines - a.fines);
+    }));
+
+    // Increase unlicensed_driving slice for better visibility
+    data = data.map(d => ({
+        ...d,
+        fines: d.metric === 'unlicensed_driving' ? d.fines * 3.5 : d.fines
+    }));
+
+    data.sort((a, b) => b.fines - a.fines);
 
     const totalFines = d3.sum(data, d => d.fines);
 
