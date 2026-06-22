@@ -86,7 +86,7 @@ function formatMethodName(method) {
         'Red light camera': 'Red Light Camera',
         'Police issued': 'Police Issued',
         'Manual Action': 'Manual Action',
-        'Average speed camera': 'Avg Speed Camera',
+        'Avg speed camera': 'Avg Speed Camera',
         'Camera': 'Camera'
     };
     return names[method] || method;
