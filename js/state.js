@@ -5,9 +5,35 @@
 // GLOBAL FILTER STATE - Shared across all charts
 // ============================================================
 const state = {
-    jurisdiction: "all",  // "all" or specific state (e.g., "NSW", "VIC")
-    age: "all",           // "all" or age group (e.g., "17-25", "26-39")
+    jurisdiction: "all",  // "all" or specific state code (e.g., "ACT", "NSW", "VIC")
+    age: "all",           // "all" or age group (e.g., "0-16", "17-25", "26-39")
     method: "all"         // "all" or detection method (e.g., "Police issued", "Fixed camera")
+};
+
+// Jurisdiction name mapping: full name -> code used in data
+const jurisdictionMap = {
+    "all": "all",
+    "Australian Capital Territory": "ACT",
+    "New South Wales": "NSW",
+    "Northern Territory": "NT",
+    "Queensland": "QLD",
+    "South Australia": "SA",
+    "Tasmania": "TAS",
+    "Victoria": "VIC",
+    "Western Australia": "WA"
+};
+
+// Reverse mapping: code -> full name (for display)
+const jurisdictionDisplayMap = {
+    "all": "All",
+    "ACT": "Australian Capital Territory",
+    "NSW": "New South Wales",
+    "NT": "Northern Territory",
+    "QLD": "Queensland",
+    "SA": "South Australia",
+    "TAS": "Tasmania",
+    "VIC": "Victoria",
+    "WA": "Western Australia"
 };
 
 // ============================================================
@@ -44,9 +70,9 @@ function getTooltip() {
  * 1. Inserts HTML content into the tooltip element
  * 2. Default position: bottom-right of cursor (clientX + 15, clientY - 20)
  * 3. Checks if tooltip would overflow viewport, adjusts automatically:
- *    - Overflow right edge → flip to left side of cursor
- *    - Overflow top edge → show below cursor
- *    - Overflow bottom edge → move up
+ *    - Overflow right edge -> flip to left side of cursor
+ *    - Overflow top edge -> show below cursor
+ *    - Overflow bottom edge -> move up
  * 
  * @param {MouseEvent} event - Mouse event (used to get cursor position)
  * @param {string} html - HTML content to display inside tooltip
@@ -136,7 +162,7 @@ function computeMonthlyData() {
     }
 
     // Group by year and month using d3.rollup (nested grouping)
-    // Structure: year → month → sum of fines
+    // Structure: year -> month -> sum of fines
     const grouped = d3.rollup(
         filtered,
         v => d3.sum(v, d => d.fines),

@@ -93,10 +93,21 @@ function renderMonthlyTrend() {
         .attr('transform', `translate(0,${innerHeight})`)
         .call(d3.axisBottom(xScale).ticks(d3.timeYear.every(2)).tickFormat(d3.timeFormat('%b %Y')));
 
-    // Y-axis: format large numbers as K/M
+    // Y-axis: format large numbers as K/M, small numbers as-is
+    // FIXED: Added handling for values < 1000 to avoid "0K" display
     svg.append('g')
         .attr('class', 'axis axis-y-left')
-        .call(d3.axisLeft(yScale).ticks(6).tickFormat(d => d >= 1e6 ? (d / 1e6).toFixed(1) + 'M' : (d / 1e3).toFixed(0) + 'K'));
+        .call(d3.axisLeft(yScale).ticks(6).tickFormat(d => {
+            if (d >= 1e6) {
+                return (d / 1e6).toFixed(1) + 'M';
+            } else if (d >= 1e3) {
+                return (d / 1e3).toFixed(0) + 'K';
+            } else if (d >= 1) {
+                return d.toLocaleString();
+            } else {
+                return '0';
+            }
+        }));
 
     // X-axis label
     svg.append('text')

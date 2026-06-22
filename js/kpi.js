@@ -44,9 +44,9 @@ async function loadGlobalKPI() {
  * 3. intersectionData - Computed from raw data (fallback for all other cases)
  * 
  * FILTER LOGIC:
- * - If all filters = 'all' → use globalKPI if available
- * - If jurisdiction is specific → try geoData first, fallback to intersectionData
- * - Otherwise → use intersectionData with age + method filters applied
+ * - If all filters = 'all' -> use globalKPI if available
+ * - If jurisdiction is specific -> try geoData first, fallback to intersectionData
+ * - Otherwise -> use intersectionData with age + method filters applied
  * 
  * IMPORTANT: geoData is already aggregated per jurisdiction, so we skip
  *            additional age/method filtering when using geoData.
@@ -118,9 +118,9 @@ function renderKPI() {
  * 
  * FORMATTING RULES:
  * - Fines: 
- *   - >= $1M → "$1.5M" (one decimal)
- *   - >= $1K → "$2.3K" (no decimal)
- *   - < $1K → "$950" (with commas)
+ *   - >= $1M -> "$1.5M" (one decimal)
+ *   - >= $1K -> "$2.3K" (no decimal)
+ *   - < $1K -> "$950" (with commas)
  * - Arrests & Charges: 
  *   - Always with commas (e.g., "1,234")
  *   - No K/M suffix because they represent people counts
